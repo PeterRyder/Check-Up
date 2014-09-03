@@ -18,9 +18,16 @@ namespace Check_Up {
         // create perf mon objects
         private PerformanceCounter perfCpuCount = new PerformanceCounter("Processor Information", "% Processor Time", "_Total");
         private PerformanceCounter perfMemCount = new PerformanceCounter("Memory", "Available MBytes");
+
+        // currently cannot use these two performance metrics - dunno why not...
         //private PerformanceCounter perfNetCount = new PerformanceCounter("Network Interface", "Bytes Total/sec");
         //private PerformanceCounter perfDiskCount = new PerformanceCounter("LogicalDisk", "% Disk Time", "_Total");
         #endregion
+
+        public List<int> memAvailable = new List<int>();
+        public List<int> cpuUsage = new List<int>();
+
+        public bool shouldGatherData;
 
         public gathering_form() {
             InitializeComponent();
@@ -32,9 +39,14 @@ namespace Check_Up {
             perfCpuCount.NextValue();
             perfMemCount.NextValue();
 
-            backgroundWorker1.DoWork += new DoWorkEventHandler(TimerGather);
             backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
 
+            if (shouldGatherData) {
+                backgroundWorker1.DoWork += new DoWorkEventHandler(TimerGather);
+            }
+            else {
+                backgroundWorker1.ReportProgress(100);
+            }
         }
 
         void Form1_Shown(object sender, EventArgs e) {
@@ -48,7 +60,18 @@ namespace Check_Up {
         }
 
         private void gathering_form_Load(object sender, EventArgs e) {
-            
+            if (!Properties.Settings.Default.CPU ||
+                !Properties.Settings.Default.Memory ||
+                !Properties.Settings.Default.Network ||
+                !Properties.Settings.Default.DiskIO) {
+
+                    Console.WriteLine("Settings indicate there is nothing to monitor");
+                    backgroundWorker1.CancelAsync();
+                    shouldGatherData = false;
+            }
+            else {
+                shouldGatherData = true;
+            }
         }
 
         void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e) {
@@ -91,15 +114,22 @@ namespace Check_Up {
 
         private void GatherData() {
 
-            // get performance values
-            int currentCpuPercentage = (int)perfCpuCount.NextValue();
-            int currentMemUsage = (int)perfMemCount.NextValue();
+            // gather and record CPU utilization
+            if (Properties.Settings.Default.CPU) {
+                int currentCpuPercentage = (int)perfCpuCount.NextValue();
+                cpuUsage.Add(currentCpuPercentage);
+                Console.WriteLine("Cpu Load: {0}%", currentCpuPercentage);
+            }
 
-            Process[] processes = Process.GetProcesses();
+            // gather and record available memory
+            if (Properties.Settings.Default.Memory) {
+                int currentMemUsage = (int)perfMemCount.NextValue();
+                Console.WriteLine("Available Memory: {0}MB", currentMemUsage);
+                memAvailable.Add(currentMemUsage);
+            }
 
-            // prints cpu load in percentage
-            Console.WriteLine("Cpu Load: {0}%", currentCpuPercentage);
-            Console.WriteLine("Available Memory: {0}MB", currentMemUsage);
+            // will be used later to monitor specific processes
+            //Process[] processes = Process.GetProcesses();
 
         }
     }
