@@ -1,5 +1,5 @@
-﻿namespace Check_Up {
-    partial class help_form {
+﻿namespace ReadWriteCsv {
+    partial class HelpForm {
         /// <summary>
         /// Required designer variable.
         /// </summary>

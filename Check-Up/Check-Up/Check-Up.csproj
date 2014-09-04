@@ -7,7 +7,7 @@
     <ProjectGuid>{EA91796E-A933-4668-9E5C-34133549946B}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Check_Up</RootNamespace>
+    <RootNamespace>ReadWriteCsv</RootNamespace>
     <AssemblyName>Check-Up</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -31,6 +31,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Check Up.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -46,40 +52,41 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="CSVUtil.cs" />
+    <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="MainWindow.Designer.cs">
+      <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="gathering_form.cs">
+    <Compile Include="DataGatheringForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="gathering_form.Designer.cs">
-      <DependentUpon>gathering_form.cs</DependentUpon>
+    <Compile Include="DataGatheringForm.Designer.cs">
+      <DependentUpon>DataGatheringForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="help_form.cs">
+    <Compile Include="HelpForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="help_form.Designer.cs">
-      <DependentUpon>help_form.cs</DependentUpon>
+    <Compile Include="HelpForm.Designer.cs">
+      <DependentUpon>HelpForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="properties_form.cs">
+    <Compile Include="PropertiesForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="properties_form.Designer.cs">
-      <DependentUpon>properties_form.cs</DependentUpon>
+    <Compile Include="PropertiesForm.Designer.cs">
+      <DependentUpon>PropertiesForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="MainWindow.resx">
+      <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="gathering_form.resx">
-      <DependentUpon>gathering_form.cs</DependentUpon>
+    <EmbeddedResource Include="DataGatheringForm.resx">
+      <DependentUpon>DataGatheringForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="help_form.resx">
-      <DependentUpon>help_form.cs</DependentUpon>
+    <EmbeddedResource Include="HelpForm.resx">
+      <DependentUpon>HelpForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -89,9 +96,10 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="properties_form.resx">
-      <DependentUpon>properties_form.cs</DependentUpon>
+    <EmbeddedResource Include="PropertiesForm.resx">
+      <DependentUpon>PropertiesForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -105,6 +113,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Check Up.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

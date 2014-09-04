@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Check_Up {
-    public partial class help_form : Form {
-        public help_form() {
+namespace ReadWriteCsv {
+    public partial class HelpForm : Form {
+        public HelpForm() {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
         }
