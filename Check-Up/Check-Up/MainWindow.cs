@@ -57,20 +57,33 @@ namespace ReadWriteCsv {
         }
 
         private void button2_Click_1(object sender, EventArgs e) {
-            using (CsvFileReader reader = new CsvFileReader("DataOutput.csv")) {
+
+            foreach (var series in this.chart1.Series) {
+                series.Points.Clear();
+            }
+
+            CsvFileReader reader = null;
+            try {
+                reader = new CsvFileReader("DataOutput.csv");
+            }
+            catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+            }
+
+            if (reader != null) {
                 CsvRow row = new CsvRow();
                 int i = 1;
                 while (reader.ReadRow(row)) {
                     string type = row[0];
                     string value = row[1];
-                    
-                    try {
-                        this.chart1.Series.Add(type);
-                    }
-                    catch {
+
+                    if (this.chart1.Series.IndexOf(type) != -1) {
 #if DEBUG
-                        Console.WriteLine("Already had chart with data type {0}", type);
+                        Console.WriteLine("Chart already has {0} in the series", type);
 #endif
+                    }
+                    else {
+                        this.chart1.Series.Add(type);
                     }
 
                     try {
@@ -89,7 +102,11 @@ namespace ReadWriteCsv {
                     i++;
                 }
             }
-
+            else {
+                foreach (var series in this.chart1.Series) {
+                    series.Points.Clear();
+                }
+            }
         }
 
         private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e) {
