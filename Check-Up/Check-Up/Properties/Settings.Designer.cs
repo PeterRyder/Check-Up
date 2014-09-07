@@ -74,9 +74,9 @@ namespace ReadWriteCsv.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("60")]
-        public int PollingTime {
+        public double PollingTime {
             get {
-                return ((int)(this["PollingTime"]));
+                return ((double)(this["PollingTime"]));
             }
             set {
                 this["PollingTime"] = value;
@@ -86,9 +86,9 @@ namespace ReadWriteCsv.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public int PollingInterval {
+        public double PollingInterval {
             get {
-                return ((int)(this["PollingInterval"]));
+                return ((double)(this["PollingInterval"]));
             }
             set {
                 this["PollingInterval"] = value;

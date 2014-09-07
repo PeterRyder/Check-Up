@@ -38,7 +38,7 @@ namespace ReadWriteCsv {
             Properties.Settings.Default.DiskIO = checkBox_diskio.Checked;
 
             try {
-                int pollingTime = Convert.ToInt32(textBox1.Text);
+                double pollingTime = Convert.ToDouble(textBox1.Text);
                 Properties.Settings.Default.PollingTime = pollingTime;
             }
             catch {
@@ -46,7 +46,7 @@ namespace ReadWriteCsv {
             }
 
             try {
-                int pollingInterval = Convert.ToInt32(textBox2.Text);
+                double pollingInterval = Convert.ToDouble(textBox2.Text);
                 Properties.Settings.Default.PollingInterval = pollingInterval;
             }
             catch {

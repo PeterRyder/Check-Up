@@ -14,10 +14,10 @@
     <Setting Name="DiskIO" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="PollingTime" Type="System.Int32" Scope="User">
+    <Setting Name="PollingTime" Type="System.Double" Scope="User">
       <Value Profile="(Default)">60</Value>
     </Setting>
-    <Setting Name="PollingInterval" Type="System.Int32" Scope="User">
+    <Setting Name="PollingInterval" Type="System.Double" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
   </Settings>

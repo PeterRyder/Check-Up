@@ -85,7 +85,7 @@ namespace ReadWriteCsv {
             Console.WriteLine("Started background worker");
 #endif
             backgroundWorker1.RunWorkerAsync();
-           
+
         }
 
         private void progressBar1_Click(object sender, EventArgs e) {
@@ -109,14 +109,14 @@ namespace ReadWriteCsv {
 
         private bool GatherData(BackgroundWorker sender, DoWorkEventArgs e) {
 
-
             double pollingTime = Properties.Settings.Default.PollingTime;
             double pollingInterval = Properties.Settings.Default.PollingInterval;
 #if DEBUG
             Console.WriteLine("Polling Time: " + pollingTime);
             Console.WriteLine("Polling Interval: " + pollingInterval);
 #endif
-            for (double i = 0f; i <= pollingTime; ) {
+            for (double i = pollingInterval; i <= pollingTime; ) {
+                
                 if (backgroundWorker1.CancellationPending) {
                     Console.WriteLine("Cancellation is pending - killing the loop");
                     e.Cancel = true;
@@ -141,22 +141,27 @@ namespace ReadWriteCsv {
 #endif
                     }
 
-                    Thread.Sleep((int)pollingInterval * 1000);
-                    double percentage = (pollingInterval / pollingTime) * 100f * i;
-                    percentage = Math.Round(percentage);
+                    Thread.Sleep((int)(pollingInterval * 1000));
+                    i += pollingInterval;
+                    double percentage = (i / pollingTime) * 100;
+                    
 #if DEBUG
                     Console.WriteLine("Percentage: " + percentage);
 #endif
-                    if (percentage >= 100) {
+                    if (percentage >= 100 || i >= pollingTime) {
                         backgroundWorker1.CancelAsync();
                         Console.WriteLine("Set cancellation to pending");
                     }
+                    else {
+                        percentage = Math.Round(percentage);
+                        backgroundWorker1.ReportProgress((int)percentage);
 
-                    backgroundWorker1.ReportProgress((int)percentage);
-
-                    i += pollingInterval;
+                        Console.WriteLine("I {0}", i);
+                    }
                 }
             }
+
+            backgroundWorker1.CancelAsync();
 
             if (backgroundWorker1.CancellationPending) {
                 Console.WriteLine("Cancellation is pending");
@@ -215,6 +220,10 @@ namespace ReadWriteCsv {
             }
 
             this.Close();
+        }
+
+        private void label2_Click(object sender, EventArgs e) {
+
         }
     }
 }
