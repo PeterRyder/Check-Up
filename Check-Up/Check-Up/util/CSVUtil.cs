@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace ReadWriteCsv {
+namespace Check_Up {
     /// <summary>
     /// Class to store one CSV row
     /// </summary>

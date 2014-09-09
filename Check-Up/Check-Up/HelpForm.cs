@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ReadWriteCsv {
+namespace Check_Up {
     public partial class HelpForm : Form {
         public HelpForm() {
             InitializeComponent();

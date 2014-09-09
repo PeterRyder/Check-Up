@@ -1,4 +1,4 @@
-﻿namespace ReadWriteCsv {
+﻿namespace Check_Up {
     partial class PropertiesForm {
         /// <summary>
         /// Required designer variable.
@@ -37,15 +37,19 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkBox_ignoreTime = new System.Windows.Forms.CheckBox();
+            this.visiblePoints = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(3, 55);
+            this.button1.Location = new System.Drawing.Point(3, 133);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 5;
@@ -55,7 +59,8 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(137, 55);
+            this.button2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.button2.Location = new System.Drawing.Point(84, 133);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 6;
@@ -157,9 +162,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(this.button2, 2, 2);
             this.tableLayoutPanel1.Controls.Add(this.textBox1, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.button1, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.textBox2, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.label2, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.label3, 1, 1);
@@ -177,21 +180,52 @@
             // 
             this.flowLayoutPanel1.Controls.Add(this.groupBox1);
             this.flowLayoutPanel1.Controls.Add(this.tableLayoutPanel1);
-            this.flowLayoutPanel1.Controls.Add(this.label1);
+            this.flowLayoutPanel1.Controls.Add(this.groupBox2);
+            this.flowLayoutPanel1.Controls.Add(this.button1);
+            this.flowLayoutPanel1.Controls.Add(this.button2);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(483, 215);
             this.flowLayoutPanel1.TabIndex = 17;
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Controls.Add(this.visiblePoints);
+            this.groupBox2.Controls.Add(this.checkBox_ignoreTime);
+            this.groupBox2.Location = new System.Drawing.Point(333, 3);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(129, 124);
+            this.groupBox2.TabIndex = 17;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Global Options";
+            // 
+            // checkBox_ignoreTime
+            // 
+            this.checkBox_ignoreTime.AutoSize = true;
+            this.checkBox_ignoreTime.Location = new System.Drawing.Point(10, 19);
+            this.checkBox_ignoreTime.Name = "checkBox_ignoreTime";
+            this.checkBox_ignoreTime.Size = new System.Drawing.Size(82, 17);
+            this.checkBox_ignoreTime.TabIndex = 1;
+            this.checkBox_ignoreTime.Text = "Ignore Time";
+            this.checkBox_ignoreTime.UseVisualStyleBackColor = true;
+            // 
+            // visiblePoints
+            // 
+            this.visiblePoints.Location = new System.Drawing.Point(7, 98);
+            this.visiblePoints.Name = "visiblePoints";
+            this.visiblePoints.Size = new System.Drawing.Size(100, 20);
+            this.visiblePoints.TabIndex = 2;
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 130);
+            this.label1.Location = new System.Drawing.Point(7, 79);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(169, 13);
-            this.label1.TabIndex = 17;
-            this.label1.Text = "Peter made changes to his branch";
+            this.label1.Size = new System.Drawing.Size(120, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Amount of Visible Points";
             // 
             // PropertiesForm
             // 
@@ -209,6 +243,8 @@
             this.tableLayoutPanel1.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -228,6 +264,9 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.CheckBox checkBox_ignoreTime;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox visiblePoints;
     }
 }

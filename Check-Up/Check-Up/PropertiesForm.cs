@@ -9,14 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Configuration;
 
-namespace ReadWriteCsv {
+namespace Check_Up {
     public partial class PropertiesForm : Form {
         public PropertiesForm() {
             InitializeComponent();
-        }
-
-        private void label1_Click(object sender, EventArgs e) {
-
         }
 
         private void properties_form_Load(object sender, EventArgs e) {
@@ -24,9 +20,11 @@ namespace ReadWriteCsv {
             checkBox_memory.Checked = Properties.Settings.Default.Memory;
             checkBox_network.Checked = Properties.Settings.Default.Network;
             checkBox_diskio.Checked = Properties.Settings.Default.DiskIO;
+            checkBox_ignoreTime.Checked = Properties.Settings.Default.IgnoreTime;
 
             textBox1.Text = "" + Properties.Settings.Default.PollingTime;
             textBox2.Text = "" + Properties.Settings.Default.PollingInterval;
+            visiblePoints.Text = "" + Properties.Settings.Default.VisiblePoints;
 
         }
 
@@ -36,13 +34,14 @@ namespace ReadWriteCsv {
             Properties.Settings.Default.Memory = checkBox_memory.Checked;
             Properties.Settings.Default.Network = checkBox_network.Checked;
             Properties.Settings.Default.DiskIO = checkBox_diskio.Checked;
+            Properties.Settings.Default.IgnoreTime = checkBox_ignoreTime.Checked;
 
             try {
                 double pollingTime = Convert.ToDouble(textBox1.Text);
                 Properties.Settings.Default.PollingTime = pollingTime;
             }
             catch {
-                Console.Error.WriteLine("Couldn't convert {0} to int", textBox1.Text);
+                Console.Error.WriteLine("Couldn't convert {0} to double", textBox1.Text);
             }
 
             try {
@@ -50,7 +49,15 @@ namespace ReadWriteCsv {
                 Properties.Settings.Default.PollingInterval = pollingInterval;
             }
             catch {
-                Console.Error.WriteLine("Couldn't convert {0} to int", textBox2.Text);
+                Console.Error.WriteLine("Couldn't convert {0} to double", textBox2.Text);
+            }
+
+            try {
+                int VisiblePoints = Convert.ToInt32(visiblePoints.Text);
+                Properties.Settings.Default.VisiblePoints = VisiblePoints;
+            }
+            catch {
+                Console.Error.WriteLine("Couldn't convert {0} to int", visiblePoints.Text);
             }
 
             #region Properties debug output
@@ -61,11 +68,14 @@ namespace ReadWriteCsv {
             Console.WriteLine("Memory checkbox: " + checkBox_memory.Checked);
             Console.WriteLine("Network checkbox: " + checkBox_network.Checked);
             Console.WriteLine("DiskIO checkbox: " + checkBox_diskio.Checked);
+            Console.WriteLine("Ignore Time checkbox: " + checkBox_ignoreTime.Checked);
 
             Console.WriteLine("CPU property: " + Properties.Settings.Default.CPU);
             Console.WriteLine("Memory property: " + Properties.Settings.Default.Memory);
             Console.WriteLine("Network property: " + Properties.Settings.Default.Network);
             Console.WriteLine("DiskIO property: " + Properties.Settings.Default.DiskIO);
+            Console.WriteLine("Real Time property: " + Properties.Settings.Default.RealTime);
+            Console.WriteLine("Ignore Time property: " + Properties.Settings.Default.IgnoreTime);
 #endif
             #endregion
 
@@ -81,17 +91,22 @@ namespace ReadWriteCsv {
             Console.WriteLine("Memory checkbox: " + checkBox_memory.Checked);
             Console.WriteLine("Network checkbox: " + checkBox_network.Checked);
             Console.WriteLine("DiskIO checkbox: " + checkBox_diskio.Checked);
+            Console.WriteLine("Ignore Time checkbox: " + checkBox_ignoreTime.Checked);
 
 
             Console.WriteLine("CPU property: " + Properties.Settings.Default.CPU);
             Console.WriteLine("Memory property: " + Properties.Settings.Default.Memory);
             Console.WriteLine("Network property: " + Properties.Settings.Default.Network);
             Console.WriteLine("DiskIO property: " + Properties.Settings.Default.DiskIO);
+            Console.WriteLine("Real Time property: " + Properties.Settings.Default.RealTime);
+            Console.WriteLine("Ignore Time property: " + Properties.Settings.Default.IgnoreTime);
 #endif
             #endregion
             this.Close();
         }
 
+        private void label1_Click_1(object sender, EventArgs e) {
 
+        }
     }
 }
