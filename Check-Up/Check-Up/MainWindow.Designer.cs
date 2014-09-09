@@ -43,6 +43,7 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label1 = new System.Windows.Forms.Label();
+            this.resetChart = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -119,7 +120,7 @@
             // deny
             // 
             this.deny.AutoSize = true;
-            this.deny.Location = new System.Drawing.Point(3, 779);
+            this.deny.Location = new System.Drawing.Point(3, 808);
             this.deny.Name = "deny";
             this.deny.Size = new System.Drawing.Size(75, 23);
             this.deny.TabIndex = 0;
@@ -131,7 +132,7 @@
             // 
             this.analyzeProcesses.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.analyzeProcesses.AutoSize = true;
-            this.analyzeProcesses.Location = new System.Drawing.Point(3, 99);
+            this.analyzeProcesses.Location = new System.Drawing.Point(3, 128);
             this.analyzeProcesses.Name = "analyzeProcesses";
             this.analyzeProcesses.Size = new System.Drawing.Size(122, 23);
             this.analyzeProcesses.TabIndex = 3;
@@ -145,7 +146,7 @@
             this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
             legend1.Name = "Legend1";
             this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(131, 99);
+            this.chart1.Location = new System.Drawing.Point(131, 128);
             this.chart1.Name = "chart1";
             this.chart1.Size = new System.Drawing.Size(1197, 674);
             this.chart1.TabIndex = 4;
@@ -154,12 +155,13 @@
             // groupBox1
             // 
             this.groupBox1.AutoSize = true;
+            this.groupBox1.Controls.Add(this.resetChart);
             this.groupBox1.Controls.Add(this.gatherData);
             this.groupBox1.Controls.Add(this.monitorStop);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(122, 90);
+            this.groupBox1.Size = new System.Drawing.Size(122, 119);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Chart Control";
@@ -191,7 +193,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1331, 805);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1331, 834);
             this.tableLayoutPanel1.TabIndex = 7;
             // 
             // backgroundWorker1
@@ -217,6 +219,16 @@
             this.label1.Size = new System.Drawing.Size(21, 13);
             this.label1.TabIndex = 9;
             this.label1.Text = "0%";
+            // 
+            // resetChart
+            // 
+            this.resetChart.Location = new System.Drawing.Point(9, 77);
+            this.resetChart.Name = "resetChart";
+            this.resetChart.Size = new System.Drawing.Size(75, 23);
+            this.resetChart.TabIndex = 8;
+            this.resetChart.Text = "Reset Chart";
+            this.resetChart.UseVisualStyleBackColor = true;
+            this.resetChart.Click += new System.EventHandler(this.resetChart_Click);
             // 
             // MainWindow
             // 
@@ -263,6 +275,7 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button resetChart;
 
 
 

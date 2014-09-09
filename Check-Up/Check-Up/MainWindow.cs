@@ -26,6 +26,7 @@ namespace Check_Up {
         // OK Button
         private void button2_Click(object sender, EventArgs e) {
             this.gatherData.Enabled = false;
+            this.cycles = 1;
             monitorStop.Enabled = true;
 
             dataCollector.ReadSettings();
@@ -154,7 +155,9 @@ namespace Check_Up {
             backgroundWorker1.CancelAsync();
 
             if (backgroundWorker1.CancellationPending) {
+#if DEBUG
                 Console.WriteLine("Cancellation is pending");
+#endif
                 e.Cancel = true;
                 return true;
             }
@@ -199,6 +202,12 @@ namespace Check_Up {
             backgroundWorker1.CancelAsync();
             backgroundWorker1.ReportProgress(100);
             gatherData.Enabled = true;
+        }
+
+        private void resetChart_Click(object sender, EventArgs e) {
+            foreach (var series in chart1.Series) {
+                series.Points.Clear();
+            }
         }
 
     }
