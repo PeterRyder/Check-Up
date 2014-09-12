@@ -75,10 +75,21 @@ namespace Check_Up {
             // The progress percentage is a property of e
             progressBar1.Value = e.ProgressPercentage;
             label1.Text = e.ProgressPercentage.ToString() + "%";
-            updateGraph("CPU", "" + cycles, "" + dataCollector.currentCPUUsage);
-        }
+            if (Properties.Settings.Default.CPU) {
+                updateGraph("CPU", "" + cycles, "" + dataCollector.currentCPUUsage);
+            }
 
-        private void label1_Click(object sender, EventArgs e) {
+            if (Properties.Settings.Default.Memory) {
+                updateGraph("Memory", "" + cycles, "" + dataCollector.availableMemMBs);
+            }
+
+            if (Properties.Settings.Default.Network) {
+                updateGraph("Network", "" + cycles, "" + dataCollector.currentNetUsageMBs);
+            }
+
+            if (Properties.Settings.Default.DiskIO) {
+                updateGraph("Disk", "" + cycles, "" + dataCollector.percentDiskTime);
+            }
 
         }
 
