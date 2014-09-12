@@ -33,24 +33,28 @@ namespace Check_Up {
         public bool shouldGatherData;
 
         public DataCollection() {
+            ulong totalMemBytes = new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory;
+            int totalMemMBs = (int)totalMemBytes / 1024 / 1024;
+
             #region Network Adapter Initialization
             string WifiNicDescription = "";
             string ethernetNicDescription = "";
 
             // find the wifi network interface
             foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces()) {
-                if (nic.Name == "Wi-Fi") {
+                //Console.WriteLine(nic.Name);
+                if (nic.Name == "Wi-Fi" || nic.Name == "Wireless Network Connection") {
                     WifiNicDescription = nic.Description;
                     WifiNicDescription = WifiNicDescription.Replace("(", "[");
                     WifiNicDescription = WifiNicDescription.Replace(")", "]");
-                    Console.WriteLine(WifiNicDescription);
+                    //Console.WriteLine(WifiNicDescription);
                 }
 
-                if (nic.Name == "Ethernet") {
+                if (nic.Name == "Ethernet" || nic.Name == "Local Area Connection") {
                     ethernetNicDescription = nic.Description;
                     ethernetNicDescription = ethernetNicDescription.Replace("(", "[");
                     ethernetNicDescription = ethernetNicDescription.Replace(")", "]");
-                    Console.WriteLine(ethernetNicDescription);
+                    //Console.WriteLine(ethernetNicDescription);
                 }
             }
             #endregion
@@ -60,10 +64,18 @@ namespace Check_Up {
             perfMemCount = new PerformanceCounter("Memory", "Available MBytes");
 
             if (WifiNicDescription != "") {
-                perfNetCount = new PerformanceCounter("Network Adapter", "Bytes Total/sec", WifiNicDescription);
+                //Console.WriteLine(WifiNicDescription);
+                try {
+                    perfNetCount = new PerformanceCounter("Network Adapter", "Bytes Total/sec", WifiNicDescription);
+                }
+                catch {
+                    Console.WriteLine(WifiNicDescription);
+                    //perfNetCount = new PerformanceCounter("Network Interface", "Bytes Total/sec", WifiNicDescription);
+                }
+                
             }
             else {
-                perfNetCount = new PerformanceCounter("Network Adapter", "Bytes Total/sec", ethernetNicDescription);
+                //perfNetCount = new PerformanceCounter("Network Adapter", "Bytes Total/sec", ethernetNicDescription);
             }
 
             perfDiskCount = new PerformanceCounter("LogicalDisk", "% Disk Time", "C:");
@@ -126,6 +138,33 @@ namespace Check_Up {
             }
 
             return true;
+        }
+
+        public void ListCounters(string categoryName) {
+            PerformanceCounterCategory category = PerformanceCounterCategory.GetCategories().First(c => c.CategoryName == categoryName);
+            Console.WriteLine("{0} [{1}]", category.CategoryName, category.CategoryType);
+
+            string[] instanceNames = category.GetInstanceNames();
+
+            if (instanceNames.Length > 0) {
+                // MultiInstance categories
+                foreach (string instanceName in instanceNames) {
+                    ListInstances(category, instanceName);
+                }
+            }
+            else {
+                // SingleInstance categories
+                ListInstances(category, string.Empty);
+            }
+        }
+
+        private static void ListInstances(PerformanceCounterCategory category, string instanceName) {
+            Console.WriteLine("    {0}", instanceName);
+            PerformanceCounter[] counters = category.GetCounters(instanceName);
+
+            foreach (PerformanceCounter counter in counters) {
+                Console.WriteLine("        {0}", counter.CounterName);
+            }
         }
     }
 }
