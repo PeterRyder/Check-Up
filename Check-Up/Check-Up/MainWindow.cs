@@ -42,7 +42,6 @@ namespace Check_Up {
                 backgroundWorker1.CancelAsync();
                 backgroundWorker1.ReportProgress(100);
             }
-
         }
 
         // Cancel Button
@@ -72,7 +71,6 @@ namespace Check_Up {
 
 
         void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e) {
-            // The progress percentage is a property of e
             progressBar1.Value = e.ProgressPercentage;
             label1.Text = e.ProgressPercentage.ToString() + "%";
             if (Properties.Settings.Default.CPU) {
@@ -80,10 +78,10 @@ namespace Check_Up {
             }
 
             if (Properties.Settings.Default.Memory) {
-                updateGraph("Memory", "" + cycles, "" + dataCollector.availableMemMBs);
+                updateGraph("Memory", "" + cycles, "" + dataCollector.currentMemUsage);
             }
 
-            if (Properties.Settings.Default.Network) {
+            if (Properties.Settings.Default.Network && dataCollector.canGatherNet) {
                 updateGraph("Network", "" + cycles, "" + dataCollector.currentNetUsageMBs);
             }
 
@@ -150,8 +148,9 @@ namespace Check_Up {
                     else {
                         percentage = Math.Round(percentage);
                         backgroundWorker1.ReportProgress((int)percentage);
-
+#if DEBUG
                         Console.WriteLine("I {0}", i);
+#endif
                     }
                     i += pollingInterval;
                 }

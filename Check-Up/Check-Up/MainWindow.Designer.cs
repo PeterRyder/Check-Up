@@ -38,12 +38,12 @@
             this.analyzeProcesses = new System.Windows.Forms.Button();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.resetChart = new System.Windows.Forms.Button();
             this.monitorStop = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label1 = new System.Windows.Forms.Label();
-            this.resetChart = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -166,8 +166,19 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Chart Control";
             // 
+            // resetChart
+            // 
+            this.resetChart.Location = new System.Drawing.Point(9, 77);
+            this.resetChart.Name = "resetChart";
+            this.resetChart.Size = new System.Drawing.Size(75, 23);
+            this.resetChart.TabIndex = 8;
+            this.resetChart.Text = "Reset Chart";
+            this.resetChart.UseVisualStyleBackColor = true;
+            this.resetChart.Click += new System.EventHandler(this.resetChart_Click);
+            // 
             // monitorStop
             // 
+            this.monitorStop.Enabled = false;
             this.monitorStop.Location = new System.Drawing.Point(9, 48);
             this.monitorStop.Name = "monitorStop";
             this.monitorStop.Size = new System.Drawing.Size(98, 23);
@@ -219,16 +230,6 @@
             this.label1.Size = new System.Drawing.Size(21, 13);
             this.label1.TabIndex = 9;
             this.label1.Text = "0%";
-            // 
-            // resetChart
-            // 
-            this.resetChart.Location = new System.Drawing.Point(9, 77);
-            this.resetChart.Name = "resetChart";
-            this.resetChart.Size = new System.Drawing.Size(75, 23);
-            this.resetChart.TabIndex = 8;
-            this.resetChart.Text = "Reset Chart";
-            this.resetChart.UseVisualStyleBackColor = true;
-            this.resetChart.Click += new System.EventHandler(this.resetChart_Click);
             // 
             // MainWindow
             // 

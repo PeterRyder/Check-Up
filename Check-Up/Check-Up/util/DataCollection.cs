@@ -14,29 +14,43 @@ namespace Check_Up {
 
         #region Performance Counters
         // create perf mon objects
-        private PerformanceCounter perfCpuCount; 
-        private PerformanceCounter perfMemCount; 
+        private PerformanceCounter perfCpuCount;
+        private PerformanceCounter perfMemCount;
         private PerformanceCounter perfNetCount;
         private PerformanceCounter perfDiskCount;
         #endregion
 
         public int currentCPUUsage;
 
-        public int availableMemMBs;
-        public int availableMemGBs;
+        public double totalMemMBs;
+        public double availableMemMBs;
+        public double currentMemUsage;
 
         public int currentNetUsageBytes;
-        public int currentNetUsageMBs;
+        public double currentNetUsageMBs;
 
         public int percentDiskTime;
 
         public bool shouldGatherData;
+        public bool canGatherNet;
 
         public DataCollection() {
-            ulong totalMemBytes = new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory;
-            int totalMemMBs = (int)totalMemBytes / 1024 / 1024;
+#if DEBUG
+            //ListCounters("Network Adapter");
+#endif
 
-            #region Network Adapter Initialization
+
+            #region CPU Counter Initialization
+            perfCpuCount = new PerformanceCounter("Processor Information", "% Processor Time", "_Total");
+            #endregion
+
+            #region Memory Counter Initialization
+            ulong totalMemBytes = new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory;
+            totalMemMBs = (int)(totalMemBytes / 1024 / 1024);
+            perfMemCount = new PerformanceCounter("Memory", "Available MBytes");
+            #endregion
+
+            #region Network Counter Initialization
             string WifiNicDescription = "";
             string ethernetNicDescription = "";
 
@@ -57,29 +71,36 @@ namespace Check_Up {
                     //Console.WriteLine(ethernetNicDescription);
                 }
             }
-            #endregion
-
-            // initialize performance counters
-            perfCpuCount = new PerformanceCounter("Processor Information", "% Processor Time", "_Total");
-            perfMemCount = new PerformanceCounter("Memory", "Available MBytes");
 
             if (WifiNicDescription != "") {
-                //Console.WriteLine(WifiNicDescription);
+                Console.WriteLine(WifiNicDescription);
                 try {
-                    perfNetCount = new PerformanceCounter("Network Adapter", "Bytes Total/sec", WifiNicDescription);
+                    perfNetCount = new PerformanceCounter("Network Adapters", "Bytes Total/sec", WifiNicDescription);
+                    canGatherNet = true;
                 }
                 catch {
-                    Console.WriteLine(WifiNicDescription);
-                    //perfNetCount = new PerformanceCounter("Network Interface", "Bytes Total/sec", WifiNicDescription);
+                    Console.WriteLine("Could not find a counter for your network adapter");
+                    canGatherNet = false;
                 }
-                
+
+                try {
+                    perfNetCount = new PerformanceCounter("Network Interfaces", "Bytes Total/sec", WifiNicDescription);
+                    canGatherNet = true;
+                }
+                catch {
+                    Console.WriteLine("Could not find a counter for your network interface");
+                    canGatherNet = false;
+                }
             }
             else {
-                //perfNetCount = new PerformanceCounter("Network Adapter", "Bytes Total/sec", ethernetNicDescription);
+                perfNetCount = new PerformanceCounter("Network Adapter", "Bytes Total/sec", ethernetNicDescription);
             }
 
-            perfDiskCount = new PerformanceCounter("LogicalDisk", "% Disk Time", "C:");
+            #endregion
 
+            #region Disk Counter Initialization
+            perfDiskCount = new PerformanceCounter("LogicalDisk", "% Disk Time", "C:");
+            #endregion
         }
 
         public void ReadSettings() {
@@ -106,37 +127,47 @@ namespace Check_Up {
         }
 
         public bool GatherData() {
-
-            // gather and record CPU utilization
+            #region CPU Data Gathering
             if (Properties.Settings.Default.CPU) {
                 currentCPUUsage = (int)perfCpuCount.NextValue();
 #if DEBUG
                 Console.WriteLine("Cpu Load: {0}%", currentCPUUsage);
 #endif
             }
-            // gather and record available memory
+            #endregion
+
+            #region Memory Data Gathering
             if (Properties.Settings.Default.Memory) {
                 availableMemMBs = (int)perfMemCount.NextValue();
+                currentMemUsage = Math.Round((totalMemMBs - availableMemMBs) / totalMemMBs * 100d, 2);
 #if DEBUG
-                Console.WriteLine("Available Memory: {0}MB", availableMemMBs);
+                Console.WriteLine("Available MBs: {0}", availableMemMBs);
+                Console.WriteLine("Total MBs: {0}", totalMemMBs);
+                Console.WriteLine("Available Memory: {0}%", currentMemUsage);
 #endif
             }
+            #endregion
 
+            #region Network Data Gathering
             if (Properties.Settings.Default.Network) {
-                currentNetUsageBytes = (int)perfNetCount.NextValue();
-                currentNetUsageMBs = currentNetUsageBytes / 1000;
+                if (canGatherNet) {
+                    currentNetUsageBytes = (int)perfNetCount.NextValue();
+                    currentNetUsageMBs = Math.Round(currentNetUsageBytes / 1024d / 1024d, 2);
 #if DEBUG
-                Console.WriteLine("Network Bytes Total/sec: {0} Bytes", currentNetUsageMBs);
+                    Console.WriteLine("Network Bytes Total/sec: {0} MBs", currentNetUsageMBs);
 #endif
+                }
             }
+            #endregion
 
+            #region Disk Data Gathering
             if (Properties.Settings.Default.DiskIO) {
                 percentDiskTime = (int)perfDiskCount.NextValue();
 #if DEBUG
                 Console.WriteLine("Percent Disk Time: {0}%", percentDiskTime);
 #endif
             }
-
+            #endregion
             return true;
         }
 
