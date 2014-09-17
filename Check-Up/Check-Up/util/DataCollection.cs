@@ -39,7 +39,6 @@ namespace Check_Up {
             //ListCounters("Network Adapter");
 #endif
 
-
             #region CPU Counter Initialization
             perfCpuCount = new PerformanceCounter("Processor Information", "% Processor Time", "_Total");
             #endregion
