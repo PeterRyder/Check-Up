@@ -58,15 +58,15 @@ namespace Check_Up {
                 //Console.WriteLine(nic.Name);
                 if (nic.Name == "Wi-Fi" || nic.Name == "Wireless Network Connection") {
                     WifiNicDescription = nic.Description;
-                    //WifiNicDescription = WifiNicDescription.Replace("(", "[");
-                    //WifiNicDescription = WifiNicDescription.Replace(")", "]");
+                    WifiNicDescription = WifiNicDescription.Replace("(", "[");
+                    WifiNicDescription = WifiNicDescription.Replace(")", "]");
                     //Console.WriteLine(WifiNicDescription);
                 }
 
                 if (nic.Name == "Ethernet" || nic.Name == "Local Area Connection") {
                     ethernetNicDescription = nic.Description;
-                    //ethernetNicDescription = ethernetNicDescription.Replace("(", "[");
-                    //ethernetNicDescription = ethernetNicDescription.Replace(")", "]");
+                    ethernetNicDescription = ethernetNicDescription.Replace("(", "[");
+                    ethernetNicDescription = ethernetNicDescription.Replace(")", "]");
                     //Console.WriteLine(ethernetNicDescription);
                 }
             }
