@@ -223,5 +223,8 @@ namespace Check_Up {
             }
         }
 
+        private void analyzeProcesses_Click(object sender, EventArgs e) {
+            Console.WriteLine("test");
+        }
     }
 }

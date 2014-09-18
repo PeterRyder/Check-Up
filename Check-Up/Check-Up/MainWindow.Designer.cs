@@ -138,6 +138,7 @@
             this.analyzeProcesses.TabIndex = 3;
             this.analyzeProcesses.Text = "Analyze Processes";
             this.analyzeProcesses.UseVisualStyleBackColor = true;
+            this.analyzeProcesses.Click += new System.EventHandler(this.analyzeProcesses_Click);
             // 
             // chart1
             // 

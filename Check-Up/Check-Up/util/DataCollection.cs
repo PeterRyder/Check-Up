@@ -58,15 +58,15 @@ namespace Check_Up {
                 //Console.WriteLine(nic.Name);
                 if (nic.Name == "Wi-Fi" || nic.Name == "Wireless Network Connection") {
                     WifiNicDescription = nic.Description;
-                    WifiNicDescription = WifiNicDescription.Replace("(", "[");
-                    WifiNicDescription = WifiNicDescription.Replace(")", "]");
+                    //WifiNicDescription = WifiNicDescription.Replace("(", "[");
+                    //WifiNicDescription = WifiNicDescription.Replace(")", "]");
                     //Console.WriteLine(WifiNicDescription);
                 }
 
                 if (nic.Name == "Ethernet" || nic.Name == "Local Area Connection") {
                     ethernetNicDescription = nic.Description;
-                    ethernetNicDescription = ethernetNicDescription.Replace("(", "[");
-                    ethernetNicDescription = ethernetNicDescription.Replace(")", "]");
+                    //ethernetNicDescription = ethernetNicDescription.Replace("(", "[");
+                    //ethernetNicDescription = ethernetNicDescription.Replace(")", "]");
                     //Console.WriteLine(ethernetNicDescription);
                 }
             }
@@ -74,7 +74,7 @@ namespace Check_Up {
             if (WifiNicDescription != "") {
                 Console.WriteLine(WifiNicDescription);
                 try {
-                    perfNetCount = new PerformanceCounter("Network Adapters", "Bytes Total/sec", WifiNicDescription);
+                    perfNetCount = new PerformanceCounter("Network Adapter", "Bytes Total/sec", WifiNicDescription);
                     canGatherNet = true;
                 }
                 catch {
@@ -83,7 +83,7 @@ namespace Check_Up {
                 }
 
                 try {
-                    perfNetCount = new PerformanceCounter("Network Interfaces", "Bytes Total/sec", WifiNicDescription);
+                    perfNetCount = new PerformanceCounter("Network Interface", "Bytes Total/sec", WifiNicDescription);
                     canGatherNet = true;
                 }
                 catch {
