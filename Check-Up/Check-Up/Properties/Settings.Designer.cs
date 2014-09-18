@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ReadWriteCsv.Properties {
+namespace Check_Up.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -92,6 +92,42 @@ namespace ReadWriteCsv.Properties {
             }
             set {
                 this["PollingInterval"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool RealTime {
+            get {
+                return ((bool)(this["RealTime"]));
+            }
+            set {
+                this["RealTime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IgnoreTime {
+            get {
+                return ((bool)(this["IgnoreTime"]));
+            }
+            set {
+                this["IgnoreTime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int VisiblePoints {
+            get {
+                return ((int)(this["VisiblePoints"]));
+            }
+            set {
+                this["VisiblePoints"] = value;
             }
         }
     }

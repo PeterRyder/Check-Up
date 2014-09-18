@@ -1,4 +1,4 @@
-﻿namespace ReadWriteCsv {
+﻿namespace Check_Up {
     partial class MainWindow {
         /// <summary>
         /// Required designer variable.
@@ -33,13 +33,17 @@
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutCheckUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.confirm = new System.Windows.Forms.Button();
+            this.gatherData = new System.Windows.Forms.Button();
             this.deny = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button_analyze_processes = new System.Windows.Forms.Button();
+            this.analyzeProcesses = new System.Windows.Forms.Button();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.resetChart = new System.Windows.Forms.Button();
+            this.monitorStop = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -54,7 +58,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1340, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1358, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -102,21 +106,21 @@
             this.aboutCheckUpToolStripMenuItem.Text = "About Check Up";
             this.aboutCheckUpToolStripMenuItem.Click += new System.EventHandler(this.aboutCheckUpToolStripMenuItem_Click);
             // 
-            // confirm
+            // gatherData
             // 
-            this.confirm.AutoSize = true;
-            this.confirm.Location = new System.Drawing.Point(8, 19);
-            this.confirm.Name = "confirm";
-            this.confirm.Size = new System.Drawing.Size(75, 23);
-            this.confirm.TabIndex = 1;
-            this.confirm.Text = "Gather Data";
-            this.confirm.UseVisualStyleBackColor = true;
-            this.confirm.Click += new System.EventHandler(this.button2_Click);
+            this.gatherData.AutoSize = true;
+            this.gatherData.Location = new System.Drawing.Point(8, 19);
+            this.gatherData.Name = "gatherData";
+            this.gatherData.Size = new System.Drawing.Size(75, 23);
+            this.gatherData.TabIndex = 1;
+            this.gatherData.Text = "Gather Data";
+            this.gatherData.UseVisualStyleBackColor = true;
+            this.gatherData.Click += new System.EventHandler(this.button2_Click);
             // 
             // deny
             // 
             this.deny.AutoSize = true;
-            this.deny.Location = new System.Drawing.Point(3, 779);
+            this.deny.Location = new System.Drawing.Point(3, 808);
             this.deny.Name = "deny";
             this.deny.Size = new System.Drawing.Size(75, 23);
             this.deny.TabIndex = 0;
@@ -124,28 +128,17 @@
             this.deny.UseVisualStyleBackColor = true;
             this.deny.Click += new System.EventHandler(this.deny_Click);
             // 
-            // button2
+            // analyzeProcesses
             // 
-            this.button2.AutoSize = true;
-            this.button2.Location = new System.Drawing.Point(8, 48);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 5;
-            this.button2.Text = "Load Chart";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click_1);
-            // 
-            // button_analyze_processes
-            // 
-            this.button_analyze_processes.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.button_analyze_processes.AutoSize = true;
-            this.button_analyze_processes.Location = new System.Drawing.Point(3, 99);
-            this.button_analyze_processes.Name = "button_analyze_processes";
-            this.button_analyze_processes.Size = new System.Drawing.Size(122, 23);
-            this.button_analyze_processes.TabIndex = 3;
-            this.button_analyze_processes.Text = "Analyze Processes";
-            this.button_analyze_processes.UseVisualStyleBackColor = true;
-            this.button_analyze_processes.Click += new System.EventHandler(this.button1_Click);
+            this.analyzeProcesses.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.analyzeProcesses.AutoSize = true;
+            this.analyzeProcesses.Location = new System.Drawing.Point(3, 128);
+            this.analyzeProcesses.Name = "analyzeProcesses";
+            this.analyzeProcesses.Size = new System.Drawing.Size(122, 23);
+            this.analyzeProcesses.TabIndex = 3;
+            this.analyzeProcesses.Text = "Analyze Processes";
+            this.analyzeProcesses.UseVisualStyleBackColor = true;
+            this.analyzeProcesses.Click += new System.EventHandler(this.analyzeProcesses_Click);
             // 
             // chart1
             // 
@@ -154,7 +147,7 @@
             this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
             legend1.Name = "Legend1";
             this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(131, 99);
+            this.chart1.Location = new System.Drawing.Point(131, 128);
             this.chart1.Name = "chart1";
             this.chart1.Size = new System.Drawing.Size(1197, 674);
             this.chart1.TabIndex = 4;
@@ -163,15 +156,37 @@
             // groupBox1
             // 
             this.groupBox1.AutoSize = true;
-            this.groupBox1.Controls.Add(this.button2);
-            this.groupBox1.Controls.Add(this.confirm);
+            this.groupBox1.Controls.Add(this.resetChart);
+            this.groupBox1.Controls.Add(this.gatherData);
+            this.groupBox1.Controls.Add(this.monitorStop);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(122, 90);
+            this.groupBox1.Size = new System.Drawing.Size(122, 119);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Chart Control";
+            // 
+            // resetChart
+            // 
+            this.resetChart.Location = new System.Drawing.Point(9, 77);
+            this.resetChart.Name = "resetChart";
+            this.resetChart.Size = new System.Drawing.Size(75, 23);
+            this.resetChart.TabIndex = 8;
+            this.resetChart.Text = "Reset Chart";
+            this.resetChart.UseVisualStyleBackColor = true;
+            this.resetChart.Click += new System.EventHandler(this.resetChart_Click);
+            // 
+            // monitorStop
+            // 
+            this.monitorStop.Enabled = false;
+            this.monitorStop.Location = new System.Drawing.Point(9, 48);
+            this.monitorStop.Name = "monitorStop";
+            this.monitorStop.Size = new System.Drawing.Size(98, 23);
+            this.monitorStop.TabIndex = 7;
+            this.monitorStop.Text = "Stop Monitoring";
+            this.monitorStop.UseVisualStyleBackColor = true;
+            this.monitorStop.Click += new System.EventHandler(this.monitorStop_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -181,7 +196,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.Controls.Add(this.chart1, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.button_analyze_processes, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.analyzeProcesses, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.deny, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 27);
@@ -190,14 +205,40 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1331, 805);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1331, 834);
             this.tableLayoutPanel1.TabIndex = 7;
+            // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.WorkerReportsProgress = true;
+            this.backgroundWorker1.WorkerSupportsCancellation = true;
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted_1);
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(495, 854);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(508, 23);
+            this.progressBar1.TabIndex = 8;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(1011, 859);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(21, 13);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "0%";
             // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1340, 889);
+            this.ClientSize = new System.Drawing.Size(1358, 889);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -226,13 +267,17 @@
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutCheckUpToolStripMenuItem;
-        private System.Windows.Forms.Button confirm;
+        private System.Windows.Forms.Button gatherData;
         private System.Windows.Forms.Button deny;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button_analyze_processes;
+        private System.Windows.Forms.Button analyzeProcesses;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Button monitorStop;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button resetChart;
 
 
 

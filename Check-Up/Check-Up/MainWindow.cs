@@ -8,13 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Threading;
 
-namespace ReadWriteCsv {
+namespace Check_Up {
     public partial class MainWindow : Form {
-
+        DataCollection dataCollector;
+        int cycles = 1;
         public MainWindow() {
             InitializeComponent();
-
+            dataCollector = new DataCollection();
         }
 
         private void Form1_Load(object sender, EventArgs e) {
@@ -23,8 +25,23 @@ namespace ReadWriteCsv {
 
         // OK Button
         private void button2_Click(object sender, EventArgs e) {
-            DataGatheringForm subForm = new DataGatheringForm();
-            subForm.Show();
+            this.gatherData.Enabled = false;
+            this.cycles = 1;
+            monitorStop.Enabled = true;
+
+            dataCollector.ReadSettings();
+
+            backgroundWorker1.RunWorkerAsync();
+
+            backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
+
+            if (dataCollector.shouldGatherData) {
+                backgroundWorker1.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
+            }
+            else {
+                backgroundWorker1.CancelAsync();
+                backgroundWorker1.ReportProgress(100);
+            }
         }
 
         // Cancel Button
@@ -52,60 +69,137 @@ namespace ReadWriteCsv {
             subForm.Show();
         }
 
-        private void button1_Click(object sender, EventArgs e) {
+
+        void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+            progressBar1.Value = e.ProgressPercentage;
+            label1.Text = e.ProgressPercentage.ToString() + "%";
+            if (Properties.Settings.Default.CPU) {
+                updateGraph("CPU", "" + cycles, "" + dataCollector.currentCPUUsage);
+            }
+
+            if (Properties.Settings.Default.Memory) {
+                updateGraph("Memory", "" + cycles, "" + dataCollector.currentMemUsage);
+            }
+
+            if (Properties.Settings.Default.Network && dataCollector.canGatherNet) {
+                updateGraph("Network", "" + cycles, "" + dataCollector.currentNetUsageMBs);
+            }
+
+            if (Properties.Settings.Default.DiskIO) {
+                updateGraph("Disk", "" + cycles, "" + dataCollector.percentDiskTime);
+            }
 
         }
 
-        private void button2_Click_1(object sender, EventArgs e) {
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e) {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            e.Result = GatherData(worker, e);
+        }
 
-            foreach (var series in this.chart1.Series) {
-                series.Points.Clear();
-            }
-
-            CsvFileReader reader = null;
-            try {
-                reader = new CsvFileReader("DataOutput.csv");
-            }
-            catch (Exception ex) {
-                Console.WriteLine(ex.Message);
-            }
-
-            if (reader != null) {
-                CsvRow row = new CsvRow();
-                int i = 1;
-                while (reader.ReadRow(row)) {
-                    string type = row[0];
-                    string value = row[1];
-
-                    if (this.chart1.Series.IndexOf(type) != -1) {
+        private void backgroundWorker1_RunWorkerCompleted_1(object sender, RunWorkerCompletedEventArgs e) {
 #if DEBUG
-                        Console.WriteLine("Chart already has {0} in the series", type);
+            Console.WriteLine("Worker completed");
+#endif
+            if (e.Error != null) {
+                MessageBox.Show(e.Error.Message);
+            }
+            else if (e.Cancelled) {
+
+            }
+            else {
+
+            }
+
+            gatherData.Enabled = true;
+            monitorStop.Enabled = false;
+
+        }
+
+        private bool GatherData(BackgroundWorker sender, DoWorkEventArgs e) {
+
+            double pollingTime = Properties.Settings.Default.PollingTime;
+            double pollingInterval = Properties.Settings.Default.PollingInterval;
+#if DEBUG
+            Console.WriteLine("Polling Time: " + pollingTime);
+            Console.WriteLine("Polling Interval: " + pollingInterval);
+#endif
+            for (double i = pollingInterval; i <= pollingTime; ) {
+                if (backgroundWorker1.CancellationPending) {
+#if DEBUG
+                    Console.WriteLine("Cancellation is pending - killing the loop");
+#endif
+                    e.Cancel = true;
+                    return true;
+                }
+
+                dataCollector.GatherData();
+
+                if (!Properties.Settings.Default.IgnoreTime) {
+
+                    double percentage = (i / pollingTime) * 100;
+#if DEBUG
+                    Console.WriteLine("Percentage: " + percentage);
+#endif
+                    if (percentage >= 100 || i >= pollingTime) {
+                        backgroundWorker1.CancelAsync();
+                        percentage = Math.Round(percentage);
+                        backgroundWorker1.ReportProgress((int)percentage);
+#if DEBUG
+                        Console.WriteLine("Set cancellation to pending");
 #endif
                     }
                     else {
-                        this.chart1.Series.Add(type);
+                        percentage = Math.Round(percentage);
+                        backgroundWorker1.ReportProgress((int)percentage);
+#if DEBUG
+                        Console.WriteLine("I {0}", i);
+#endif
                     }
-
-                    try {
-                        this.chart1.Series[type].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-                    }
-                    catch {
-                        Console.WriteLine("Couldn't change {0} into line graph", type);
-                    }
-                    try {
-                        this.chart1.Series[type].Points.AddXY("" + i, value);
-                        chart1.Series[type].ToolTip = "X: #VALX, Y: #VALY";
-                    }
-                    catch {
-                        Console.WriteLine("Couldn't create point on graph X: {0}, Y: {1}", i, value);
-                    }
-                    i++;
+                    i += pollingInterval;
                 }
+                else {
+                    backgroundWorker1.ReportProgress(0);
+                }
+
+                Thread.Sleep((int)(pollingInterval * 1000));
+                cycles++;
+            }
+
+            backgroundWorker1.CancelAsync();
+
+            if (backgroundWorker1.CancellationPending) {
+#if DEBUG
+                Console.WriteLine("Cancellation is pending");
+#endif
+                e.Cancel = true;
+                return true;
+            }
+
+            return true;
+        }
+
+        private void updateGraph(string type, string x, string y) {
+            if (this.chart1.Series.IndexOf(type) != -1) {
+#if DEBUG
+                //Console.WriteLine("Chart already has {0} in the series", type);
+#endif
             }
             else {
-                foreach (var series in this.chart1.Series) {
-                    series.Points.Clear();
-                }
+                this.chart1.Series.Add(type);
+            }
+
+            try {
+                this.chart1.Series[type].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            }
+            catch {
+                Console.WriteLine("Couldn't change {0} into line graph", type);
+            }
+            try {
+                this.chart1.Series[type].Points.AddXY(x, y);
+                chart1.Series[type].ToolTip = "X: #VALX, Y: #VALY";
+            }
+            catch {
+                Console.WriteLine("Couldn't create point on graph X: {0}, Y: {1}", x, y);
             }
         }
 
@@ -115,6 +209,22 @@ namespace ReadWriteCsv {
 
         private void MainWindow_Load(object sender, EventArgs e) {
 
+        }
+
+        private void monitorStop_Click(object sender, EventArgs e) {
+            backgroundWorker1.CancelAsync();
+            backgroundWorker1.ReportProgress(100);
+            gatherData.Enabled = true;
+        }
+
+        private void resetChart_Click(object sender, EventArgs e) {
+            foreach (var series in chart1.Series) {
+                series.Points.Clear();
+            }
+        }
+
+        private void analyzeProcesses_Click(object sender, EventArgs e) {
+            Console.WriteLine("test");
         }
     }
 }
