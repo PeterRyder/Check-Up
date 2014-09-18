@@ -125,7 +125,9 @@ namespace Check_Up {
 #endif
             for (double i = pollingInterval; i <= pollingTime; ) {
                 if (backgroundWorker1.CancellationPending) {
+#if DEBUG
                     Console.WriteLine("Cancellation is pending - killing the loop");
+#endif
                     e.Cancel = true;
                     return true;
                 }
@@ -142,8 +144,9 @@ namespace Check_Up {
                         backgroundWorker1.CancelAsync();
                         percentage = Math.Round(percentage);
                         backgroundWorker1.ReportProgress((int)percentage);
-                        Console.WriteLine("I {0}", i);
+#if DEBUG
                         Console.WriteLine("Set cancellation to pending");
+#endif
                     }
                     else {
                         percentage = Math.Round(percentage);
@@ -178,7 +181,7 @@ namespace Check_Up {
         private void updateGraph(string type, string x, string y) {
             if (this.chart1.Series.IndexOf(type) != -1) {
 #if DEBUG
-                Console.WriteLine("Chart already has {0} in the series", type);
+                //Console.WriteLine("Chart already has {0} in the series", type);
 #endif
             }
             else {
