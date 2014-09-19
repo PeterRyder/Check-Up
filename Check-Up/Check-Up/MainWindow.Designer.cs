@@ -45,11 +45,13 @@
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.chartControls = new System.Windows.Forms.GroupBox();
             this.menuStrip1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
+            this.chartControls.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -111,7 +113,7 @@
             // gatherData
             // 
             this.gatherData.AutoSize = true;
-            this.gatherData.Location = new System.Drawing.Point(3, 3);
+            this.gatherData.Location = new System.Drawing.Point(6, 19);
             this.gatherData.Name = "gatherData";
             this.gatherData.Size = new System.Drawing.Size(75, 23);
             this.gatherData.TabIndex = 1;
@@ -123,7 +125,7 @@
             // 
             this.analyzeProcesses.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.analyzeProcesses.AutoSize = true;
-            this.analyzeProcesses.Location = new System.Drawing.Point(3, 90);
+            this.analyzeProcesses.Location = new System.Drawing.Point(3, 109);
             this.analyzeProcesses.Name = "analyzeProcesses";
             this.analyzeProcesses.Size = new System.Drawing.Size(122, 23);
             this.analyzeProcesses.TabIndex = 3;
@@ -133,7 +135,7 @@
             // 
             // resetChart
             // 
-            this.resetChart.Location = new System.Drawing.Point(3, 61);
+            this.resetChart.Location = new System.Drawing.Point(9, 77);
             this.resetChart.Name = "resetChart";
             this.resetChart.Size = new System.Drawing.Size(75, 23);
             this.resetChart.TabIndex = 8;
@@ -144,7 +146,7 @@
             // monitorStop
             // 
             this.monitorStop.Enabled = false;
-            this.monitorStop.Location = new System.Drawing.Point(3, 32);
+            this.monitorStop.Location = new System.Drawing.Point(6, 48);
             this.monitorStop.Name = "monitorStop";
             this.monitorStop.Size = new System.Drawing.Size(98, 23);
             this.monitorStop.TabIndex = 7;
@@ -196,9 +198,7 @@
             // 
             // flowLayoutPanel2
             // 
-            this.flowLayoutPanel2.Controls.Add(this.gatherData);
-            this.flowLayoutPanel2.Controls.Add(this.monitorStop);
-            this.flowLayoutPanel2.Controls.Add(this.resetChart);
+            this.flowLayoutPanel2.Controls.Add(this.chartControls);
             this.flowLayoutPanel2.Controls.Add(this.analyzeProcesses);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 24);
@@ -251,6 +251,20 @@
             this.tableLayoutPanel3.Size = new System.Drawing.Size(1266, 83);
             this.tableLayoutPanel3.TabIndex = 0;
             // 
+            // chartControls
+            // 
+            this.chartControls.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.chartControls.Controls.Add(this.resetChart);
+            this.chartControls.Controls.Add(this.monitorStop);
+            this.chartControls.Controls.Add(this.gatherData);
+            this.chartControls.Dock = System.Windows.Forms.DockStyle.Top;
+            this.chartControls.Location = new System.Drawing.Point(3, 3);
+            this.chartControls.Name = "chartControls";
+            this.chartControls.Size = new System.Drawing.Size(123, 100);
+            this.chartControls.TabIndex = 9;
+            this.chartControls.TabStop = false;
+            this.chartControls.Text = "Chart Controls";
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -273,6 +287,8 @@
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
+            this.chartControls.ResumeLayout(false);
+            this.chartControls.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -299,6 +315,7 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.GroupBox chartControls;
 
 
 
