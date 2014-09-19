@@ -109,6 +109,7 @@
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(193, 184);
             this.Name = "AboutForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "About";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
