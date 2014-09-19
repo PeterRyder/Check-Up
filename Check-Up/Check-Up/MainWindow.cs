@@ -23,11 +23,15 @@ namespace Check_Up {
 
         }
 
-        // OK Button
-        private void button2_Click(object sender, EventArgs e) {
-            this.gatherData.Enabled = false;
+        /// <summary>
+        /// Starts gathering data and updating the graph when the button "Gather Data" is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button_gatherData_Click(object sender, EventArgs e) {
+            this.button_gatherData.Enabled = false;
             this.cycles = 1;
-            monitorStop.Enabled = true;
+            button_monitorStop.Enabled = true;
 
             dataCollector.ReadSettings();
 
@@ -44,35 +48,45 @@ namespace Check_Up {
             }
         }
 
-        // Cancel Button
-        private void deny_Click(object sender, EventArgs e) {
-            Application.Exit();
-
-        }
-
-        private void confirm_MouseHover(object sender, EventArgs e) {
-
-        }
-
+        /// <summary>
+        /// Menu item to display the "Properties" form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void propertiesToolStripMenuItem_Click(object sender, EventArgs e) {
             PropertiesForm subForm = new PropertiesForm();
             subForm.Show();
 
         }
 
+        /// <summary>
+        /// Menu item to exit the application
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
             Application.Exit();
         }
 
+        /// <summary>
+        /// Menu item to display the "About" form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void aboutCheckUpToolStripMenuItem_Click(object sender, EventArgs e) {
             AboutForm subForm = new AboutForm();
             subForm.Show();
         }
 
-
+        /// <summary>
+        /// Fired whenever the background worked updates its progress
+        /// Used for updating the graph and the progress bar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e) {
             progressBar1.Value = e.ProgressPercentage;
-            label1.Text = e.ProgressPercentage.ToString() + "%";
+            label_percentage.Text = e.ProgressPercentage.ToString() + "%";
             if (Properties.Settings.Default.CPU) {
                 updateGraph("CPU", "" + cycles, "" + dataCollector.currentCPUUsage);
             }
@@ -91,30 +105,40 @@ namespace Check_Up {
 
         }
 
+        /// <summary>
+        /// DoWork method for the background worker - gathers data
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e) {
             BackgroundWorker worker = sender as BackgroundWorker;
             e.Result = GatherData(worker, e);
         }
 
+        /// <summary>
+        /// Fired whenever the background worker completes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void backgroundWorker1_RunWorkerCompleted_1(object sender, RunWorkerCompletedEventArgs e) {
 #if DEBUG
             Console.WriteLine("Worker completed");
 #endif
+            // If the progress bar isn't full, force it
+            progressBar1.Value = 100;
             if (e.Error != null) {
                 MessageBox.Show(e.Error.Message);
             }
-            else if (e.Cancelled) {
-
-            }
-            else {
-
-            }
-
-            gatherData.Enabled = true;
-            monitorStop.Enabled = false;
-
+            button_gatherData.Enabled = true;
+            button_monitorStop.Enabled = false;
         }
 
+        /// <summary>
+        /// Main data gathering loop - gathers data and tracks the progress
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
         private bool GatherData(BackgroundWorker sender, DoWorkEventArgs e) {
 
             double pollingTime = Properties.Settings.Default.PollingTime;
@@ -131,7 +155,7 @@ namespace Check_Up {
                     e.Cancel = true;
                     return true;
                 }
-
+                
                 dataCollector.GatherData();
 
                 if (!Properties.Settings.Default.IgnoreTime) {
@@ -178,28 +202,35 @@ namespace Check_Up {
             return true;
         }
 
+        /// <summary>
+        /// Function to add a data type, x, and y coordinate to the graph
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         private void updateGraph(string type, string x, string y) {
 
+            // Could be useful when creating a doughnut type graph
             //resetChartFunc();
 
-            if (this.chart1.Series.IndexOf(type) != -1) {
+            if (this.chart.Series.IndexOf(type) != -1) {
 #if DEBUG
                 //Console.WriteLine("Chart already has {0} in the series", type);
 #endif
             }
             else {
-                this.chart1.Series.Add(type);
+                this.chart.Series.Add(type);
             }
 
             try {
-                this.chart1.Series[type].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+                this.chart.Series[type].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             }
             catch {
                 Console.WriteLine("Couldn't change {0} into line graph", type);
             }
             try {
-                this.chart1.Series[type].Points.AddXY(x, y);
-                chart1.Series[type].ToolTip = "X: #VALX, Y: #VALY";
+                this.chart.Series[type].Points.AddXY(x, y);
+                chart.Series[type].ToolTip = "X: #VALX, Y: #VALY";
             }
             catch {
                 Console.WriteLine("Couldn't create point on graph X: {0}, Y: {1}", x, y);
@@ -214,22 +245,35 @@ namespace Check_Up {
 
         }
 
+        /// <summary>
+        /// Stops the DataCollector when the button "Stop Monitoring" is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void monitorStop_Click(object sender, EventArgs e) {
             backgroundWorker1.CancelAsync();
             backgroundWorker1.ReportProgress(100);
-            gatherData.Enabled = true;
+            button_gatherData.Enabled = true;
         }
 
+        /// <summary>
+        /// Resets the graph and removes all coordinates when the button "Reset Graph" is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void resetChart_Click(object sender, EventArgs e) {
             resetChartFunc();
         }
-
+        
         private void analyzeProcesses_Click(object sender, EventArgs e) {
-            Console.WriteLine("test");
+            
         }
 
+        /// <summary>
+        /// Will reset the graph and remove all coordinates
+        /// </summary>
         private void resetChartFunc() {
-            foreach (var series in chart1.Series) {
+            foreach (var series in chart.Series) {
                 series.Points.Clear();
             }
         }

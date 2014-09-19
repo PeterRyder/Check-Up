@@ -33,23 +33,23 @@
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutCheckUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.gatherData = new System.Windows.Forms.Button();
-            this.analyzeProcesses = new System.Windows.Forms.Button();
-            this.resetChart = new System.Windows.Forms.Button();
-            this.monitorStop = new System.Windows.Forms.Button();
+            this.button_gatherData = new System.Windows.Forms.Button();
+            this.button_analyzeProcesses = new System.Windows.Forms.Button();
+            this.button_resetChart = new System.Windows.Forms.Button();
+            this.button_monitorStop = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.label1 = new System.Windows.Forms.Label();
+            this.label_percentage = new System.Windows.Forms.Label();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.chartControls = new System.Windows.Forms.GroupBox();
-            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.menuStrip1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.chartControls.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
@@ -110,49 +110,49 @@
             this.aboutCheckUpToolStripMenuItem.Text = "About Check Up";
             this.aboutCheckUpToolStripMenuItem.Click += new System.EventHandler(this.aboutCheckUpToolStripMenuItem_Click);
             // 
-            // gatherData
+            // button_gatherData
             // 
-            this.gatherData.AutoSize = true;
-            this.gatherData.Location = new System.Drawing.Point(6, 19);
-            this.gatherData.Name = "gatherData";
-            this.gatherData.Size = new System.Drawing.Size(75, 23);
-            this.gatherData.TabIndex = 1;
-            this.gatherData.Text = "Gather Data";
-            this.gatherData.UseVisualStyleBackColor = true;
-            this.gatherData.Click += new System.EventHandler(this.button2_Click);
+            this.button_gatherData.AutoSize = true;
+            this.button_gatherData.Location = new System.Drawing.Point(6, 19);
+            this.button_gatherData.Name = "button_gatherData";
+            this.button_gatherData.Size = new System.Drawing.Size(75, 23);
+            this.button_gatherData.TabIndex = 1;
+            this.button_gatherData.Text = "Gather Data";
+            this.button_gatherData.UseVisualStyleBackColor = true;
+            this.button_gatherData.Click += new System.EventHandler(this.button_gatherData_Click);
             // 
-            // analyzeProcesses
+            // button_analyzeProcesses
             // 
-            this.analyzeProcesses.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.analyzeProcesses.AutoSize = true;
-            this.analyzeProcesses.Location = new System.Drawing.Point(3, 109);
-            this.analyzeProcesses.Name = "analyzeProcesses";
-            this.analyzeProcesses.Size = new System.Drawing.Size(122, 23);
-            this.analyzeProcesses.TabIndex = 3;
-            this.analyzeProcesses.Text = "Analyze Processes";
-            this.analyzeProcesses.UseVisualStyleBackColor = true;
-            this.analyzeProcesses.Click += new System.EventHandler(this.analyzeProcesses_Click);
+            this.button_analyzeProcesses.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.button_analyzeProcesses.AutoSize = true;
+            this.button_analyzeProcesses.Location = new System.Drawing.Point(3, 109);
+            this.button_analyzeProcesses.Name = "button_analyzeProcesses";
+            this.button_analyzeProcesses.Size = new System.Drawing.Size(122, 23);
+            this.button_analyzeProcesses.TabIndex = 3;
+            this.button_analyzeProcesses.Text = "Analyze Processes";
+            this.button_analyzeProcesses.UseVisualStyleBackColor = true;
+            this.button_analyzeProcesses.Click += new System.EventHandler(this.analyzeProcesses_Click);
             // 
-            // resetChart
+            // button_resetChart
             // 
-            this.resetChart.Location = new System.Drawing.Point(9, 77);
-            this.resetChart.Name = "resetChart";
-            this.resetChart.Size = new System.Drawing.Size(75, 23);
-            this.resetChart.TabIndex = 8;
-            this.resetChart.Text = "Reset Chart";
-            this.resetChart.UseVisualStyleBackColor = true;
-            this.resetChart.Click += new System.EventHandler(this.resetChart_Click);
+            this.button_resetChart.Location = new System.Drawing.Point(9, 77);
+            this.button_resetChart.Name = "button_resetChart";
+            this.button_resetChart.Size = new System.Drawing.Size(75, 23);
+            this.button_resetChart.TabIndex = 8;
+            this.button_resetChart.Text = "Reset Chart";
+            this.button_resetChart.UseVisualStyleBackColor = true;
+            this.button_resetChart.Click += new System.EventHandler(this.resetChart_Click);
             // 
-            // monitorStop
+            // button_monitorStop
             // 
-            this.monitorStop.Enabled = false;
-            this.monitorStop.Location = new System.Drawing.Point(6, 48);
-            this.monitorStop.Name = "monitorStop";
-            this.monitorStop.Size = new System.Drawing.Size(98, 23);
-            this.monitorStop.TabIndex = 7;
-            this.monitorStop.Text = "Stop Monitoring";
-            this.monitorStop.UseVisualStyleBackColor = true;
-            this.monitorStop.Click += new System.EventHandler(this.monitorStop_Click);
+            this.button_monitorStop.Enabled = false;
+            this.button_monitorStop.Location = new System.Drawing.Point(6, 48);
+            this.button_monitorStop.Name = "button_monitorStop";
+            this.button_monitorStop.Size = new System.Drawing.Size(98, 23);
+            this.button_monitorStop.TabIndex = 7;
+            this.button_monitorStop.Text = "Stop Monitoring";
+            this.button_monitorStop.UseVisualStyleBackColor = true;
+            this.button_monitorStop.Click += new System.EventHandler(this.monitorStop_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -186,20 +186,20 @@
             this.progressBar1.Size = new System.Drawing.Size(853, 23);
             this.progressBar1.TabIndex = 8;
             // 
-            // label1
+            // label_percentage
             // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(862, 32);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(21, 13);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "0%";
+            this.label_percentage.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label_percentage.AutoSize = true;
+            this.label_percentage.Location = new System.Drawing.Point(862, 32);
+            this.label_percentage.Name = "label_percentage";
+            this.label_percentage.Size = new System.Drawing.Size(21, 13);
+            this.label_percentage.TabIndex = 9;
+            this.label_percentage.Text = "0%";
             // 
             // flowLayoutPanel2
             // 
             this.flowLayoutPanel2.Controls.Add(this.chartControls);
-            this.flowLayoutPanel2.Controls.Add(this.analyzeProcesses);
+            this.flowLayoutPanel2.Controls.Add(this.button_analyzeProcesses);
             this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 24);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
@@ -209,9 +209,9 @@
             // chartControls
             // 
             this.chartControls.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.chartControls.Controls.Add(this.resetChart);
-            this.chartControls.Controls.Add(this.monitorStop);
-            this.chartControls.Controls.Add(this.gatherData);
+            this.chartControls.Controls.Add(this.button_resetChart);
+            this.chartControls.Controls.Add(this.button_monitorStop);
+            this.chartControls.Controls.Add(this.button_gatherData);
             this.chartControls.Dock = System.Windows.Forms.DockStyle.Top;
             this.chartControls.Location = new System.Drawing.Point(3, 3);
             this.chartControls.Name = "chartControls";
@@ -220,18 +220,18 @@
             this.chartControls.TabStop = false;
             this.chartControls.Text = "Chart Controls";
             // 
-            // chart1
+            // chart
             // 
             chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
-            this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chart.ChartAreas.Add(chartArea1);
+            this.chart.Dock = System.Windows.Forms.DockStyle.Fill;
             legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(3, 3);
-            this.chart1.Name = "chart1";
-            this.chart1.Size = new System.Drawing.Size(905, 500);
-            this.chart1.TabIndex = 12;
-            this.chart1.Text = "chart1";
+            this.chart.Legends.Add(legend1);
+            this.chart.Location = new System.Drawing.Point(3, 3);
+            this.chart.Name = "chart";
+            this.chart.Size = new System.Drawing.Size(905, 500);
+            this.chart.TabIndex = 12;
+            this.chart.Text = "chart1";
             // 
             // tableLayoutPanel2
             // 
@@ -239,7 +239,7 @@
             this.tableLayoutPanel2.ColumnCount = 1;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel3, 0, 1);
-            this.tableLayoutPanel2.Controls.Add(this.chart1, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.chart, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(132, 24);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -256,7 +256,7 @@
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 95F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
             this.tableLayoutPanel3.Controls.Add(this.progressBar1, 0, 0);
-            this.tableLayoutPanel3.Controls.Add(this.label1, 1, 0);
+            this.tableLayoutPanel3.Controls.Add(this.label_percentage, 1, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 509);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
@@ -287,7 +287,7 @@
             this.flowLayoutPanel2.PerformLayout();
             this.chartControls.ResumeLayout(false);
             this.chartControls.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
@@ -305,16 +305,16 @@
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutCheckUpToolStripMenuItem;
-        private System.Windows.Forms.Button gatherData;
-        private System.Windows.Forms.Button analyzeProcesses;
+        private System.Windows.Forms.Button button_gatherData;
+        private System.Windows.Forms.Button button_analyzeProcesses;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Button monitorStop;
+        private System.Windows.Forms.Button button_monitorStop;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button resetChart;
+        private System.Windows.Forms.Label label_percentage;
+        private System.Windows.Forms.Button button_resetChart;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.GroupBox chartControls;
