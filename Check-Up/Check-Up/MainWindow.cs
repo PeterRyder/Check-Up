@@ -65,7 +65,7 @@ namespace Check_Up {
         }
 
         private void aboutCheckUpToolStripMenuItem_Click(object sender, EventArgs e) {
-            HelpForm subForm = new HelpForm();
+            AboutForm subForm = new AboutForm();
             subForm.Show();
         }
 
