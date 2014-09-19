@@ -179,6 +179,9 @@ namespace Check_Up {
         }
 
         private void updateGraph(string type, string x, string y) {
+
+            //resetChartFunc();
+
             if (this.chart1.Series.IndexOf(type) != -1) {
 #if DEBUG
                 //Console.WriteLine("Chart already has {0} in the series", type);
@@ -218,13 +221,17 @@ namespace Check_Up {
         }
 
         private void resetChart_Click(object sender, EventArgs e) {
-            foreach (var series in chart1.Series) {
-                series.Points.Clear();
-            }
+            resetChartFunc();
         }
 
         private void analyzeProcesses_Click(object sender, EventArgs e) {
             Console.WriteLine("test");
+        }
+
+        private void resetChartFunc() {
+            foreach (var series in chart1.Series) {
+                series.Points.Clear();
+            }
         }
     }
 }
