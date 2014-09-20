@@ -9,17 +9,23 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Threading;
+using Check_Up.Util;
 
 namespace Check_Up {
     public partial class MainWindow : Form {
-        DataCollection dataCollector;
+        OSDataCollection osDataCollector;
+        ProcessesDataCollection processDataCollector;
+
         int cycles = 1;
 
         public MainWindow() {
             InitializeComponent();
 
             // initialize a data collector
-            dataCollector = new DataCollection();
+            osDataCollector = new OSDataCollection();
+            processDataCollector = new ProcessesDataCollection();
+
+            processDataCollector.GatherData();
         }
 
         private void MainWindow_Load(object sender, EventArgs e) {
@@ -37,7 +43,7 @@ namespace Check_Up {
             button_monitorStop.Enabled = true;
 
             // Load settings
-            dataCollector.ReadSettings();
+            osDataCollector.ReadSettings();
 
             // Begin the backgroundWorker
             backgroundWorker1.RunWorkerAsync();
@@ -46,7 +52,7 @@ namespace Check_Up {
             backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
 
             // check if data should be gathered
-            if (dataCollector.shouldGatherData) {
+            if (osDataCollector.shouldGatherData) {
                 backgroundWorker1.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
             }
             else {
@@ -103,22 +109,22 @@ namespace Check_Up {
 
             // If CPU data should be gathered, update the graph
             if (Properties.Settings.Default.CPU) {
-                updateGraph("CPU", "" + cycles, "" + dataCollector.currentCPUUsage);
+                updateGraph("CPU", "" + cycles, "" + osDataCollector.currentCPUUsage);
             }
 
             // If Memory data should be gathered, update the graph
             if (Properties.Settings.Default.Memory) {
-                updateGraph("Memory", "" + cycles, "" + dataCollector.currentMemUsage);
+                updateGraph("Memory", "" + cycles, "" + osDataCollector.currentMemUsage);
             }
 
             // If Network data should be gathered, update the graph
-            if (Properties.Settings.Default.Network && dataCollector.canGatherNet) {
-                updateGraph("Network", "" + cycles, "" + dataCollector.currentNetUsageMBs);
+            if (Properties.Settings.Default.Network && osDataCollector.canGatherNet) {
+                updateGraph("Network", "" + cycles, "" + osDataCollector.currentNetUsageMBs);
             }
 
             // If Disk IO data should be gathered, update the graph
             if (Properties.Settings.Default.DiskIO) {
-                updateGraph("Disk", "" + cycles, "" + dataCollector.percentDiskTime);
+                updateGraph("Disk", "" + cycles, "" + osDataCollector.percentDiskTime);
             }
 
         }
@@ -184,7 +190,7 @@ namespace Check_Up {
                 }
                 
                 // Gather data on the devices
-                dataCollector.GatherData();
+                osDataCollector.GatherData();
 
                 // If the pollingTime is to be used
                 if (!Properties.Settings.Default.IgnoreTime) {
@@ -310,6 +316,7 @@ namespace Check_Up {
         }
         
         private void analyzeProcesses_Click(object sender, EventArgs e) {
+            
             
         }
 

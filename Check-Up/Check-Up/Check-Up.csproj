@@ -75,7 +75,9 @@
     <Compile Include="PropertiesForm.Designer.cs">
       <DependentUpon>PropertiesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="util\DataCollection.cs" />
+    <Compile Include="util\OSDataCollection.cs" />
+    <Compile Include="util\ProcessesDataCollection.cs" />
+    <Compile Include="util\ProcessMonitor.cs" />
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>

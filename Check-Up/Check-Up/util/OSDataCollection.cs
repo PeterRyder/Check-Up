@@ -9,8 +9,8 @@ using System.Diagnostics;
 using System.Threading;
 using System.Net.NetworkInformation;
 
-namespace Check_Up {
-    class DataCollection {
+namespace Check_Up.Util {
+    class OSDataCollection {
 
         #region Performance Counters
         // create perf mon objects
@@ -34,7 +34,7 @@ namespace Check_Up {
         public bool shouldGatherData;
         public bool canGatherNet;
 
-        public DataCollection() {
+        public OSDataCollection() {
 #if DEBUG
             //ListCounters("Network Adapter");
 #endif
