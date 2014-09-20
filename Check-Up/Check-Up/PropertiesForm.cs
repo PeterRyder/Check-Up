@@ -15,6 +15,11 @@ namespace Check_Up {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// When the Properties form loads, load all the default settings
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void properties_form_Load(object sender, EventArgs e) {
             checkBox_cpu.Checked = Properties.Settings.Default.CPU;
             checkBox_memory.Checked = Properties.Settings.Default.Memory;
@@ -22,14 +27,18 @@ namespace Check_Up {
             checkBox_diskio.Checked = Properties.Settings.Default.DiskIO;
             checkBox_ignoreTime.Checked = Properties.Settings.Default.IgnoreTime;
 
-            textBox1.Text = "" + Properties.Settings.Default.PollingTime;
-            textBox2.Text = "" + Properties.Settings.Default.PollingInterval;
+            textBox_dataPollingTime.Text = "" + Properties.Settings.Default.PollingTime;
+            textBox_dataPollingInterval.Text = "" + Properties.Settings.Default.PollingInterval;
             visiblePoints.Text = "" + Properties.Settings.Default.VisiblePoints;
 
         }
 
-        private void button1_Click(object sender, EventArgs e) {
-
+        /// <summary>
+        /// When the user confirms the settings, save them
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button_confirm_Click(object sender, EventArgs e) {
             Properties.Settings.Default.CPU = checkBox_cpu.Checked;
             Properties.Settings.Default.Memory = checkBox_memory.Checked;
             Properties.Settings.Default.Network = checkBox_network.Checked;
@@ -37,19 +46,19 @@ namespace Check_Up {
             Properties.Settings.Default.IgnoreTime = checkBox_ignoreTime.Checked;
 
             try {
-                double pollingTime = Convert.ToDouble(textBox1.Text);
+                double pollingTime = Convert.ToDouble(textBox_dataPollingTime.Text);
                 Properties.Settings.Default.PollingTime = pollingTime;
             }
             catch {
-                Console.Error.WriteLine("Couldn't convert {0} to double", textBox1.Text);
+                Console.Error.WriteLine("Couldn't convert {0} to double", textBox_dataPollingTime.Text);
             }
 
             try {
-                double pollingInterval = Convert.ToDouble(textBox2.Text);
+                double pollingInterval = Convert.ToDouble(textBox_dataPollingInterval.Text);
                 Properties.Settings.Default.PollingInterval = pollingInterval;
             }
             catch {
-                Console.Error.WriteLine("Couldn't convert {0} to double", textBox2.Text);
+                Console.Error.WriteLine("Couldn't convert {0} to double", textBox_dataPollingInterval.Text);
             }
 
             try {
@@ -82,7 +91,12 @@ namespace Check_Up {
             this.Close();
         }
 
-        private void button2_Click(object sender, EventArgs e) {
+        /// <summary>
+        /// If the user denys the settings, close the window without saving
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button_deny_Click(object sender, EventArgs e) {
             #region Properties debug output
 #if DEBUG
             Console.WriteLine("Properties window closed using CANCEL - settings should not have saved");
@@ -103,10 +117,6 @@ namespace Check_Up {
 #endif
             #endregion
             this.Close();
-        }
-
-        private void label1_Click_1(object sender, EventArgs e) {
-
         }
     }
 }

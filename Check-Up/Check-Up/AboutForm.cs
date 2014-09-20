@@ -9,14 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Check_Up {
-    public partial class HelpForm : Form {
-        public HelpForm() {
+    public partial class AboutForm : Form {
+        public AboutForm() {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
-        }
-
-        private void label1_Click(object sender, EventArgs e) {
-
         }
     }
 }

@@ -101,7 +101,10 @@ namespace Check_Up {
             perfDiskCount = new PerformanceCounter("LogicalDisk", "% Disk Time", "C:");
             #endregion
         }
-
+    
+        /// <summary>
+        /// Checks if there are devices to monitor
+        /// </summary>
         public void ReadSettings() {
             #region Debug Console Output
 #if DEBUG
@@ -125,6 +128,11 @@ namespace Check_Up {
             }
         }
 
+        /// <summary>
+        /// Will gather data on devices which are checked from the properties form
+        /// Converts all data to percentages EXCEPT for Networking - this is in MBps
+        /// </summary>
+        /// <returns></returns>
         public bool GatherData() {
             #region CPU Data Gathering
             if (Properties.Settings.Default.CPU) {
@@ -170,6 +178,10 @@ namespace Check_Up {
             return true;
         }
 
+        /// <summary>
+        /// Debug function to list all counters on the system
+        /// </summary>
+        /// <param name="categoryName"></param>
         public void ListCounters(string categoryName) {
             PerformanceCounterCategory category = PerformanceCounterCategory.GetCategories().First(c => c.CategoryName == categoryName);
             Console.WriteLine("{0} [{1}]", category.CategoryName, category.CategoryType);
@@ -188,6 +200,11 @@ namespace Check_Up {
             }
         }
 
+        /// <summary>
+        /// Debug function to list all instances of a performanceCounterCategory
+        /// </summary>
+        /// <param name="category"></param>
+        /// <param name="instanceName"></param>
         private static void ListInstances(PerformanceCounterCategory category, string instanceName) {
             Console.WriteLine("    {0}", instanceName);
             PerformanceCounter[] counters = category.GetCounters(instanceName);
