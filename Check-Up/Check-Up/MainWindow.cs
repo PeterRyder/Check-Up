@@ -24,8 +24,6 @@ namespace Check_Up {
             // initialize a data collector
             osDataCollector = new OSDataCollection();
             processDataCollector = new ProcessesDataCollection();
-
-            processDataCollector.GatherData();
         }
 
         private void MainWindow_Load(object sender, EventArgs e) {
@@ -275,7 +273,7 @@ namespace Check_Up {
                 this.chart.Series[type].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             }
             catch {
-                Console.WriteLine("Couldn't change {0} into line graph", type);
+                Console.WriteLine("ERROR: Couldn't change {0} into line graph", type);
             }
             try {
                 // Add the X,Y coordinate of the data to the graph
@@ -285,7 +283,7 @@ namespace Check_Up {
                 chart.Series[type].ToolTip = "X: #VALX, Y: #VALY";
             }
             catch {
-                Console.WriteLine("Couldn't create point on graph X: {0}, Y: {1}", x, y);
+                Console.WriteLine("ERROR: Couldn't create point on graph X: {0}, Y: {1}", x, y);
             }
         }
 
@@ -317,6 +315,7 @@ namespace Check_Up {
         
         private void analyzeProcesses_Click(object sender, EventArgs e) {
             
+            processDataCollector.GatherData();
             
         }
 

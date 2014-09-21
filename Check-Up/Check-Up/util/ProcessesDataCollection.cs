@@ -9,17 +9,12 @@ namespace Check_Up.Util {
     class ProcessesDataCollection {
 
         public Process[] RunningProcesses;
-        List<PerformanceCounter> processCPUCounter;
-        List<PerformanceCounter> processMemCounter;
+        List<ProcessMonitor> procMonitors = new List<ProcessMonitor>();
 
         public ProcessesDataCollection() {
-            processCPUCounter = new List<PerformanceCounter>();
             foreach (Process proc in Process.GetProcesses()) {
-
-                using (PerformanceCounter pcProcess = new PerformanceCounter("Process", "% Processor Time", proc.ProcessName)) {
-                    pcProcess.NextValue();
-                    processCPUCounter.Add(pcProcess);
-                }
+                ProcessMonitor procMonitor = new ProcessMonitor(proc.ProcessName);
+                procMonitors.Add(procMonitor);
             }
         }
 
@@ -28,23 +23,14 @@ namespace Check_Up.Util {
         }
 
         public void GatherData() {
+            foreach (ProcessMonitor counter in procMonitors) {
+                counter.GatherData();
+                float cpuUsage = counter.getCpuUsage();
 
-            for (int i = 0; i < 10; i++) {
-
-                foreach (PerformanceCounter counter in processCPUCounter) {
-                    float cpu = counter.NextValue() / 4;
-                    if (cpu != 0) {
-                        Console.WriteLine("Process:{0} CPU% {1}", counter.InstanceName, cpu);
-                    }
-                    
+                if (counter.getCpuUsage() != 0) {
+                    Console.WriteLine("Process {0} {1}% CPU Usage", counter.getName(), counter.getCpuUsage());
                 }
-
-                Thread.Sleep(500);
-                Console.WriteLine("");
             }
-
-
         }
-
     }
 }
