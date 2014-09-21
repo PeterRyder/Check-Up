@@ -8,7 +8,6 @@ using System.Diagnostics;
 namespace Check_Up.Util {
     class ProcessesDataCollection {
 
-        public Process[] RunningProcesses;
         List<ProcessMonitor> procMonitors = new List<ProcessMonitor>();
 
         public ProcessesDataCollection() {
@@ -18,18 +17,19 @@ namespace Check_Up.Util {
             }
         }
 
-        private void getProcesses() {
-            RunningProcesses = Process.GetProcesses();
+        public List<ProcessMonitor> getProcMonitors() {
+            return procMonitors;
         }
 
         public void GatherData() {
-            foreach (ProcessMonitor counter in procMonitors) {
-                counter.GatherData();
-                float cpuUsage = counter.getCpuUsage();
+            for (int i = 0; i < procMonitors.Count(); i++) {
+                procMonitors[i].GatherData();
 
-                if (counter.getCpuUsage() != 0) {
-                    Console.WriteLine("Process {0} {1}% CPU Usage", counter.getName(), counter.getCpuUsage());
-                }
+                //float cpuUsage = counter.getCpuUsage();
+
+                //if (counter.getCpuUsage() != 0) {
+                    //Console.WriteLine("Process {0} {1}% CPU Usage", counter.getName(), counter.getCpuUsage());
+                //}
             }
         }
     }

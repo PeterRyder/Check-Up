@@ -14,16 +14,15 @@ using Check_Up.Util;
 namespace Check_Up {
     public partial class MainWindow : Form {
         OSDataCollection osDataCollector;
-        ProcessesDataCollection processDataCollector;
-
         int cycles = 1;
+        List<Form> subForms;
 
         public MainWindow() {
             InitializeComponent();
 
             // initialize a data collector
             osDataCollector = new OSDataCollection();
-            processDataCollector = new ProcessesDataCollection();
+            subForms = new List<Form>();
         }
 
         private void MainWindow_Load(object sender, EventArgs e) {
@@ -68,6 +67,7 @@ namespace Check_Up {
         /// <param name="e"></param>
         private void propertiesToolStripMenuItem_Click(object sender, EventArgs e) {
             PropertiesForm subForm = new PropertiesForm();
+            subForms.Add(subForm);
             subForm.Show();
 
         }
@@ -88,6 +88,7 @@ namespace Check_Up {
         /// <param name="e"></param>
         private void aboutCheckUpToolStripMenuItem_Click(object sender, EventArgs e) {
             AboutForm subForm = new AboutForm();
+            subForms.Add(subForm);
             subForm.Show();
         }
 
@@ -314,9 +315,8 @@ namespace Check_Up {
         }
         
         private void analyzeProcesses_Click(object sender, EventArgs e) {
-            
-            processDataCollector.GatherData();
-            
+            ProcessListForm subForm = new ProcessListForm();
+            subForm.Show();
         }
 
         /// <summary>
@@ -325,6 +325,21 @@ namespace Check_Up {
         private void resetChartFunc() {
             foreach (var series in chart.Series) {
                 series.Points.Clear();
+            }
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e) {
+            backgroundWorker1.CancelAsync();
+            backgroundWorker1.ReportProgress(100);
+            base.OnFormClosing(e);
+
+            foreach (Form form in subForms) {
+                try {
+                    form.Close();
+                }
+                catch {
+                    Console.WriteLine("Couldn't close subform {0}", form.Name);
+                }
             }
         }
     }

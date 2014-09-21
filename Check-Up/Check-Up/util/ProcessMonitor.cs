@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 
 namespace Check_Up.Util {
-    class ProcessMonitor {
+    class ProcessMonitor : IComparable<ProcessMonitor> {
 
         string name = "";
         private long peakPagedMem = 0,
@@ -29,6 +29,19 @@ namespace Check_Up.Util {
                 Console.WriteLine("ERROR: Could not gather CPU data for process {0} ", this.name);
             }
             
+        }
+
+        public override string ToString() {
+            return name;
+        }
+
+        public int CompareTo(ProcessMonitor process) {
+            // A null value means that this object is greater. 
+            if (process == null)
+                return 1;
+
+            else
+                return this.name.CompareTo(process.name);
         }
 
         #region Set Functions
