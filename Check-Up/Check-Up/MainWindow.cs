@@ -327,12 +327,11 @@ namespace Check_Up {
                 series.Points.Clear();
             }
         }
-
+        /// <summary>
+        /// Override the form closing event to close all sub forms
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnFormClosing(FormClosingEventArgs e) {
-            backgroundWorker1.CancelAsync();
-            backgroundWorker1.ReportProgress(100);
-            base.OnFormClosing(e);
-
             foreach (Form form in subForms) {
                 try {
                     form.Close();
@@ -341,6 +340,14 @@ namespace Check_Up {
                     Console.WriteLine("Couldn't close subform {0}", form.Name);
                 }
             }
-        }
+            backgroundWorker1.CancelAsync();
+            try {
+                base.OnFormClosing(e);
+            }
+            catch {
+                Console.WriteLine("Couldn't call base form close");
+            }
+            Application.Exit();
+        }      
     }
 }
