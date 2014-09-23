@@ -173,6 +173,10 @@ namespace Check_Up {
             Console.WriteLine("Polling Interval: " + pollingInterval);
 #endif
             for (double i = pollingInterval; i <= pollingTime; ) {
+                // Get current time
+                int timeMin = DateTime.Now.Minute;
+                int timeSec = DateTime.Now.Second;
+                int timeMsec = DateTime.Now.Millisecond;
 
                 // If there is a pending cancellation break out of the loop
                 if (backgroundWorker1.CancellationPending) {
@@ -220,8 +224,16 @@ namespace Check_Up {
                     backgroundWorker1.ReportProgress(0);
                 }
 
-                // Sleep the backgroundWorker for the pollingInterval
-                Thread.Sleep((int)(pollingInterval * 1000));
+                int timeElapsed = (DateTime.Now.Minute - timeMin) * 60 * 1000;
+                timeElapsed += (DateTime.Now.Second - timeSec) * 1000;
+                timeElapsed += (DateTime.Now.Millisecond - timeMsec);
+
+                Console.WriteLine(String.Format("Sleep time: {0}", pollingInterval * 1000 - timeElapsed));
+                // Sleep the backgroundWorker for the pollingInterval minus time already elapsed
+                if (pollingInterval * 1000 - timeElapsed >= 1)
+                {
+                    Thread.Sleep((int)(pollingInterval * 1000 - timeElapsed));
+                }
 
                 // Increment the amount of cycles which has elapsed
                 cycles++;
