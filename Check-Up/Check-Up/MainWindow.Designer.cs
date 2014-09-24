@@ -43,15 +43,15 @@
             this.label_percentage = new System.Windows.Forms.Label();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.chartControls = new System.Windows.Forms.GroupBox();
-            this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.menuStrip1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.chartControls.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -141,7 +141,6 @@
             this.button_resetChart.TabIndex = 8;
             this.button_resetChart.Text = "Reset Chart";
             this.button_resetChart.UseVisualStyleBackColor = true;
-            this.button_resetChart.Click += new System.EventHandler(this.resetChart_Click);
             // 
             // button_monitorStop
             // 
@@ -220,19 +219,6 @@
             this.chartControls.TabStop = false;
             this.chartControls.Text = "Chart Controls";
             // 
-            // chart
-            // 
-            chartArea1.Name = "ChartArea1";
-            this.chart.ChartAreas.Add(chartArea1);
-            this.chart.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend1.Name = "Legend1";
-            this.chart.Legends.Add(legend1);
-            this.chart.Location = new System.Drawing.Point(3, 3);
-            this.chart.Name = "chart";
-            this.chart.Size = new System.Drawing.Size(905, 500);
-            this.chart.TabIndex = 12;
-            this.chart.Text = "chart1";
-            // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -265,6 +251,19 @@
             this.tableLayoutPanel3.Size = new System.Drawing.Size(905, 77);
             this.tableLayoutPanel3.TabIndex = 0;
             // 
+            // chart
+            // 
+            chartArea1.Name = "ChartArea1";
+            this.chart.ChartAreas.Add(chartArea1);
+            this.chart.Dock = System.Windows.Forms.DockStyle.Fill;
+            legend1.Name = "Legend1";
+            this.chart.Legends.Add(legend1);
+            this.chart.Location = new System.Drawing.Point(3, 3);
+            this.chart.Name = "chart";
+            this.chart.Size = new System.Drawing.Size(905, 500);
+            this.chart.TabIndex = 1;
+            this.chart.Text = "chart";
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -287,10 +286,10 @@
             this.flowLayoutPanel2.PerformLayout();
             this.chartControls.ResumeLayout(false);
             this.chartControls.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -314,10 +313,10 @@
         private System.Windows.Forms.Label label_percentage;
         private System.Windows.Forms.Button button_resetChart;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.GroupBox chartControls;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart;
 
 
 

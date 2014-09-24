@@ -9,17 +9,30 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Threading;
+using Check_Up.Util;
 
 namespace Check_Up {
     public partial class MainWindow : Form {
-        DataCollection dataCollector;
+        OSDataCollection osDataCollector;
         int cycles = 1;
+        List<Form> subForms;
+        int logicalCpuCount;
+
+        
 
         public MainWindow() {
             InitializeComponent();
 
             // initialize a data collector
-            dataCollector = new DataCollection();
+            osDataCollector = new OSDataCollection();
+            subForms = new List<Form>();
+
+            foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_ComputerSystem").Get()) {
+                this.logicalCpuCount = Convert.ToInt32(item["NumberOfLogicalProcessors"]);
+#if DEBUG
+                Console.WriteLine("Number of logical processors: {0}", logicalCpuCount);
+#endif
+            }
         }
 
         private void MainWindow_Load(object sender, EventArgs e) {
@@ -37,7 +50,7 @@ namespace Check_Up {
             button_monitorStop.Enabled = true;
 
             // Load settings
-            dataCollector.ReadSettings();
+            osDataCollector.ReadSettings();
 
             // Begin the backgroundWorker
             backgroundWorker1.RunWorkerAsync();
@@ -46,7 +59,7 @@ namespace Check_Up {
             backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
 
             // check if data should be gathered
-            if (dataCollector.shouldGatherData) {
+            if (osDataCollector.shouldGatherData) {
                 backgroundWorker1.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
             }
             else {
@@ -64,6 +77,7 @@ namespace Check_Up {
         /// <param name="e"></param>
         private void propertiesToolStripMenuItem_Click(object sender, EventArgs e) {
             PropertiesForm subForm = new PropertiesForm();
+            subForms.Add(subForm);
             subForm.Show();
 
         }
@@ -84,6 +98,7 @@ namespace Check_Up {
         /// <param name="e"></param>
         private void aboutCheckUpToolStripMenuItem_Click(object sender, EventArgs e) {
             AboutForm subForm = new AboutForm();
+            subForms.Add(subForm);
             subForm.Show();
         }
 
@@ -97,30 +112,30 @@ namespace Check_Up {
 
             // Update the progress bar every time the backgroundWorker changes
             progressBar1.Value = e.ProgressPercentage;
-
+            
             // Update the label next to the progress bar
             label_percentage.Text = e.ProgressPercentage.ToString() + "%";
 
             // If CPU data should be gathered, update the graph
             if (Properties.Settings.Default.CPU) {
-                updateGraph("CPU", "" + cycles, "" + dataCollector.currentCPUUsage);
+                updateGraph("CPU", "" + cycles, "" + osDataCollector.currentCPUUsage);
             }
 
             // If Memory data should be gathered, update the graph
             if (Properties.Settings.Default.Memory) {
-                updateGraph("Memory", "" + cycles, "" + dataCollector.currentMemUsage);
+                updateGraph("Memory", "" + cycles, "" + osDataCollector.currentMemUsage);
             }
 
             // If Network data should be gathered, update the graph
-            if (Properties.Settings.Default.Network && dataCollector.canGatherNet) {
-                updateGraph("Network", "" + cycles, "" + dataCollector.currentNetUsageMBs);
+            if (Properties.Settings.Default.Network && osDataCollector.canGatherNet) {
+                updateGraph("Network", "" + cycles, "" + osDataCollector.currentNetUsageMBs);
             }
 
             // If Disk IO data should be gathered, update the graph
             if (Properties.Settings.Default.DiskIO) {
-                updateGraph("Disk", "" + cycles, "" + dataCollector.percentDiskTime);
+                updateGraph("Disk", "" + cycles, "" + osDataCollector.percentDiskTime);
             }
-
+            
         }
 
         /// <summary>
@@ -188,7 +203,7 @@ namespace Check_Up {
                 }
                 
                 // Gather data on the devices
-                dataCollector.GatherData();
+                osDataCollector.GatherData();
 
                 // If the pollingTime is to be used
                 if (!Properties.Settings.Default.IgnoreTime) {
@@ -260,10 +275,12 @@ namespace Check_Up {
         /// <param name="type"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
+        /// 
+        
         private void updateGraph(string type, string x, string y) {
 
             // Could be useful when creating a doughnut type graph
-            //resetChartFunc();
+            resetChartFunc();
 
             // Check if the data type is already registered with the chart
             if (this.chart.Series.IndexOf(type) != -1) {
@@ -281,7 +298,7 @@ namespace Check_Up {
                 this.chart.Series[type].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             }
             catch {
-                Console.WriteLine("Couldn't change {0} into line graph", type);
+                Console.WriteLine("ERROR: Couldn't change {0} into line graph", type);
             }
             try {
                 // Add the X,Y coordinate of the data to the graph
@@ -291,9 +308,10 @@ namespace Check_Up {
                 chart.Series[type].ToolTip = "X: #VALX, Y: #VALY";
             }
             catch {
-                Console.WriteLine("Couldn't create point on graph X: {0}, Y: {1}", x, y);
+                Console.WriteLine("ERROR: Couldn't create point on graph X: {0}, Y: {1}", x, y);
             }
         }
+         
 
         /// <summary>
         /// Stops the DataCollector when the button "Stop Monitoring" is clicked
@@ -317,21 +335,49 @@ namespace Check_Up {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        /// 
+        
         private void resetChart_Click(object sender, EventArgs e) {
             resetChartFunc();
         }
         
         private void analyzeProcesses_Click(object sender, EventArgs e) {
-            
+            ProcessListForm subForm = new ProcessListForm();
+            subForm.Show();
         }
 
         /// <summary>
         /// Will reset the graph and remove all coordinates
         /// </summary>
+        /// 
+        
         private void resetChartFunc() {
             foreach (var series in chart.Series) {
                 series.Points.Clear();
             }
         }
+         
+        /// <summary>
+        /// Override the form closing event to close all sub forms
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnFormClosing(FormClosingEventArgs e) {
+            foreach (Form form in subForms) {
+                try {
+                    form.Close();
+                }
+                catch {
+                    Console.WriteLine("Couldn't close subform {0}", form.Name);
+                }
+            }
+            backgroundWorker1.CancelAsync();
+            try {
+                base.OnFormClosing(e);
+            }
+            catch {
+                Console.WriteLine("Couldn't call base form close");
+            }
+            Application.Exit();
+        }      
     }
 }
