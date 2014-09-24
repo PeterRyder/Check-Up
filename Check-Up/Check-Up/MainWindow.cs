@@ -16,6 +16,9 @@ namespace Check_Up {
         OSDataCollection osDataCollector;
         int cycles = 1;
         List<Form> subForms;
+        int logicalCpuCount;
+
+        
 
         public MainWindow() {
             InitializeComponent();
@@ -23,6 +26,13 @@ namespace Check_Up {
             // initialize a data collector
             osDataCollector = new OSDataCollection();
             subForms = new List<Form>();
+
+            foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_ComputerSystem").Get()) {
+                this.logicalCpuCount = Convert.ToInt32(item["NumberOfLogicalProcessors"]);
+#if DEBUG
+                Console.WriteLine("Number of logical processors: {0}", logicalCpuCount);
+#endif
+            }
         }
 
         private void MainWindow_Load(object sender, EventArgs e) {
@@ -102,7 +112,7 @@ namespace Check_Up {
 
             // Update the progress bar every time the backgroundWorker changes
             progressBar1.Value = e.ProgressPercentage;
-
+            
             // Update the label next to the progress bar
             label_percentage.Text = e.ProgressPercentage.ToString() + "%";
 
@@ -125,7 +135,7 @@ namespace Check_Up {
             if (Properties.Settings.Default.DiskIO) {
                 updateGraph("Disk", "" + cycles, "" + osDataCollector.percentDiskTime);
             }
-
+            
         }
 
         /// <summary>
@@ -253,10 +263,12 @@ namespace Check_Up {
         /// <param name="type"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
+        /// 
+        
         private void updateGraph(string type, string x, string y) {
 
             // Could be useful when creating a doughnut type graph
-            //resetChartFunc();
+            resetChartFunc();
 
             // Check if the data type is already registered with the chart
             if (this.chart.Series.IndexOf(type) != -1) {
@@ -287,6 +299,7 @@ namespace Check_Up {
                 Console.WriteLine("ERROR: Couldn't create point on graph X: {0}, Y: {1}", x, y);
             }
         }
+         
 
         /// <summary>
         /// Stops the DataCollector when the button "Stop Monitoring" is clicked
@@ -310,6 +323,8 @@ namespace Check_Up {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        /// 
+        
         private void resetChart_Click(object sender, EventArgs e) {
             resetChartFunc();
         }
@@ -322,11 +337,14 @@ namespace Check_Up {
         /// <summary>
         /// Will reset the graph and remove all coordinates
         /// </summary>
+        /// 
+        
         private void resetChartFunc() {
             foreach (var series in chart.Series) {
                 series.Points.Clear();
             }
         }
+         
         /// <summary>
         /// Override the form closing event to close all sub forms
         /// </summary>

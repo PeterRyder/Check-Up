@@ -12,7 +12,9 @@ namespace Check_Up.Util {
         private long peakPagedMem = 0,
                      peakWorkingSet = 0,
                      peakVirtualMem = 0;
+
         float cpuUsage = 0;
+        float prevCpuUsage = -1;
         PerformanceCounter ProcessCPUUsage;
 
         public ProcessMonitor(string name) {
@@ -23,7 +25,8 @@ namespace Check_Up.Util {
 
         public void GatherData() {
             try {
-                cpuUsage = ProcessCPUUsage.NextValue() / 4;
+                this.prevCpuUsage = this.cpuUsage;
+                this.cpuUsage = ProcessCPUUsage.NextValue() / RandomInfo.logicalCpuCount;
             }
             catch {
                 Console.WriteLine("ERROR: Could not gather CPU data for process {0} ", this.name);
@@ -78,6 +81,10 @@ namespace Check_Up.Util {
 
         public float getCpuUsage() {
             return this.cpuUsage;
+        }
+
+        public float getPrevCpuUsage() {
+            return this.prevCpuUsage;
         }
 
         public string getName() {

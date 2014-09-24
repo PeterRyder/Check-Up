@@ -49,45 +49,62 @@ namespace Check_Up {
             procMonitors.Sort();
 
             foreach (ProcessMonitor proc in procMonitors) {
-                try {
-                    ListViewItem item = listView1.FindItemWithText(proc.getName(), false, 0, false);
-                    item.SubItems[1].Text = Math.Round(proc.getCpuUsage()) + "%";
-                }
-                catch {
-                    Console.WriteLine("Couldn't update ListViewItem {0}", proc.getName());
-                }
+#if DEBUG
+                //Console.WriteLine("Previous CPU Usage: {0}", proc.getPrevCpuUsage());
+                //Console.WriteLine("Current CPU Usage: {0}", proc.getCpuUsage());
+#endif
 
+                if (proc.getPrevCpuUsage() != proc.getCpuUsage()) {
+                    try {
+                        ListViewItem item = listView1.FindItemWithText(proc.getName(), false, 0, false);
+                        item.SubItems[1].Text = Math.Round(proc.getCpuUsage()) + "%";
+                        
+                    }
+                    catch {
+                        Console.WriteLine("Couldn't update ListViewItem {0}", proc.getName());
+                        
+                    }
+                }
             }
         }
 
         private void initializeListView() {
             foreach (ProcessMonitor proc in procMonitors) {
-                listView1.Items.Add(new ListViewItem(new string[] { proc.getName(), "" }));
+                listView1.Items.Add(new ListViewItem(new string[] { proc.getName(), proc.getCpuUsage() + "%" }));
             }
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-
+#if DEBUG
+            Console.WriteLine("Worker Completed");
+#endif
         }
 
         private bool GatherData(BackgroundWorker sender, DoWorkEventArgs e) {
-
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 100; i++) {
                 if (backgroundWorker1.CancellationPending) {
+#if DEBUG
+                    Console.WriteLine("Background Worker Cancelled");
+#endif
+                    backgroundWorker1.ReportProgress(100);
                     e.Cancel = true;
                     return true;
                 }
 
                 processDataCollector.GatherData();
-                backgroundWorker1.ReportProgress(i * 10);
+#if DEBUG
+                Console.WriteLine("Gathered Data");
+#endif
+                backgroundWorker1.ReportProgress(0);
                 Thread.Sleep(1000);
             }
+
+
             return true;
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e) {
             backgroundWorker1.CancelAsync();
-            backgroundWorker1.ReportProgress(100);
             base.OnFormClosing(e);
         }
     }
