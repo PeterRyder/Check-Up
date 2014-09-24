@@ -242,8 +242,9 @@ namespace Check_Up {
                 int timeElapsed = (DateTime.Now.Minute - timeMin) * 60 * 1000;
                 timeElapsed += (DateTime.Now.Second - timeSec) * 1000;
                 timeElapsed += (DateTime.Now.Millisecond - timeMsec);
-
+#if DEBUG
                 Console.WriteLine(String.Format("Sleep time: {0}", pollingInterval * 1000 - timeElapsed));
+#endif
                 // Sleep the backgroundWorker for the pollingInterval minus time already elapsed
                 if (pollingInterval * 1000 - timeElapsed >= 1)
                 {
@@ -280,7 +281,7 @@ namespace Check_Up {
         private void updateGraph(string type, string x, string y) {
 
             // Could be useful when creating a doughnut type graph
-            resetChartFunc();
+            //resetChartFunc();
 
             // Check if the data type is already registered with the chart
             if (this.chart.Series.IndexOf(type) != -1) {
@@ -302,6 +303,9 @@ namespace Check_Up {
             }
             try {
                 // Add the X,Y coordinate of the data to the graph
+#if DEBUG
+                Console.WriteLine("X: {0} Y: {1}", x, y);
+#endif
                 this.chart.Series[type].Points.AddXY(x, y);
 
                 // Display a tooltip when mouse hovers over the line graph
@@ -311,7 +315,10 @@ namespace Check_Up {
                 Console.WriteLine("ERROR: Couldn't create point on graph X: {0}, Y: {1}", x, y);
             }
         }
-         
+
+        private void button_resetChart_Click(object sender, EventArgs e) {
+            resetChartFunc();
+        } 
 
         /// <summary>
         /// Stops the DataCollector when the button "Stop Monitoring" is clicked
@@ -337,9 +344,7 @@ namespace Check_Up {
         /// <param name="e"></param>
         /// 
         
-        private void resetChart_Click(object sender, EventArgs e) {
-            resetChartFunc();
-        }
+
         
         private void analyzeProcesses_Click(object sender, EventArgs e) {
             ProcessListForm subForm = new ProcessListForm();
@@ -350,10 +355,12 @@ namespace Check_Up {
         /// Will reset the graph and remove all coordinates
         /// </summary>
         /// 
-        
         private void resetChartFunc() {
             foreach (var series in chart.Series) {
                 series.Points.Clear();
+#if DEBUG
+                Console.WriteLine("Reset Series");
+#endif
             }
         }
          
@@ -378,6 +385,6 @@ namespace Check_Up {
                 Console.WriteLine("Couldn't call base form close");
             }
             Application.Exit();
-        }      
+        }     
     }
 }

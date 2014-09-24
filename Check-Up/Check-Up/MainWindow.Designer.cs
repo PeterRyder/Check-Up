@@ -141,6 +141,7 @@
             this.button_resetChart.TabIndex = 8;
             this.button_resetChart.Text = "Reset Chart";
             this.button_resetChart.UseVisualStyleBackColor = true;
+            this.button_resetChart.Click += new System.EventHandler(this.button_resetChart_Click);
             // 
             // button_monitorStop
             // 
