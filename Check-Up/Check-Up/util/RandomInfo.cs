@@ -10,13 +10,7 @@ namespace Check_Up.Util {
         public static int logicalCpuCount = InitializeCpuCount();
 
         private static int InitializeCpuCount() {
-            int logicalCpuCount = 0;
-            foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_ComputerSystem").Get()) {
-                logicalCpuCount = Convert.ToInt32(item["NumberOfLogicalProcessors"]);
-                Console.WriteLine("Found logical cores");
-            }
-            return logicalCpuCount;
+            return Environment.ProcessorCount;
         }
-
     }
 }

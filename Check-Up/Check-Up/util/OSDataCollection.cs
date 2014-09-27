@@ -72,7 +72,9 @@ namespace Check_Up.Util {
             }
 
             if (WifiNicDescription != "") {
+#if DEBUG
                 Console.WriteLine(WifiNicDescription);
+#endif
                 try {
                     perfNetCount = new PerformanceCounter("Network Adapter", "Bytes Total/sec", WifiNicDescription);
                     canGatherNet = true;
@@ -100,6 +102,10 @@ namespace Check_Up.Util {
             #region Disk Counter Initialization
             perfDiskCount = new PerformanceCounter("LogicalDisk", "% Disk Time", "C:");
             #endregion
+
+#if DEBUG
+            Console.WriteLine("Finished PerformanceCounter Initialization");
+#endif
         }
     
         /// <summary>

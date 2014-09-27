@@ -16,9 +16,6 @@ namespace Check_Up {
         OSDataCollection osDataCollector;
         int cycles = 1;
         List<Form> subForms;
-        int logicalCpuCount;
-
-        
 
         public MainWindow() {
             InitializeComponent();
@@ -27,12 +24,6 @@ namespace Check_Up {
             osDataCollector = new OSDataCollection();
             subForms = new List<Form>();
 
-            foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_ComputerSystem").Get()) {
-                this.logicalCpuCount = Convert.ToInt32(item["NumberOfLogicalProcessors"]);
-#if DEBUG
-                Console.WriteLine("Number of logical processors: {0}", logicalCpuCount);
-#endif
-            }
         }
 
         private void MainWindow_Load(object sender, EventArgs e) {

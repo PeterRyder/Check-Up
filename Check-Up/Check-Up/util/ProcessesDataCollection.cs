@@ -8,28 +8,20 @@ using System.Diagnostics;
 namespace Check_Up.Util {
     class ProcessesDataCollection {
 
-        List<ProcessMonitor> procMonitors = new List<ProcessMonitor>();
+        public List<ProcessMonitor> procMonitors = new List<ProcessMonitor>();
 
         public ProcessesDataCollection() {
             foreach (Process proc in Process.GetProcesses()) {
+                //Console.WriteLine("Initializing {0}", proc.ProcessName);
                 ProcessMonitor procMonitor = new ProcessMonitor(proc.ProcessName);
                 procMonitors.Add(procMonitor);
             }
-        }
-
-        public List<ProcessMonitor> getProcMonitors() {
-            return procMonitors;
+            procMonitors.Sort();
         }
 
         public void GatherData() {
-            for (int i = 0; i < procMonitors.Count(); i++) {
-                procMonitors[i].GatherData();
-
-                //float cpuUsage = counter.getCpuUsage();
-
-                //if (counter.getCpuUsage() != 0) {
-                    //Console.WriteLine("Process {0} {1}% CPU Usage", counter.getName(), counter.getCpuUsage());
-                //}
+            foreach (ProcessMonitor proc in procMonitors) {
+                proc.GatherData();
             }
         }
     }
