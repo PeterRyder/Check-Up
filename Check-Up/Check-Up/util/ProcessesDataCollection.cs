@@ -21,7 +21,13 @@ namespace Check_Up.Util {
 
         public void GatherData() {
             foreach (ProcessMonitor proc in procMonitors) {
-                proc.GatherData();
+                try {
+                    proc.GatherData();
+                }
+                catch {
+                    Console.WriteLine("Could not gather data for process {0}", proc.getName());
+                }
+                
             }
         }
     }
