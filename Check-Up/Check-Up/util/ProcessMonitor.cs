@@ -24,14 +24,8 @@ namespace Check_Up.Util {
         }
 
         public void GatherData() {
-            try {
-                this.prevCpuUsage = this.cpuUsage;
-                this.cpuUsage = ProcessCPUUsage.NextValue() / RandomInfo.logicalCpuCount;
-            }
-            catch {
-                Console.WriteLine("ERROR: Could not gather CPU data for process {0} ", this.name);
-            }
-            
+            this.prevCpuUsage = this.cpuUsage;
+            this.cpuUsage = ProcessCPUUsage.NextValue() / RandomInfo.logicalCpuCount;
         }
 
         public override string ToString() {

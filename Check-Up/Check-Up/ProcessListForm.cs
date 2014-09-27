@@ -14,26 +14,23 @@ namespace Check_Up {
     public partial class ProcessListForm : Form {
 
         ProcessesDataCollection processDataCollector;
-        List<ProcessMonitor> procMonitors;
 
         public ProcessListForm() {
             InitializeComponent();
             processDataCollector = new ProcessesDataCollection();
-            procMonitors = processDataCollector.getProcMonitors();
             initializeListView();
 
-            // Begin the backgroundWorker
-            backgroundWorker1.RunWorkerAsync();
-
             // Add the ProgressChanged function to the ProgressChangedEventHandler
-            backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
+            this.backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
 
-            backgroundWorker1.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
+            this.backgroundWorker1.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
+
+            // Begin the backgroundWorker
+            this.backgroundWorker1.RunWorkerAsync();
         }
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e) {
             BackgroundWorker worker = sender as BackgroundWorker;
-
             // GatherData every time the background worker does work
             e.Result = GatherData(worker, e);
         }
@@ -42,18 +39,11 @@ namespace Check_Up {
             BackgroundWorker worker = sender as BackgroundWorker;
 
             if (worker.CancellationPending) {
+                Console.WriteLine("Cancellation Pending - Cancelling");
                 return;
-            }
+            }            
 
-            procMonitors = processDataCollector.getProcMonitors();
-            procMonitors.Sort();
-
-            foreach (ProcessMonitor proc in procMonitors) {
-#if DEBUG
-                //Console.WriteLine("Previous CPU Usage: {0}", proc.getPrevCpuUsage());
-                //Console.WriteLine("Current CPU Usage: {0}", proc.getCpuUsage());
-#endif
-
+            foreach (ProcessMonitor proc in processDataCollector.procMonitors) {
                 if (proc.getPrevCpuUsage() != proc.getCpuUsage()) {
                     try {
                         ListViewItem item = listView1.FindItemWithText(proc.getName(), false, 0, false);
@@ -69,7 +59,7 @@ namespace Check_Up {
         }
 
         private void initializeListView() {
-            foreach (ProcessMonitor proc in procMonitors) {
+            foreach (ProcessMonitor proc in processDataCollector.procMonitors) {
                 listView1.Items.Add(new ListViewItem(new string[] { proc.getName(), proc.getCpuUsage() + "%" }));
             }
         }
@@ -81,6 +71,7 @@ namespace Check_Up {
         }
 
         private bool GatherData(BackgroundWorker sender, DoWorkEventArgs e) {
+            
             for (int i = 0; i < 100; i++) {
                 if (backgroundWorker1.CancellationPending) {
 #if DEBUG
@@ -92,14 +83,19 @@ namespace Check_Up {
                 }
 
                 processDataCollector.GatherData();
-#if DEBUG
-                Console.WriteLine("Gathered Data");
-#endif
+
                 backgroundWorker1.ReportProgress(0);
                 Thread.Sleep(1000);
             }
 
+            backgroundWorker1.CancelAsync();
 
+            if (backgroundWorker1.CancellationPending) {
+#if DEBUG
+                Console.WriteLine("Cancellation is pending");
+#endif
+                e.Cancel = true;
+            }
             return true;
         }
 
