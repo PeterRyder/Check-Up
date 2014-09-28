@@ -114,7 +114,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(81, 114);
+            this.groupBox1.Size = new System.Drawing.Size(81, 113);
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Settings";
@@ -199,7 +199,7 @@
             this.tableLayoutPanel3.RowCount = 2;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(428, 252);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(428, 251);
             this.tableLayoutPanel3.TabIndex = 20;
             // 
             // tableLayoutPanel4
@@ -215,7 +215,7 @@
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 1;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(293, 120);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(293, 119);
             this.tableLayoutPanel4.TabIndex = 19;
             // 
             // tableLayoutPanel2
@@ -227,7 +227,7 @@
             this.tableLayoutPanel2.Controls.Add(this.confirm, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.deny, 1, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(302, 129);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(302, 128);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -266,7 +266,7 @@
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.visiblePoints);
             this.groupBox2.Controls.Add(this.checkBox_ignoreTime);
-            this.groupBox2.Location = new System.Drawing.Point(3, 129);
+            this.groupBox2.Location = new System.Drawing.Point(3, 128);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(293, 102);
             this.groupBox2.TabIndex = 17;
@@ -308,7 +308,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.deny;
-            this.ClientSize = new System.Drawing.Size(428, 252);
+            this.ClientSize = new System.Drawing.Size(428, 251);
             this.Controls.Add(this.tableLayoutPanel3);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(444, 290);

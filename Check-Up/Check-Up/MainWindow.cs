@@ -70,7 +70,6 @@ namespace Check_Up {
             PropertiesForm subForm = new PropertiesForm();
             subForms.Add(subForm);
             subForm.Show();
-
         }
 
         /// <summary>
@@ -126,7 +125,6 @@ namespace Check_Up {
             if (Properties.Settings.Default.DiskIO) {
                 updateGraph("Disk", "" + cycles, "" + osDataCollector.percentDiskTime);
             }
-            
         }
 
         /// <summary>
@@ -268,7 +266,6 @@ namespace Check_Up {
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// 
-        
         private void updateGraph(string type, string x, string y) {
 
             // Could be useful when creating a doughnut type graph
@@ -307,6 +304,11 @@ namespace Check_Up {
             }
         }
 
+        /// <summary>
+        /// Resets the graph and removes all coordinates when the button "Reset Graph" is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button_resetChart_Click(object sender, EventArgs e) {
             resetChartFunc();
         } 
@@ -327,18 +329,10 @@ namespace Check_Up {
             // Enable the gatherData button
             button_gatherData.Enabled = true;
         }
-
-        /// <summary>
-        /// Resets the graph and removes all coordinates when the button "Reset Graph" is clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// 
-        
-
         
         private void analyzeProcesses_Click(object sender, EventArgs e) {
             ProcessListForm subForm = new ProcessListForm();
+            subForms.Add(subForm);
             subForm.Show();
         }
 
@@ -376,6 +370,6 @@ namespace Check_Up {
                 Console.WriteLine("Couldn't call base form close");
             }
             Application.Exit();
-        }     
+        } 
     }
 }

@@ -25,7 +25,9 @@ namespace Check_Up.Util {
                     proc.GatherData();
                 }
                 catch {
+#if DEBUG
                     Console.WriteLine("Could not gather data for process {0}", proc.getName());
+#endif
                 }
                 
             }
