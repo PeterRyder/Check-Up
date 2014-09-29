@@ -13,6 +13,7 @@ using System.Threading;
 namespace Check_Up {
     public partial class ProcessListForm : Form {
 
+        // 
         ProcessesDataCollection processDataCollector;
 
         public ProcessListForm() {
@@ -39,7 +40,9 @@ namespace Check_Up {
             BackgroundWorker worker = sender as BackgroundWorker;
 
             if (worker.CancellationPending) {
+#if DEBUG
                 Console.WriteLine("Cancellation Pending - Cancelling");
+#endif
                 return;
             }            
 
@@ -48,11 +51,11 @@ namespace Check_Up {
                     try {
                         ListViewItem item = listView1.FindItemWithText(proc.getName(), false, 0, false);
                         item.SubItems[1].Text = Math.Round(proc.getCpuUsage()) + "%";
-                        
                     }
                     catch {
+#if DEBUG
                         Console.WriteLine("Couldn't update ListViewItem {0}", proc.getName());
-                        
+#endif    
                     }
                 }
             }

@@ -17,12 +17,40 @@ namespace Check_Up {
         int cycles = 1;
         List<Form> subForms;
 
+        private bool shouldGatherData;
+
+        private bool shouldPlotData = true;
+
         public MainWindow() {
             InitializeComponent();
 
             // initialize a data collector
             osDataCollector = new OSDataCollection();
             subForms = new List<Form>();
+
+            // Add the ProgressChanged function to the ProgressChangedEventHandler
+            backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
+
+            if (!Properties.Settings.Default.CPU &&
+                !Properties.Settings.Default.Memory &&
+                !Properties.Settings.Default.Network &&
+                !Properties.Settings.Default.DiskIO) {
+                shouldGatherData = false;
+            }
+            else {
+                shouldGatherData = true;
+            }
+
+            // check if data should be gathered
+            if (shouldGatherData) {
+                backgroundWorker1.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
+            }
+            else {
+
+                // Stop the backgroundWorker if data shouldn't be gathered
+                backgroundWorker1.CancelAsync();
+                backgroundWorker1.ReportProgress(100);
+            }
 
         }
 
@@ -40,25 +68,8 @@ namespace Check_Up {
             this.cycles = 1;
             button_monitorStop.Enabled = true;
 
-            // Load settings
-            osDataCollector.ReadSettings();
-
             // Begin the backgroundWorker
             backgroundWorker1.RunWorkerAsync();
-
-            // Add the ProgressChanged function to the ProgressChangedEventHandler
-            backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
-
-            // check if data should be gathered
-            if (osDataCollector.shouldGatherData) {
-                backgroundWorker1.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
-            }
-            else {
-
-                // Stop the backgroundWorker if data shouldn't be gathered
-                backgroundWorker1.CancelAsync();
-                backgroundWorker1.ReportProgress(100);
-            }
         }
 
         /// <summary>
@@ -70,7 +81,6 @@ namespace Check_Up {
             PropertiesForm subForm = new PropertiesForm();
             subForms.Add(subForm);
             subForm.Show();
-
         }
 
         /// <summary>
@@ -100,33 +110,36 @@ namespace Check_Up {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+            if (shouldGatherData) {
+                // Update the progress bar every time the backgroundWorker changes
+                progressBar1.Value = e.ProgressPercentage;
 
-            // Update the progress bar every time the backgroundWorker changes
-            progressBar1.Value = e.ProgressPercentage;
-            
-            // Update the label next to the progress bar
-            label_percentage.Text = e.ProgressPercentage.ToString() + "%";
+                // Update the label next to the progress bar
+                label_percentage.Text = e.ProgressPercentage.ToString() + "%";
 
-            // If CPU data should be gathered, update the graph
-            if (Properties.Settings.Default.CPU) {
-                updateGraph("CPU", "" + cycles, "" + osDataCollector.currentCPUUsage);
+                Console.WriteLine("Progress Updated");
+
+                // If CPU data should be gathered, update the graph
+                if (Properties.Settings.Default.CPU) {
+                    updateGraph("CPU", "" + cycles, "" + osDataCollector.currentCPUUsage);
+                }
+
+                // If Memory data should be gathered, update the graph
+                if (Properties.Settings.Default.Memory) {
+                    updateGraph("Memory", "" + cycles, "" + osDataCollector.currentMemUsage);
+                }
+
+                // If Network data should be gathered, update the graph
+                if (Properties.Settings.Default.Network && osDataCollector.canGatherNet) {
+                    updateGraph("Network", "" + cycles, "" + osDataCollector.currentNetUsageMBs);
+                }
+
+                // If Disk IO data should be gathered, update the graph
+                if (Properties.Settings.Default.DiskIO) {
+                    updateGraph("Disk", "" + cycles, "" + osDataCollector.percentDiskTime);
+                }
+                shouldGatherData = false;
             }
-
-            // If Memory data should be gathered, update the graph
-            if (Properties.Settings.Default.Memory) {
-                updateGraph("Memory", "" + cycles, "" + osDataCollector.currentMemUsage);
-            }
-
-            // If Network data should be gathered, update the graph
-            if (Properties.Settings.Default.Network && osDataCollector.canGatherNet) {
-                updateGraph("Network", "" + cycles, "" + osDataCollector.currentNetUsageMBs);
-            }
-
-            // If Disk IO data should be gathered, update the graph
-            if (Properties.Settings.Default.DiskIO) {
-                updateGraph("Disk", "" + cycles, "" + osDataCollector.percentDiskTime);
-            }
-            
         }
 
         /// <summary>
@@ -192,9 +205,10 @@ namespace Check_Up {
                     e.Cancel = true;
                     return true;
                 }
-                
+
                 // Gather data on the devices
                 osDataCollector.GatherData();
+                shouldGatherData = true;
 
                 // If the pollingTime is to be used
                 if (!Properties.Settings.Default.IgnoreTime) {
@@ -237,8 +251,7 @@ namespace Check_Up {
                 Console.WriteLine(String.Format("Sleep time: {0}", pollingInterval * 1000 - timeElapsed));
 #endif
                 // Sleep the backgroundWorker for the pollingInterval minus time already elapsed
-                if (pollingInterval * 1000 - timeElapsed >= 1)
-                {
+                if (pollingInterval * 1000 - timeElapsed >= 1) {
                     Thread.Sleep((int)(pollingInterval * 1000 - timeElapsed));
                 }
 
@@ -268,7 +281,6 @@ namespace Check_Up {
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// 
-        
         private void updateGraph(string type, string x, string y) {
 
             // Could be useful when creating a doughnut type graph
@@ -307,9 +319,14 @@ namespace Check_Up {
             }
         }
 
+        /// <summary>
+        /// Resets the graph and removes all coordinates when the button "Reset Graph" is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button_resetChart_Click(object sender, EventArgs e) {
             resetChartFunc();
-        } 
+        }
 
         /// <summary>
         /// Stops the DataCollector when the button "Stop Monitoring" is clicked
@@ -328,17 +345,9 @@ namespace Check_Up {
             button_gatherData.Enabled = true;
         }
 
-        /// <summary>
-        /// Resets the graph and removes all coordinates when the button "Reset Graph" is clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// 
-        
-
-        
         private void analyzeProcesses_Click(object sender, EventArgs e) {
             ProcessListForm subForm = new ProcessListForm();
+            subForms.Add(subForm);
             subForm.Show();
         }
 
@@ -354,7 +363,7 @@ namespace Check_Up {
 #endif
             }
         }
-         
+
         /// <summary>
         /// Override the form closing event to close all sub forms
         /// </summary>
@@ -376,6 +385,6 @@ namespace Check_Up {
                 Console.WriteLine("Couldn't call base form close");
             }
             Application.Exit();
-        }     
+        }
     }
 }
