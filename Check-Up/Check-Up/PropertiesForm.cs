@@ -38,7 +38,20 @@ namespace Check_Up {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button_confirm_Click(object sender, EventArgs e) {
+        private void button1_Click(object sender, EventArgs e) {
+
+            double pollingTime = Convert.ToDouble(textBox_dataPollingTime.Text);
+            double pollingInterval = Convert.ToDouble(textBox_dataPollingInterval.Text);
+
+            if (pollingTime < pollingInterval) {
+#if DEBUG
+                Console.WriteLine("Polling time greater than polling interval");
+#endif
+                error1.Visible = true;
+                return;
+            }
+
+
             Properties.Settings.Default.CPU = checkBox_cpu.Checked;
             Properties.Settings.Default.Memory = checkBox_memory.Checked;
             Properties.Settings.Default.Network = checkBox_network.Checked;
@@ -46,7 +59,7 @@ namespace Check_Up {
             Properties.Settings.Default.IgnoreTime = checkBox_ignoreTime.Checked;
 
             try {
-                double pollingTime = Convert.ToDouble(textBox_dataPollingTime.Text);
+                
                 Properties.Settings.Default.PollingTime = pollingTime;
             }
             catch {
@@ -54,7 +67,7 @@ namespace Check_Up {
             }
 
             try {
-                double pollingInterval = Convert.ToDouble(textBox_dataPollingInterval.Text);
+                
                 Properties.Settings.Default.PollingInterval = pollingInterval;
             }
             catch {
@@ -96,7 +109,7 @@ namespace Check_Up {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button_deny_Click(object sender, EventArgs e) {
+        private void button2_Click(object sender, EventArgs e) {
             #region Properties debug output
 #if DEBUG
             Console.WriteLine("Properties window closed using CANCEL - settings should not have saved");

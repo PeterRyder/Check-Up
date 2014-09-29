@@ -22,8 +22,10 @@ namespace Check_Up {
 
             // initialize a data collector
             osDataCollector = new OSDataCollection();
+            if (!osDataCollector.canGatherNet) {
+                listView_warnings.Items.Add(new ListViewItem(new string[] { "Could not find network adapter" }));
+            }
             subForms = new List<Form>();
-
         }
 
         private void MainWindow_Load(object sender, EventArgs e) {
