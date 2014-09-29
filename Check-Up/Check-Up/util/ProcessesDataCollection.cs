@@ -9,10 +9,10 @@ namespace Check_Up.Util {
     class ProcessesDataCollection {
 
         public List<ProcessMonitor> procMonitors = new List<ProcessMonitor>();
+        public List<ProcessMonitor> procMonitorsToRemove = new List<ProcessMonitor>();
 
         public ProcessesDataCollection() {
             foreach (Process proc in Process.GetProcesses()) {
-                //Console.WriteLine("Initializing {0}", proc.ProcessName);
                 ProcessMonitor procMonitor = new ProcessMonitor(proc.ProcessName);
                 procMonitors.Add(procMonitor);
             }
@@ -25,9 +25,17 @@ namespace Check_Up.Util {
                     proc.GatherData();
                 }
                 catch {
+#if DEBUG
                     Console.WriteLine("Could not gather data for process {0}", proc.getName());
+                    Console.WriteLine("Removing process {0}", proc.getName());
+#endif
+                    procMonitorsToRemove.Add(proc);
                 }
-                
+            }
+
+            foreach (ProcessMonitor proc in procMonitorsToRemove) {
+                procMonitors.Remove(proc);
+                procMonitorsToRemove.Remove(proc);
             }
         }
     }

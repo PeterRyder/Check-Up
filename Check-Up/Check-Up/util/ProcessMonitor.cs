@@ -19,8 +19,16 @@ namespace Check_Up.Util {
 
         public ProcessMonitor(string name) {
             this.name = name;
-            ProcessCPUUsage = new PerformanceCounter("Process", "% Processor Time", name);
-            ProcessCPUUsage.NextValue();
+            try {
+                ProcessCPUUsage = new PerformanceCounter("Process", "% Processor Time", name);
+                ProcessCPUUsage.NextValue();
+            }
+            catch {
+#if DEBUG
+                Console.WriteLine("Could not initialize procMonitor for process {0}", name);
+#endif
+            }
+
         }
 
         public void GatherData() {

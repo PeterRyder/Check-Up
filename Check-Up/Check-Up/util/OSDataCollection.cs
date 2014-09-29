@@ -31,7 +31,6 @@ namespace Check_Up.Util {
 
         public int percentDiskTime;
 
-        public bool shouldGatherData;
         public bool canGatherNet;
 
         public OSDataCollection() {
@@ -106,32 +105,6 @@ namespace Check_Up.Util {
 #if DEBUG
             Console.WriteLine("Finished PerformanceCounter Initialization");
 #endif
-        }
-    
-        /// <summary>
-        /// Checks if there are devices to monitor
-        /// </summary>
-        public void ReadSettings() {
-            #region Debug Console Output
-#if DEBUG
-            Console.WriteLine("CPU property: " + Properties.Settings.Default.CPU);
-            Console.WriteLine("Memory property: " + Properties.Settings.Default.Memory);
-            Console.WriteLine("Network property: " + Properties.Settings.Default.Network);
-            Console.WriteLine("DiskIO property: " + Properties.Settings.Default.DiskIO);
-#endif
-            #endregion
-            if (!Properties.Settings.Default.CPU &&
-                !Properties.Settings.Default.Memory &&
-                !Properties.Settings.Default.Network &&
-                !Properties.Settings.Default.DiskIO) {
-#if DEBUG
-                Console.WriteLine("Settings indicate there is nothing to monitor");
-#endif
-                shouldGatherData = false;
-            }
-            else {
-                shouldGatherData = true;
-            }
         }
 
         /// <summary>
