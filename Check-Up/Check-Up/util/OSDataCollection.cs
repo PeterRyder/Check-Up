@@ -79,7 +79,9 @@ namespace Check_Up.Util {
                     canGatherNet = true;
                 }
                 catch {
+#if DEBUG
                     Console.WriteLine("Could not find a counter for your network adapter");
+#endif
                     canGatherNet = false;
                 }
 
@@ -88,7 +90,9 @@ namespace Check_Up.Util {
                     canGatherNet = true;
                 }
                 catch {
+#if DEBUG
                     Console.WriteLine("Could not find a counter for your network interface");
+#endif
                     canGatherNet = false;
                 }
             }
