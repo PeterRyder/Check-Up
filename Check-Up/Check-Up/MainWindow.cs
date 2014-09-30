@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -26,6 +26,9 @@ namespace Check_Up {
 
             // initialize a data collector
             osDataCollector = new OSDataCollection();
+            if (!osDataCollector.canGatherNet) {
+                listView_warnings.Items.Add(new ListViewItem(new string[] { "Could not find network adapter" }));
+            }
             subForms = new List<Form>();
 
             // Add the ProgressChanged function to the ProgressChangedEventHandler
@@ -326,7 +329,7 @@ namespace Check_Up {
         /// <param name="e"></param>
         private void button_resetChart_Click(object sender, EventArgs e) {
             resetChartFunc();
-        }
+        } 
 
         /// <summary>
         /// Stops the DataCollector when the button "Stop Monitoring" is clicked
@@ -385,6 +388,6 @@ namespace Check_Up {
                 Console.WriteLine("Couldn't call base form close");
             }
             Application.Exit();
-        }
+        } 
     }
 }
