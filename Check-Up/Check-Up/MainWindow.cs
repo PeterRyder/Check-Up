@@ -19,8 +19,6 @@ namespace Check_Up {
 
         private bool shouldGatherData;
 
-        private bool shouldPlotData = true;
-
         public MainWindow() {
             InitializeComponent();
 
@@ -54,11 +52,6 @@ namespace Check_Up {
                 backgroundWorker1.CancelAsync();
                 backgroundWorker1.ReportProgress(100);
             }
-
-        }
-
-        private void MainWindow_Load(object sender, EventArgs e) {
-
         }
 
         /// <summary>
@@ -119,8 +112,6 @@ namespace Check_Up {
 
                 // Update the label next to the progress bar
                 label_percentage.Text = e.ProgressPercentage.ToString() + "%";
-
-                Console.WriteLine("Progress Updated");
 
                 // If CPU data should be gathered, update the graph
                 if (Properties.Settings.Default.CPU) {
