@@ -44,12 +44,11 @@
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.chartControls = new System.Windows.Forms.GroupBox();
-            this.groupBox_warnings = new System.Windows.Forms.GroupBox();
-            this.listView_warnings = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.listView_warnings = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.menuStrip1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -57,7 +56,6 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.chartControls.SuspendLayout();
-            this.groupBox_warnings.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
@@ -233,7 +231,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.groupBox_warnings);
+            this.splitContainer1.Panel2.Controls.Add(this.listView_warnings);
             this.splitContainer1.Size = new System.Drawing.Size(166, 628);
             this.splitContainer1.SplitterDistance = 313;
             this.splitContainer1.TabIndex = 11;
@@ -252,37 +250,6 @@
             this.chartControls.TabIndex = 9;
             this.chartControls.TabStop = false;
             this.chartControls.Text = "Chart Controls";
-            // 
-            // groupBox_warnings
-            // 
-            this.groupBox_warnings.Controls.Add(this.listView_warnings);
-            this.groupBox_warnings.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox_warnings.Location = new System.Drawing.Point(0, 0);
-            this.groupBox_warnings.Name = "groupBox_warnings";
-            this.groupBox_warnings.Size = new System.Drawing.Size(166, 311);
-            this.groupBox_warnings.TabIndex = 10;
-            this.groupBox_warnings.TabStop = false;
-            this.groupBox_warnings.Text = "Warnings";
-            // 
-            // listView_warnings
-            // 
-            this.listView_warnings.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
-            this.listView_warnings.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView_warnings.FullRowSelect = true;
-            this.listView_warnings.GridLines = true;
-            this.listView_warnings.Location = new System.Drawing.Point(3, 16);
-            this.listView_warnings.MultiSelect = false;
-            this.listView_warnings.Name = "listView_warnings";
-            this.listView_warnings.Size = new System.Drawing.Size(160, 292);
-            this.listView_warnings.TabIndex = 0;
-            this.listView_warnings.UseCompatibleStateImageBehavior = false;
-            this.listView_warnings.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Warnings";
-            this.columnHeader1.Width = 155;
             // 
             // tableLayoutPanel2
             // 
@@ -330,6 +297,26 @@
             this.chart.TabIndex = 1;
             this.chart.Text = "chart";
             // 
+            // listView_warnings
+            // 
+            this.listView_warnings.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+            this.listView_warnings.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView_warnings.FullRowSelect = true;
+            this.listView_warnings.GridLines = true;
+            this.listView_warnings.Location = new System.Drawing.Point(0, 0);
+            this.listView_warnings.MultiSelect = false;
+            this.listView_warnings.Name = "listView_warnings";
+            this.listView_warnings.Size = new System.Drawing.Size(166, 311);
+            this.listView_warnings.TabIndex = 1;
+            this.listView_warnings.UseCompatibleStateImageBehavior = false;
+            this.listView_warnings.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Warnings";
+            this.columnHeader1.Width = 164;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -354,7 +341,6 @@
             this.splitContainer1.ResumeLayout(false);
             this.chartControls.ResumeLayout(false);
             this.chartControls.PerformLayout();
-            this.groupBox_warnings.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
@@ -386,7 +372,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.GroupBox chartControls;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart;
-        private System.Windows.Forms.GroupBox groupBox_warnings;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ListView listView_warnings;
         private System.Windows.Forms.ColumnHeader columnHeader1;
