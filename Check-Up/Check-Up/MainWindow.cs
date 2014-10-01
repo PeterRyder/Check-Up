@@ -14,7 +14,7 @@ using Check_Up.Util;
 namespace Check_Up {
     public partial class MainWindow : Form {
         OSDataCollection osDataCollector;
-        int cycles = 1;
+        int cycles = 0;
         List<Form> subForms;
 
         private bool shouldGatherData;

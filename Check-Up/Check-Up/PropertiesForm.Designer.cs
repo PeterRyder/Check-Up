@@ -37,8 +37,6 @@
             this.textBox_dataPollingTime = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.visiblePoints = new System.Windows.Forms.TextBox();
@@ -46,6 +44,8 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.error1 = new System.Windows.Forms.Label();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -234,10 +234,9 @@
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.visiblePoints);
             this.groupBox2.Controls.Add(this.checkBox_ignoreTime);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(3, 129);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(349, 120);
+            this.groupBox2.Size = new System.Drawing.Size(129, 102);
             this.groupBox2.TabIndex = 17;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Global Options";
@@ -279,7 +278,7 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.error1);
             this.splitContainer1.Size = new System.Drawing.Size(186, 120);
-            this.splitContainer1.SplitterDistance = 58;
+            this.splitContainer1.SplitterDistance = 57;
             this.splitContainer1.TabIndex = 21;
             // 
             // error1
@@ -346,7 +345,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(563, 290);
             this.Name = "PropertiesForm";
-            this.Opacity = 0.85D;
+            this.Opacity = 0.9D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Properties";
             this.TopMost = true;
