@@ -44,11 +44,12 @@
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.chartControls = new System.Windows.Forms.GroupBox();
+            this.listView_warnings = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.listView_warnings = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.button_checkScripts = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -239,6 +240,7 @@
             // chartControls
             // 
             this.chartControls.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.chartControls.Controls.Add(this.button_checkScripts);
             this.chartControls.Controls.Add(this.button_analyzeProcesses);
             this.chartControls.Controls.Add(this.button_resetChart);
             this.chartControls.Controls.Add(this.button_monitorStop);
@@ -250,6 +252,26 @@
             this.chartControls.TabIndex = 9;
             this.chartControls.TabStop = false;
             this.chartControls.Text = "Chart Controls";
+            // 
+            // listView_warnings
+            // 
+            this.listView_warnings.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+            this.listView_warnings.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView_warnings.FullRowSelect = true;
+            this.listView_warnings.GridLines = true;
+            this.listView_warnings.Location = new System.Drawing.Point(0, 0);
+            this.listView_warnings.MultiSelect = false;
+            this.listView_warnings.Name = "listView_warnings";
+            this.listView_warnings.Size = new System.Drawing.Size(166, 311);
+            this.listView_warnings.TabIndex = 1;
+            this.listView_warnings.UseCompatibleStateImageBehavior = false;
+            this.listView_warnings.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Warnings";
+            this.columnHeader1.Width = 164;
             // 
             // tableLayoutPanel2
             // 
@@ -297,25 +319,15 @@
             this.chart.TabIndex = 1;
             this.chart.Text = "chart";
             // 
-            // listView_warnings
+            // button_checkScripts
             // 
-            this.listView_warnings.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
-            this.listView_warnings.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView_warnings.FullRowSelect = true;
-            this.listView_warnings.GridLines = true;
-            this.listView_warnings.Location = new System.Drawing.Point(0, 0);
-            this.listView_warnings.MultiSelect = false;
-            this.listView_warnings.Name = "listView_warnings";
-            this.listView_warnings.Size = new System.Drawing.Size(166, 311);
-            this.listView_warnings.TabIndex = 1;
-            this.listView_warnings.UseCompatibleStateImageBehavior = false;
-            this.listView_warnings.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Warnings";
-            this.columnHeader1.Width = 164;
+            this.button_checkScripts.Location = new System.Drawing.Point(6, 135);
+            this.button_checkScripts.Name = "button_checkScripts";
+            this.button_checkScripts.Size = new System.Drawing.Size(87, 23);
+            this.button_checkScripts.TabIndex = 9;
+            this.button_checkScripts.Text = "Check Scripts";
+            this.button_checkScripts.UseVisualStyleBackColor = true;
+            this.button_checkScripts.Click += new System.EventHandler(this.button_checkScripts_Click);
             // 
             // MainWindow
             // 
@@ -375,6 +387,7 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ListView listView_warnings;
         private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.Button button_checkScripts;
 
 
 

@@ -14,6 +14,8 @@ using Check_Up.Util;
 namespace Check_Up {
     public partial class MainWindow : Form {
         OSDataCollection osDataCollector;
+        Scripts scripts;
+
         int cycles = 0;
         List<Form> subForms;
 
@@ -23,7 +25,7 @@ namespace Check_Up {
             InitializeComponent();
 
             // Initialize the scripts and run them
-            Scripts scripts = new Scripts();
+            scripts = new Scripts();
             scripts.checkDirectory();
             scripts.runScripts();
 
@@ -384,6 +386,10 @@ namespace Check_Up {
                 Console.WriteLine("Couldn't call base form close");
             }
             Application.Exit();
+        }
+
+        private void button_checkScripts_Click(object sender, EventArgs e) {
+            scripts.checkNewScripts();
         } 
     }
 }
