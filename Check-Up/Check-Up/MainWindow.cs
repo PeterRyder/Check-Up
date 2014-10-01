@@ -22,6 +22,11 @@ namespace Check_Up {
         public MainWindow() {
             InitializeComponent();
 
+            // Initialize the scripts and run them
+            Scripts scripts = new Scripts();
+            scripts.checkDirectory();
+            scripts.runScripts();
+
             // initialize a data collector
             osDataCollector = new OSDataCollection();
             if (!osDataCollector.canGatherNet) {
