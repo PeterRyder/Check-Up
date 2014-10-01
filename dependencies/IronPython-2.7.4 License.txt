@@ -1,0 +1,3 @@
+IronPython uses the Apache License Version 2.0
+
+http://opensource.org/licenses/apache2.0.php

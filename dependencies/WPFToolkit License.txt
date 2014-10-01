@@ -1,0 +1,3 @@
+WPF Toolkit uses the Microsoft Public License 
+
+http://wpf.codeplex.com/license
