@@ -224,9 +224,6 @@ namespace Check_Up {
                         // Report the progress percentage
                         percentage = Math.Round(percentage);
                         backgroundWorker1.ReportProgress((int)percentage);
-#if DEBUG
-                        Console.WriteLine("I {0}", i);
-#endif
                     }
 
                     // Increment the amount of time elapsed
