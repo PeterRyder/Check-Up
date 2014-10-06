@@ -14,6 +14,8 @@ using Check_Up.Util;
 namespace Check_Up {
     public partial class MainWindow : Form {
         OSDataCollection osDataCollector;
+        Scripts scripts;
+
         int cycles = 0;
         List<Form> subForms;
 
@@ -21,6 +23,11 @@ namespace Check_Up {
 
         public MainWindow() {
             InitializeComponent();
+
+            // Initialize the scripts and run them
+            scripts = new Scripts();
+            scripts.checkDirectory();
+            scripts.runScripts();
 
             // initialize a data collector
             osDataCollector = new OSDataCollection();
@@ -379,6 +386,22 @@ namespace Check_Up {
                 Console.WriteLine("Couldn't call base form close");
             }
             Application.Exit();
-        } 
+        }
+
+        private void button_checkScripts_Click(object sender, EventArgs e) {
+            scripts.checkNewScripts();
+        }
+
+        private void notifyIcon1_Click(object sender, EventArgs e) {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        private void MainWindow_Resize(object sender, EventArgs e) {
+            if (WindowState == FormWindowState.Minimized) {
+                this.Hide();
+            }
+        }
+
     }
 }
