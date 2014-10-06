@@ -23,8 +23,9 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,12 +45,13 @@
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.chartControls = new System.Windows.Forms.GroupBox();
+            this.button_checkScripts = new System.Windows.Forms.Button();
             this.listView_warnings = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.button_checkScripts = new System.Windows.Forms.Button();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.menuStrip1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -253,6 +255,16 @@
             this.chartControls.TabStop = false;
             this.chartControls.Text = "Chart Controls";
             // 
+            // button_checkScripts
+            // 
+            this.button_checkScripts.Location = new System.Drawing.Point(6, 135);
+            this.button_checkScripts.Name = "button_checkScripts";
+            this.button_checkScripts.Size = new System.Drawing.Size(87, 23);
+            this.button_checkScripts.TabIndex = 9;
+            this.button_checkScripts.Text = "Check Scripts";
+            this.button_checkScripts.UseVisualStyleBackColor = true;
+            this.button_checkScripts.Click += new System.EventHandler(this.button_checkScripts_Click);
+            // 
             // listView_warnings
             // 
             this.listView_warnings.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -308,26 +320,23 @@
             // chart
             // 
             this.chart.BorderSkin.BackColor = System.Drawing.Color.Black;
-            chartArea1.Name = "ChartArea1";
-            this.chart.ChartAreas.Add(chartArea1);
+            chartArea2.Name = "ChartArea1";
+            this.chart.ChartAreas.Add(chartArea2);
             this.chart.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend1.Name = "Legend1";
-            this.chart.Legends.Add(legend1);
+            legend2.Name = "Legend1";
+            this.chart.Legends.Add(legend2);
             this.chart.Location = new System.Drawing.Point(3, 3);
             this.chart.Name = "chart";
             this.chart.Size = new System.Drawing.Size(948, 535);
             this.chart.TabIndex = 1;
             this.chart.Text = "chart";
             // 
-            // button_checkScripts
+            // notifyIcon1
             // 
-            this.button_checkScripts.Location = new System.Drawing.Point(6, 135);
-            this.button_checkScripts.Name = "button_checkScripts";
-            this.button_checkScripts.Size = new System.Drawing.Size(87, 23);
-            this.button_checkScripts.TabIndex = 9;
-            this.button_checkScripts.Text = "Check Scripts";
-            this.button_checkScripts.UseVisualStyleBackColor = true;
-            this.button_checkScripts.Click += new System.EventHandler(this.button_checkScripts_Click);
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Visible = true;
+            this.notifyIcon1.Click += new System.EventHandler(this.notifyIcon1_Click);
             // 
             // MainWindow
             // 
@@ -344,6 +353,7 @@
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Check Up";
+            this.Resize += new System.EventHandler(this.MainWindow_Resize);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);
@@ -388,6 +398,7 @@
         private System.Windows.Forms.ListView listView_warnings;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.Button button_checkScripts;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
 
 
 

@@ -390,6 +390,18 @@ namespace Check_Up {
 
         private void button_checkScripts_Click(object sender, EventArgs e) {
             scripts.checkNewScripts();
-        } 
+        }
+
+        private void notifyIcon1_Click(object sender, EventArgs e) {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        private void MainWindow_Resize(object sender, EventArgs e) {
+            if (WindowState == FormWindowState.Minimized) {
+                this.Hide();
+            }
+        }
+
     }
 }
