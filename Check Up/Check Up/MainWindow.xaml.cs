@@ -151,7 +151,9 @@ namespace Check_Up {
         }
 
         private void MenuItemAbout_Click(object sender, RoutedEventArgs e) {
-
+            AboutWindow subWindow = new AboutWindow();
+            subWindows.Add(subWindow);
+            subWindow.Show();
         }
 
         /// <summary>

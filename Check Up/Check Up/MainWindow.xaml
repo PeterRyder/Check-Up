@@ -11,7 +11,7 @@
         RunWorkerCompleted="BackgroundWorker_RunWorkerCompleted" WorkerReportsProgress="True" WorkerSupportsCancellation="True" ProgressChanged="backgroundWorker_ProgressChanged"/>
     </Window.Resources>
 
-    <Grid Margin="0">
+    <Grid Margin="0" Background="#FF424242">
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
@@ -68,6 +68,12 @@
         </TabControl>
         <ProgressBar x:Name="progressBar" HorizontalAlignment="Right" Height="18" Margin="0,0,123,42" VerticalAlignment="Bottom" Width="694" Grid.Column="1" Grid.ColumnSpan="2"/>
         <chartingToolkit:Chart x:Name="chart" Grid.Column="1" HorizontalAlignment="Left" Margin="10,26,0,0" Title="Chart Title" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="578" Width="901">
+            <chartingToolkit:Chart.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="1"/>
+                    <GradientStop Color="White" Offset="0.733"/>
+                </LinearGradientBrush>
+            </chartingToolkit:Chart.Foreground>
             <chartingToolkit:Chart.DataContext>
                 <PointCollection>1,10 2,20 3,30 4,40</PointCollection>
             </chartingToolkit:Chart.DataContext>
