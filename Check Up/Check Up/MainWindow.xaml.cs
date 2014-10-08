@@ -171,8 +171,10 @@ namespace Check_Up {
         private void button_gatherData_Click(object sender, RoutedEventArgs e) {
             this.button_gatherData.IsEnabled = false;
             this.button_resetChart.IsEnabled = false;
-            this.cycles = 1;
             button_stopMonitoring.IsEnabled = true;
+            this.menuitem_Properties.IsEnabled = false;
+
+            this.cycles = 1;
 
             #region Create Series
             if (Properties.Settings.Default.CPU) {
@@ -248,6 +250,8 @@ namespace Check_Up {
             backgroundWorker.ReportProgress(100);
 
             this.button_resetChart.IsEnabled = true;
+            this.menuitem_Properties.IsEnabled = true;
+
         }
 
         /// <summary>

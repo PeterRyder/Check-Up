@@ -20,20 +20,20 @@
             <ColumnDefinition Width="911*"/>
         </Grid.ColumnDefinitions>
 
-        <Menu VerticalAlignment="Top" Grid.ColumnSpan="2" Height="18">
-            <MenuItem Header="File">
-                <MenuItem Header="Properties" HorizontalAlignment="Left" Width="160"
+        <Menu x:Name="menu_bar" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="18">
+            <MenuItem x:Name="menuitem_file" Header="File">
+                <MenuItem x:Name="menuitem_Properties" Header="Properties" HorizontalAlignment="Left" Width="160"
 			  Click="MenuItemProperties_Click"/>
                 <Separator HorizontalAlignment="Left" Width="140"/>
-                <MenuItem Header="Exit" HorizontalAlignment="Left" Width="160"
+                <MenuItem x:Name="menuitem_Exit" Header="Exit" HorizontalAlignment="Left" Width="160"
 			  Click="MenuItemExit_Click"/>
             </MenuItem>
 
-            <MenuItem Header="Edit">
+            <MenuItem x:Name="menuitem_edit" Header="Edit">
             </MenuItem>
 
-            <MenuItem Header="Help">
-                <MenuItem Header="About Check Up" HorizontalAlignment="Left" Width="180"
+            <MenuItem x:Name="menuitem_help" Header="Help">
+                <MenuItem x:Name="menuitem_AboutCheckUp" Header="About Check Up" HorizontalAlignment="Left" Width="180"
 			  Click="MenuItemAbout_Click"/>
             </MenuItem>
         </Menu>
