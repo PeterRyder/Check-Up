@@ -76,7 +76,7 @@ namespace Check_Up {
     public partial class MainWindow : Window {
 
         OSDataCollection osDataCollector;
-        //Scripts scripts;
+        Scripts scripts;
 
         List<Window> subWindows;
 
@@ -94,6 +94,10 @@ namespace Check_Up {
         public MainWindow() {
             InitializeComponent();
             backgroundWorker = ((BackgroundWorker)this.FindResource("backgroundWorker"));
+
+            scripts = new Scripts();
+            scripts.checkDirectory();
+            scripts.runScripts();
 
             // initialize a cpuData collector
             osDataCollector = new OSDataCollection();

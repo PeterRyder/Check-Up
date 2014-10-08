@@ -19,15 +19,32 @@
             <ColumnDefinition Width="308*"/>
             <ColumnDefinition Width="911*"/>
         </Grid.ColumnDefinitions>
-        <ListView x:Name="listview_warnings" ToolTip="Shows Warnings" HorizontalAlignment="Left" Width="284" Height="489" Margin="10,184,0,13" Background="#FFE5E5E5">
+
+        <Menu VerticalAlignment="Top" Grid.ColumnSpan="2" Height="18">
+            <MenuItem Header="File">
+                <MenuItem Header="Properties" HorizontalAlignment="Left" Width="160"
+			  Click="MenuItemProperties_Click"/>
+                <Separator HorizontalAlignment="Left" Width="140"/>
+                <MenuItem Header="Exit" HorizontalAlignment="Left" Width="160"
+			  Click="MenuItemExit_Click"/>
+            </MenuItem>
+
+            <MenuItem Header="Edit">
+            </MenuItem>
+
+            <MenuItem Header="Help">
+                <MenuItem Header="About Check Up" HorizontalAlignment="Left" Width="180"
+			  Click="MenuItemAbout_Click"/>
+            </MenuItem>
+        </Menu>
+        <ListView x:Name="listview_warnings" ToolTip="Shows Warnings" HorizontalAlignment="Left" Width="284" Margin="14,185,0,23" Background="#FFE5E5E5">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Warnings"/>
-                    <GridViewColumn Header="Errors"/>
+                    <GridViewColumn Header="Warnings" Width="200"/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <TabControl Height="140" Margin="14,26,14,0" VerticalAlignment="Top">
+        <TabControl Height="140" Margin="14,26,14,0" VerticalAlignment="Top" Background="#FFE5E5E5">
             <TabItem Header="Chart Control">
                 <Grid Background="#FFE5E5E5">
                     <Button x:Name="button_gatherData" Content="Gather Data" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103" Click="button_gatherData_Click"/>
@@ -48,7 +65,7 @@
             </TabItem>
         </TabControl>
         <ProgressBar x:Name="progressBar" HorizontalAlignment="Right" Height="18" Margin="0,0,123,42" VerticalAlignment="Bottom" Width="694" Grid.Column="1" Background="#FFE5E5E5"/>
-        <chartingToolkit:Chart x:Name="chart" Grid.Column="1" HorizontalAlignment="Left" Margin="10,26,0,0" Title="Performance" VerticalAlignment="Top" Height="578" Width="901" BorderBrush="#FFE5E5E5" Foreground="Black" Background="#FFE5E5E5">
+        <chartingToolkit:Chart x:Name="chart" Grid.Column="1" HorizontalAlignment="Left" Margin="10,26,0,0" Title="Performance" VerticalAlignment="Top" Height="578" Width="901" BorderBrush="#FF424242" Background="#FF424242" Foreground="#FFBDBDBD">
             <chartingToolkit:Chart.DataContext>
                 <PointCollection>1,10 2,20 3,30 4,40</PointCollection>
             </chartingToolkit:Chart.DataContext>
