@@ -128,6 +128,9 @@ namespace Check_Up {
             memDataStorage = new memoryData();
             diskDataStorage = new diskioData();
             netDataStorage = new networkData();
+
+            button_stopMonitoring.IsEnabled = false;
+            button_resetChart.IsEnabled = false;
         }
 
         /// <summary>
@@ -163,6 +166,7 @@ namespace Check_Up {
         /// <param name="e"></param>
         private void button_gatherData_Click(object sender, RoutedEventArgs e) {
             this.button_gatherData.IsEnabled = false;
+            this.button_resetChart.IsEnabled = false;
             this.cycles = 1;
             button_stopMonitoring.IsEnabled = true;
 
@@ -185,7 +189,14 @@ namespace Check_Up {
             #endregion
 
             // Begin the backgroundWorker
-            backgroundWorker.RunWorkerAsync();
+            try {
+                backgroundWorker.RunWorkerAsync();
+            }
+            catch {
+#if DBEUG
+                Console.WriteLine("Could not start backgroundWorker")
+#endif
+            }
         }
 
         private void createSeries(string type) {
@@ -236,8 +247,7 @@ namespace Check_Up {
             // Announce that the backgroundWorker is 100 percent done
             backgroundWorker.ReportProgress(100);
 
-            // Enable the gatherData button
-            button_gatherData.IsEnabled = true;
+            this.button_resetChart.IsEnabled = true;
         }
 
         /// <summary>
@@ -300,9 +310,6 @@ namespace Check_Up {
                 MessageBox.Show(e.Error.Message);
             }
 
-            // Enable the gatherData button when the backgroundWorker is completed
-            button_gatherData.IsEnabled = true;
-
             // Disable the monitorStop button when the backgroundWorker is completed
             button_stopMonitoring.IsEnabled = false;
         }
@@ -317,10 +324,7 @@ namespace Check_Up {
             // Store the pollingTime and pollingInterval settings
             double pollingTime = Properties.Settings.Default.PollingTime;
             double pollingInterval = Properties.Settings.Default.PollingInterval;
-#if DEBUG
-            Console.WriteLine("Polling Time: " + pollingTime);
-            Console.WriteLine("Polling Interval: " + pollingInterval);
-#endif
+
             for (double i = pollingInterval; i <= pollingTime; ) {
                 // Get current time
                 int timeMin = DateTime.Now.Minute;
@@ -329,9 +333,6 @@ namespace Check_Up {
 
                 // If there is a pending cancellation break out of the loop
                 if (backgroundWorker.CancellationPending) {
-#if DEBUG
-                    Console.WriteLine("Cancellation is pending - killing the loop");
-#endif
                     e.Cancel = true;
                     return true;
                 }
@@ -360,9 +361,6 @@ namespace Check_Up {
                         // Report the progress percentage
                         percentage = Math.Round(percentage);
                         backgroundWorker.ReportProgress((int)percentage);
-#if DEBUG
-                        Console.WriteLine("I {0}", i);
-#endif
                     }
 
                     // Increment the amount of time elapsed
@@ -434,6 +432,13 @@ namespace Check_Up {
             memDataStorage.ValueList.Clear();
             netDataStorage.ValueList.Clear();
             diskDataStorage.ValueList.Clear();
+
+            this.button_gatherData.IsEnabled = true;
+            this.button_resetChart.IsEnabled = false;
+        }
+
+        private void button_checkScripts_Click(object sender, RoutedEventArgs e) {
+
         }
 
     }

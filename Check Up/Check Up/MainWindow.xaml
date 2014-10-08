@@ -16,29 +16,10 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="331*"/>
-            <ColumnDefinition Width="690*"/>
-            <ColumnDefinition Width="286*"/>
+            <ColumnDefinition Width="308*"/>
+            <ColumnDefinition Width="911*"/>
         </Grid.ColumnDefinitions>
-
-        <Menu VerticalAlignment="Top" Grid.ColumnSpan="3" Height="18">
-            <MenuItem Header="File">
-                <MenuItem Header="Properties" HorizontalAlignment="Left" Width="160"
-			  Click="MenuItemProperties_Click"/>
-                <Separator HorizontalAlignment="Left" Width="140"/>
-                <MenuItem Header="Exit" HorizontalAlignment="Left" Width="160"
-			  Click="MenuItemExit_Click"/>
-            </MenuItem>
-
-            <MenuItem Header="Edit">
-            </MenuItem>
-
-            <MenuItem Header="Help">
-                <MenuItem Header="About Check Up" HorizontalAlignment="Left" Width="180"
-			  Click="MenuItemAbout_Click"/>
-            </MenuItem>
-        </Menu>
-        <ListView x:Name="listview_warnings" ToolTip="Shows Warnings" HorizontalAlignment="Left" Width="284" Height="489" Margin="10,171,0,0">
+        <ListView x:Name="listview_warnings" ToolTip="Shows Warnings" HorizontalAlignment="Left" Width="284" Height="489" Margin="10,184,0,13" Background="#FFE5E5E5">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Warnings"/>
@@ -56,7 +37,7 @@
             </TabItem>
             <TabItem Header="Script Control">
                 <Grid Background="#FFE5E5E5">
-                    <Button x:Name="button_checkScripts" Content="Check Scripts" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103"/>
+                    <Button x:Name="button_checkScripts" Content="Check Scripts" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103" Click="button_checkScripts_Click"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Process Control">
@@ -66,14 +47,8 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <ProgressBar x:Name="progressBar" HorizontalAlignment="Right" Height="18" Margin="0,0,123,42" VerticalAlignment="Bottom" Width="694" Grid.Column="1" Grid.ColumnSpan="2"/>
-        <chartingToolkit:Chart x:Name="chart" Grid.Column="1" HorizontalAlignment="Left" Margin="10,26,0,0" Title="Chart Title" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="578" Width="901">
-            <chartingToolkit:Chart.Foreground>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black" Offset="1"/>
-                    <GradientStop Color="White" Offset="0.733"/>
-                </LinearGradientBrush>
-            </chartingToolkit:Chart.Foreground>
+        <ProgressBar x:Name="progressBar" HorizontalAlignment="Right" Height="18" Margin="0,0,123,42" VerticalAlignment="Bottom" Width="694" Grid.Column="1" Background="#FFE5E5E5"/>
+        <chartingToolkit:Chart x:Name="chart" Grid.Column="1" HorizontalAlignment="Left" Margin="10,26,0,0" Title="Performance" VerticalAlignment="Top" Height="578" Width="901" BorderBrush="#FFE5E5E5" Foreground="Black" Background="#FFE5E5E5">
             <chartingToolkit:Chart.DataContext>
                 <PointCollection>1,10 2,20 3,30 4,40</PointCollection>
             </chartingToolkit:Chart.DataContext>
