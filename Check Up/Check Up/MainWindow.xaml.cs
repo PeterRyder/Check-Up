@@ -220,7 +220,6 @@ namespace Check_Up {
             areaSeries.DependentValuePath = "Value";
             areaSeries.IndependentValuePath = "Key";
 
-
             if (type == "CPU") {
                 areaSeries.ItemsSource = cpuDataStorage.ValueList;
             }
@@ -234,9 +233,6 @@ namespace Check_Up {
                 areaSeries.ItemsSource = diskDataStorage.ValueList;
             }
             chart.Series.Add(areaSeries);
-
-
-
         }
 
         /// <summary>
@@ -442,7 +438,7 @@ namespace Check_Up {
         }
 
         private void button_checkScripts_Click(object sender, RoutedEventArgs e) {
-
+            scripts.runScripts();
         }
 
     }

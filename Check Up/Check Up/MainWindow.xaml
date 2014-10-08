@@ -65,11 +65,7 @@
             </TabItem>
         </TabControl>
         <ProgressBar x:Name="progressBar" HorizontalAlignment="Right" Height="18" Margin="0,0,123,42" VerticalAlignment="Bottom" Width="694" Grid.Column="1" Background="#FFE5E5E5"/>
-        <chartingToolkit:Chart x:Name="chart" Grid.Column="1" HorizontalAlignment="Left" Margin="10,26,0,0" Title="Performance" VerticalAlignment="Top" Height="578" Width="901" BorderBrush="#FF424242" Background="#FF424242" Foreground="#FFBDBDBD">
-            <chartingToolkit:Chart.DataContext>
-                <PointCollection>1,10 2,20 3,30 4,40</PointCollection>
-            </chartingToolkit:Chart.DataContext>
-        </chartingToolkit:Chart>
+        <chartingToolkit:Chart x:Name="chart" Grid.Column="1" HorizontalAlignment="Left" Margin="10,26,0,0" Title="Performance" VerticalAlignment="Top" Height="578" Width="901" BorderBrush="#FF424242" Background="#FF424242" Foreground="White"/>
     </Grid>
 
 </Window>

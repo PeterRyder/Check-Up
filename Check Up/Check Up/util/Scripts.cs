@@ -56,6 +56,7 @@ namespace Check_Up.Util {
 
                     backgroundWorker.RunWorkerAsync(filename);
                     workers.Add(backgroundWorker);
+                    scripts.Add(filename);
                 }
                 else {
 #if DEBUG
