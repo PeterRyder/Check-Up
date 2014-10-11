@@ -8,17 +8,15 @@ using System.Diagnostics;
 namespace Check_Up.Util {
     class ProcessMonitor : IComparable<ProcessMonitor> {
 
-        string name = "";
-        private long peakPagedMem = 0,
-                     peakWorkingSet = 0,
-                     peakVirtualMem = 0;
+        public string Name { get; set; }
 
-        float cpuUsage = 0;
-        float prevCpuUsage = -1;
+        public float CPUUsage { get; set; }
+        public float PrevCpuUsage { get; set; }
+
         PerformanceCounter ProcessCPUUsage;
 
         public ProcessMonitor(string name) {
-            this.name = name;
+            this.Name = name;
             try {
                 ProcessCPUUsage = new PerformanceCounter("Process", "% Processor Time", name);
                 ProcessCPUUsage.NextValue();
@@ -32,12 +30,12 @@ namespace Check_Up.Util {
         }
 
         public void GatherData() {
-            this.prevCpuUsage = this.cpuUsage;
-            this.cpuUsage = ProcessCPUUsage.NextValue() / RandomInfo.logicalCpuCount;
+            this.PrevCpuUsage = this.CPUUsage;
+            this.CPUUsage = ProcessCPUUsage.NextValue() / RandomInfo.logicalCpuCount;
         }
 
         public override string ToString() {
-            return name;
+            return Name;
         }
 
         public int CompareTo(ProcessMonitor process) {
@@ -46,52 +44,7 @@ namespace Check_Up.Util {
                 return 1;
 
             else
-                return this.name.CompareTo(process.name);
+                return this.Name.CompareTo(process.Name);
         }
-
-        #region Set Functions
-        public void setPeakPagedMem(long val) {
-            this.peakPagedMem = val;
-        }
-
-        public void setPeakWorkingSet(long val) {
-            this.peakWorkingSet = val;
-        }
-
-        public void setPeakVirtualMem(long val) {
-            this.peakVirtualMem = val;
-        }
-
-        public void setCpuUsage(long val) {
-            this.cpuUsage = val;
-        }
-        #endregion
-
-
-        #region Get Functions
-        public long getPeakPagedMem() {
-            return this.peakPagedMem;
-        }
-
-        public long getPeakWorkingSet() {
-            return this.peakWorkingSet;
-        }
-
-        public long getPeakVirtualMem() {
-            return this.peakVirtualMem;
-        }
-
-        public float getCpuUsage() {
-            return this.cpuUsage;
-        }
-
-        public float getPrevCpuUsage() {
-            return this.prevCpuUsage;
-        }
-
-        public string getName() {
-            return this.name;
-        }
-        #endregion
     }
 }

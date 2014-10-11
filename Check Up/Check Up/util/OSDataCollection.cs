@@ -19,18 +19,18 @@ namespace Check_Up.Util {
         private PerformanceCounter perfDiskCount;
         #endregion
 
-        public int currentCPUUsage;
+        public int currentCPUUsage { get; set; }
 
-        public double totalMemMBs;
-        public double availableMemMBs;
-        public double currentMemUsage;
+        public double totalMemMBs { get; set; }
+        public double availableMemMBs { get; set; }
+        public double currentMemUsage { get; set; }
 
-        public int currentNetUsageBytes;
-        public double currentNetUsageMBs;
+        public int currentNetUsageBytes { get; set; }
+        public double currentNetUsageMBs { get; set; }
 
-        public int percentDiskTime;
+        public int percentDiskTime { get; set; }
 
-        public bool canGatherNet;
+        public bool canGatherNet { get; set; }
 
         public OSDataCollection() {
 #if DEBUG
@@ -115,49 +115,40 @@ namespace Check_Up.Util {
         /// Converts all cpuData to percentages EXCEPT for Networking - this is in MBps
         /// </summary>
         /// <returns></returns>
-        public bool GatherData() {
-            #region CPU Data Gathering
-            if (Properties.Settings.Default.CPU) {
-                currentCPUUsage = (int)perfCpuCount.NextValue();
-#if DEBUG
-                Console.WriteLine("Cpu Load: {0}%", currentCPUUsage);
-#endif
-            }
-            #endregion
+        public void GatherCPUData() {
 
-            #region Memory Data Gathering
-            if (Properties.Settings.Default.Memory) {
-                availableMemMBs = (int)perfMemCount.NextValue();
-                currentMemUsage = Math.Round((totalMemMBs - availableMemMBs) / totalMemMBs * 100d, 2);
+            currentCPUUsage = (int)perfCpuCount.NextValue();
 #if DEBUG
-                Console.WriteLine("Available MBs: {0}", availableMemMBs);
-                Console.WriteLine("Total MBs: {0}", totalMemMBs);
-                Console.WriteLine("Available Memory: {0}%", currentMemUsage);
+            Console.WriteLine("Cpu Load: {0}%", currentCPUUsage);
 #endif
-            }
-            #endregion
 
-            #region Network Data Gathering
-            if (Properties.Settings.Default.Network) {
-                if (canGatherNet) {
-                    currentNetUsageBytes = (int)perfNetCount.NextValue();
-                    currentNetUsageMBs = Math.Round(currentNetUsageBytes / 1024d / 1024d, 2);
-#if DEBUG
-                    Console.WriteLine("Network Bytes Total/sec: {0} MBs", currentNetUsageMBs);
-#endif
-                }
-            }
-            #endregion
+        }
 
-            #region Disk Data Gathering
-            if (Properties.Settings.Default.DiskIO) {
-                percentDiskTime = (int)perfDiskCount.NextValue();
+        public void GatherMemoryData() {
+            availableMemMBs = (int)perfMemCount.NextValue();
+            currentMemUsage = Math.Round((totalMemMBs - availableMemMBs) / totalMemMBs * 100d, 2);
 #if DEBUG
-                Console.WriteLine("Percent Disk Time: {0}%", percentDiskTime);
+            Console.WriteLine("Available MBs: {0}", availableMemMBs);
+            Console.WriteLine("Total MBs: {0}", totalMemMBs);
+            Console.WriteLine("Available Memory: {0}%", currentMemUsage);
+#endif
+        }
+
+        public void GatherNetworkData() {
+            if (canGatherNet) {
+                currentNetUsageBytes = (int)perfNetCount.NextValue();
+                currentNetUsageMBs = Math.Round(currentNetUsageBytes / 1024d / 1024d, 2);
+#if DEBUG
+                Console.WriteLine("Network Bytes Total/sec: {0} MBs", currentNetUsageMBs);
 #endif
             }
-            #endregion
-            return true;
+        }
+
+        public void GatherDiskData() {
+            percentDiskTime = (int)perfDiskCount.NextValue();
+#if DEBUG
+            Console.WriteLine("Percent Disk Time: {0}%", percentDiskTime);
+#endif
         }
 
         /// <summary>

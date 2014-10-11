@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Check_Up.AboutWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="About Check Up" Height="300" Width="300" ResizeMode="NoResize" Background="Black" WindowStyle="None">
+        Title="About Check Up" Height="300" Width="300" ResizeMode="NoResize" Background="Black" WindowStartupLocation="CenterScreen" ScrollViewer.HorizontalScrollBarVisibility="Auto" WindowStyle="None">
     <Grid Background="Black">
         <Label Content="Check Up" Margin="0,20,0,0" VerticalAlignment="Top" FontSize="30" HorizontalContentAlignment="Center" Height="55" FontWeight="Bold" Background="Black">
             <Label.Foreground>
@@ -21,7 +21,33 @@
         </Label>
         <Label Content="Blake Lingenau" Margin="0,117,0,0" VerticalAlignment="Top" FontSize="20" HorizontalContentAlignment="Center" Foreground="#FF707070" Background="Black"/>
         <Label Content="Mike Macelletti" Margin="0,159,0,0" VerticalAlignment="Top" FontSize="20" HorizontalContentAlignment="Center" Foreground="#FF707070" Background="Black"/>
-        <Button Content="OK" Margin="0,241,0,0" VerticalAlignment="Top" Width="71" Foreground="#FF727272" Background="Black" Click="Button_Click" Cursor="Hand"/>
+        <Button Content="Button" HorizontalAlignment="Center" VerticalAlignment="Bottom" HorizontalContentAlignment="Left" BorderBrush="{x:Null}" Margin="100,0,100,44" Width="100" Height="24" Click="Button_Click_1" Cursor="Hand">
+            <Button.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="1"/>
+                    <GradientStop Color="#FFBBB3B3" Offset="0.638"/>
+                </LinearGradientBrush>
+            </Button.Foreground>
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="Black"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#424242"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
     </Grid>
-    
+
 </Window>

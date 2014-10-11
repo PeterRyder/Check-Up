@@ -26,8 +26,8 @@ namespace Check_Up.Util {
                 }
                 catch {
 #if DEBUG
-                    Console.WriteLine("Could not gather data for process {0}", proc.getName());
-                    Console.WriteLine("Removing process {0}", proc.getName());
+                    Console.WriteLine("Could not gather data for process {0}", proc.Name);
+                    Console.WriteLine("Removing process {0}", proc.Name);
 #endif
                     procMonitorsToRemove.Add(proc);
                 }

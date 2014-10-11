@@ -26,15 +26,9 @@ namespace Check_Up.Util {
 
         public void checkDirectory() {
             if (!Directory.Exists(fullScriptPath)) {
-#if DEBUG
-                Console.WriteLine("Creating scripts directory");
-#endif
                 Directory.CreateDirectory(fullScriptPath);
             }
             else {
-#if DEBUG
-                Console.WriteLine("Scripts directory already exists");
-#endif
             }
         }
 
@@ -75,8 +69,5 @@ namespace Check_Up.Util {
             scripts.Add(filename);
             test.main();
         }
-
-    
-
     }
 }

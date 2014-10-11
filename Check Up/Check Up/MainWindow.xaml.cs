@@ -341,8 +341,25 @@ namespace Check_Up {
                     return true;
                 }
 
-                // Gather cpuData on the devices
-                osDataCollector.GatherData();
+                #region Data Gathering
+                // Gather data on the devices
+                if (Properties.Settings.Default.CPU) {
+                    osDataCollector.GatherCPUData();
+                }
+
+                if (Properties.Settings.Default.Memory) {
+                    osDataCollector.GatherMemoryData();
+                }
+
+                if (Properties.Settings.Default.Network) {
+                    osDataCollector.GatherNetworkData();
+                }
+
+                if (Properties.Settings.Default.DiskIO) {
+                    osDataCollector.GatherDiskData();
+                }
+                #endregion
+
                 shouldGatherData = true;
 
                 // If the pollingTime is to be used

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:cm="clr-namespace:System.ComponentModel;assembly=System"
         xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" xmlns:Custom="http://schemas.microsoft.com/wpf/2008/toolkit" x:Name="mainWindow" x:Class="Check_Up.MainWindow"
-        Title="Check Up" Height="718" Width="1227" WindowStartupLocation="CenterScreen">
+        Title="Check Up" Height="718" Width="1227" WindowStartupLocation="CenterScreen" WindowStyle="ThreeDBorderWindow" Background="{x:Null}" Foreground="{x:Null}" OpacityMask="Red">
 
     <Window.Resources>
         <cm:BackgroundWorker x:Name="backgroundWorker" x:Key="backgroundWorker"
@@ -16,11 +16,10 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="308*"/>
-            <ColumnDefinition Width="911*"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <Menu x:Name="menu_bar" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="18">
+        <Menu x:Name="menu_bar" VerticalAlignment="Top" Height="18">
             <MenuItem x:Name="menuitem_file" Header="File">
                 <MenuItem x:Name="menuitem_Properties" Header="Properties" HorizontalAlignment="Left" Width="160"
 			  Click="MenuItemProperties_Click"/>
@@ -37,19 +36,19 @@
 			  Click="MenuItemAbout_Click"/>
             </MenuItem>
         </Menu>
-        <ListView x:Name="listview_warnings" ToolTip="Shows Warnings" HorizontalAlignment="Left" Width="284" Margin="14,185,0,23" Background="#FFE5E5E5">
+        <ListView x:Name="listview_warnings" ToolTip="Shows Warnings" Margin="14,230,0,23" Background="#FFE5E5E5" Width="274" HorizontalAlignment="Left">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Warnings" Width="200"/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <TabControl Height="140" Margin="14,26,14,0" VerticalAlignment="Top" Background="#FFE5E5E5">
+        <TabControl Height="199" Margin="14,26,0,0" VerticalAlignment="Top" Background="#FFE5E5E5" HorizontalAlignment="Left" Width="273">
             <TabItem Header="Chart Control">
                 <Grid Background="#FFE5E5E5">
-                    <Button x:Name="button_gatherData" Content="Gather Data" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103" Click="button_gatherData_Click"/>
-                    <Button x:Name="button_stopMonitoring" Content="Stop Monitoring" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="103" Click="button_stopMonitoring_Click"/>
-                    <Button x:Name="button_resetChart" Content="Reset Chart" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Width="103" Click="button_resetChart_Click"/>
+                    <Button x:Name="button_gatherData" Content="Gather Data" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103" Click="button_gatherData_Click" ToolTip="Start Gathering Data"/>
+                    <Button x:Name="button_stopMonitoring" Content="Stop Monitoring" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="103" Click="button_stopMonitoring_Click" ToolTip="Stop Gathering Data"/>
+                    <Button x:Name="button_resetChart" Content="Reset Chart" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Width="103" Click="button_resetChart_Click" ToolTip="Reset the Graph"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Script Control">
@@ -64,8 +63,8 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <ProgressBar x:Name="progressBar" HorizontalAlignment="Right" Height="18" Margin="0,0,123,42" VerticalAlignment="Bottom" Width="694" Grid.Column="1" Background="#FFE5E5E5"/>
-        <chartingToolkit:Chart x:Name="chart" Grid.Column="1" HorizontalAlignment="Left" Margin="10,26,0,0" Title="Performance" VerticalAlignment="Top" Height="578" Width="901" BorderBrush="#FF424242" Background="#FF424242" Foreground="White"/>
+        <ProgressBar x:Name="progressBar" Height="18" Margin="302,0,10,43" VerticalAlignment="Bottom" Background="#FFE5E5E5"/>
+        <chartingToolkit:Chart x:Name="chart" Margin="288,26,0,61" Title="Performance" BorderBrush="#FF424242" Background="#FF424242" Foreground="White"/>
     </Grid>
 
 </Window>
