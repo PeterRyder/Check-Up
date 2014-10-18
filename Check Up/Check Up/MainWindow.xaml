@@ -28,9 +28,6 @@
 			  Click="MenuItemExit_Click"/>
             </MenuItem>
 
-            <MenuItem x:Name="menuitem_edit" Header="Edit">
-            </MenuItem>
-
             <MenuItem x:Name="menuitem_help" Header="Help">
                 <MenuItem x:Name="menuitem_AboutCheckUp" Header="About Check Up" HorizontalAlignment="Left" Width="180"
 			  Click="MenuItemAbout_Click"/>

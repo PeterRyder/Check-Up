@@ -43,22 +43,35 @@ namespace Check_Up.Util {
 
                 if (!scripts.Contains(filename)) {
 #if DEBUG
-                    Console.WriteLine("Found new script {0}", Path.GetFileName(filename));               
+                    Console.WriteLine("Found new script {0}", Path.GetFileName(filename));
 #endif
-                    BackgroundWorker backgroundWorker = new BackgroundWorker();
-                    backgroundWorker.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
+                    if (SanityCheckScript(Path.GetFileName(filename))) {
+                        BackgroundWorker backgroundWorker = new BackgroundWorker();
+                        backgroundWorker.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
 
-                    backgroundWorker.RunWorkerAsync(filename);
-                    workers.Add(backgroundWorker);
-                    scripts.Add(filename);
+                        backgroundWorker.RunWorkerAsync(filename);
+                        workers.Add(backgroundWorker);
+                        scripts.Add(filename);
+                    }
+
                 }
                 else {
 #if DEBUG
                     Console.WriteLine("Script {0} already running", Path.GetFileName(filename));
 #endif
                 }
+            }
+        }
 
-
+        private bool SanityCheckScript(String filename) {
+            if (Path.GetExtension(filename) != ".py") {
+#if DEBUG
+                Console.WriteLine("Script must be a Python file! Not executing file {0}", filename);
+#endif
+                return false;
+            }
+            else {
+                return true;
             }
         }
 
