@@ -21,13 +21,7 @@
         </Label>
         <Label Content="Blake Lingenau" Margin="0,117,0,0" VerticalAlignment="Top" FontSize="20" HorizontalContentAlignment="Center" Foreground="#FF707070" Background="Black"/>
         <Label Content="Mike Macelletti" Margin="0,159,0,0" VerticalAlignment="Top" FontSize="20" HorizontalContentAlignment="Center" Foreground="#FF707070" Background="Black"/>
-        <Button Content="Button" HorizontalAlignment="Center" VerticalAlignment="Bottom" HorizontalContentAlignment="Left" BorderBrush="{x:Null}" Margin="100,0,100,44" Width="100" Height="24" Click="Button_Click_1" Cursor="Hand">
-            <Button.Foreground>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black" Offset="1"/>
-                    <GradientStop Color="#FFBBB3B3" Offset="0.638"/>
-                </LinearGradientBrush>
-            </Button.Foreground>
+        <Button Content="OK" HorizontalAlignment="Center" VerticalAlignment="Bottom" HorizontalContentAlignment="Left" BorderBrush="{x:Null}" Margin="100,0,100,44" Width="100" Height="24" Click="Button_Click_1" Cursor="Hand" Foreground="#FF9B9B9B">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="Background" Value="Black"/>

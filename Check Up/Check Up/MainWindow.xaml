@@ -58,7 +58,7 @@
             </TabItem>
             <TabItem Header="Process Control">
                 <Grid Background="#FFE5E5E5" Margin="0,0,0,63">
-                    <Button x:Name="button_analyzeProcesses" Content="Analyze Processes" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103"/>
+                    <Button x:Name="button_analyzeProcesses" Content="Analyze Processes" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103" Click="button_analyzeProcesses_Click"/>
 
                 </Grid>
             </TabItem>

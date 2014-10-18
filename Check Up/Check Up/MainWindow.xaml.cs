@@ -17,6 +17,7 @@ using System.Windows.Controls.DataVisualization.Charting;
 using Check_Up.Util;
 using System.Threading;
 using System.Collections.ObjectModel;
+using System.Windows.Forms;
 
 namespace Check_Up {
 
@@ -93,6 +94,16 @@ namespace Check_Up {
 
         public MainWindow() {
             InitializeComponent();
+
+            System.Windows.Forms.NotifyIcon ni = new System.Windows.Forms.NotifyIcon();
+            ni.Icon = new System.Drawing.Icon("Check Up.ico");
+            ni.Visible = true;
+            ni.DoubleClick +=
+                delegate(object sender, EventArgs args) {
+                    this.Show();
+                    this.WindowState = WindowState.Normal;
+                };
+
             backgroundWorker = ((BackgroundWorker)this.FindResource("backgroundWorker"));
 
             scripts = new Scripts();
@@ -311,11 +322,12 @@ namespace Check_Up {
             // If the progress bar isn't full, force it
             progressBar.Value = 100;
             if (e.Error != null) {
-                MessageBox.Show(e.Error.Message);
+                System.Windows.MessageBox.Show(e.Error.Message);
             }
 
             // Disable the monitorStop button when the backgroundWorker is completed
             button_stopMonitoring.IsEnabled = false;
+            button_resetChart.IsEnabled = true;
         }
 
         /// <summary>
@@ -444,7 +456,7 @@ namespace Check_Up {
         /// Resets the chart
         /// </summary>
         private void resetChartFunc() {
-            
+
             // Remove the Series
             chart.Series.Clear();
 
@@ -460,6 +472,17 @@ namespace Check_Up {
 
         private void button_checkScripts_Click(object sender, RoutedEventArgs e) {
             scripts.runScripts();
+        }
+
+        protected override void OnStateChanged(EventArgs e) {
+            if (WindowState == WindowState.Minimized) {
+                this.Hide();
+            }
+            base.OnStateChanged(e);
+        }
+
+        private void button_analyzeProcesses_Click(object sender, RoutedEventArgs e) {
+
         }
 
     }
