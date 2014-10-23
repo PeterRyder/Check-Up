@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using log4net;
 
 namespace Check_Up.Util {
-    class ProcessMonitor : IComparable<ProcessMonitor> {
+    class ProcessMonitor : IComparable<ProcessMonitor>, IDisposable {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public string Name { get; set; }
 
@@ -22,11 +24,8 @@ namespace Check_Up.Util {
                 ProcessCPUUsage.NextValue();
             }
             catch {
-#if DEBUG
-                Console.WriteLine("Could not initialize procMonitor for process {0}", name);
-#endif
+                log.Error(String.Format("Could not initialize procMonitor for process {0}", name));
             }
-
         }
 
         public void GatherData() {
@@ -45,6 +44,17 @@ namespace Check_Up.Util {
 
             else
                 return this.Name.CompareTo(process.Name);
+        }
+
+        public void Dispose() {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public virtual void Dispose(bool disposing) {
+            if (disposing) {
+                ProcessCPUUsage.Dispose();
+            }
         }
     }
 }

@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Diagnostics;
+using log4net;
 
 namespace Check_Up.Util {
     class ProcessesDataCollection {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public List<ProcessMonitor> procMonitors = new List<ProcessMonitor>();
         public List<ProcessMonitor> procMonitorsToRemove = new List<ProcessMonitor>();
@@ -25,10 +27,7 @@ namespace Check_Up.Util {
                     proc.GatherData();
                 }
                 catch {
-#if DEBUG
-                    Console.WriteLine("Could not gather data for process {0}", proc.Name);
-                    Console.WriteLine("Removing process {0}", proc.Name);
-#endif
+                    log.Debug(String.Format("Removing process {0}", proc.Name));
                     procMonitorsToRemove.Add(proc);
                 }
             }

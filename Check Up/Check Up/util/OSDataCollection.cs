@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Threading;
 using System.Net.NetworkInformation;
+using log4net;
 
 namespace Check_Up.Util {
-    class OSDataCollection {
+    class OSDataCollection : IDisposable{
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Performance Counters
         // create perf mon objects
@@ -33,10 +35,10 @@ namespace Check_Up.Util {
         public bool canGatherNet { get; set; }
 
         public OSDataCollection() {
-#if DEBUG
-            //ListCounters("Network Adapter");
-#endif
+            InitializeCounters();
+        }
 
+        private void InitializeCounters() {
             #region CPU Counter Initialization
             perfCpuCount = new PerformanceCounter("Processor Information", "% Processor Time", "_Total");
             #endregion
@@ -53,34 +55,27 @@ namespace Check_Up.Util {
 
             // find the wifi network interface
             foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces()) {
-                //Console.WriteLine(nic.Name);
                 if (nic.Name == "Wi-Fi" || nic.Name == "Wireless Network Connection") {
                     WifiNicDescription = nic.Description;
                     WifiNicDescription = WifiNicDescription.Replace("(", "[");
                     WifiNicDescription = WifiNicDescription.Replace(")", "]");
-                    //Console.WriteLine(WifiNicDescription);
                 }
 
                 if (nic.Name == "Ethernet" || nic.Name == "Local Area Connection") {
                     ethernetNicDescription = nic.Description;
                     ethernetNicDescription = ethernetNicDescription.Replace("(", "[");
                     ethernetNicDescription = ethernetNicDescription.Replace(")", "]");
-                    //Console.WriteLine(ethernetNicDescription);
                 }
             }
 
             if (WifiNicDescription != "") {
-#if DEBUG
-                Console.WriteLine(WifiNicDescription);
-#endif
                 try {
                     perfNetCount = new PerformanceCounter("Network Adapter", "Bytes Total/sec", WifiNicDescription);
                     canGatherNet = true;
                 }
                 catch {
-#if DEBUG
-                    Console.WriteLine("Could not find a counter for your network adapter");
-#endif
+                    log.Error("Could not find a counter for your network adapter");
+
                     canGatherNet = false;
                 }
 
@@ -89,9 +84,7 @@ namespace Check_Up.Util {
                     canGatherNet = true;
                 }
                 catch {
-#if DEBUG
-                    Console.WriteLine("Could not find a counter for your network interface");
-#endif
+                    log.Error("Could not find a counter for your network interface");
                     canGatherNet = false;
                 }
             }
@@ -104,51 +97,26 @@ namespace Check_Up.Util {
             #region Disk Counter Initialization
             perfDiskCount = new PerformanceCounter("LogicalDisk", "% Disk Time", "C:");
             #endregion
-
-#if DEBUG
-            Console.WriteLine("Finished PerformanceCounter Initialization");
-#endif
         }
 
-        /// <summary>
-        /// Will gather cpuData on devices which are checked from the properties form
-        /// Converts all cpuData to percentages EXCEPT for Networking - this is in MBps
-        /// </summary>
-        /// <returns></returns>
         public void GatherCPUData() {
-
             currentCPUUsage = (int)perfCpuCount.NextValue();
-#if DEBUG
-            Console.WriteLine("Cpu Load: {0}%", currentCPUUsage);
-#endif
-
         }
 
         public void GatherMemoryData() {
             availableMemMBs = (int)perfMemCount.NextValue();
             currentMemUsage = Math.Round((totalMemMBs - availableMemMBs) / totalMemMBs * 100d, 2);
-#if DEBUG
-            Console.WriteLine("Available MBs: {0}", availableMemMBs);
-            Console.WriteLine("Total MBs: {0}", totalMemMBs);
-            Console.WriteLine("Available Memory: {0}%", currentMemUsage);
-#endif
         }
 
         public void GatherNetworkData() {
             if (canGatherNet) {
                 currentNetUsageBytes = (int)perfNetCount.NextValue();
                 currentNetUsageMBs = Math.Round(currentNetUsageBytes / 1024d / 1024d, 2);
-#if DEBUG
-                Console.WriteLine("Network Bytes Total/sec: {0} MBs", currentNetUsageMBs);
-#endif
             }
         }
 
         public void GatherDiskData() {
             percentDiskTime = (int)perfDiskCount.NextValue();
-#if DEBUG
-            Console.WriteLine("Percent Disk Time: {0}%", percentDiskTime);
-#endif
         }
 
         /// <summary>
@@ -184,6 +152,20 @@ namespace Check_Up.Util {
 
             foreach (PerformanceCounter counter in counters) {
                 Console.WriteLine("        {0}", counter.CounterName);
+            }
+        }
+
+        public void Dispose() {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public virtual void Dispose(bool disposing) {
+            if (disposing) {
+                perfCpuCount.Dispose();
+                perfMemCount.Dispose();
+                perfNetCount.Dispose();
+                perfDiskCount.Dispose();
             }
         }
     }

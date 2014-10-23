@@ -18,6 +18,7 @@ using Check_Up.Util;
 using System.Threading;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
+using log4net;
 
 namespace Check_Up {
 
@@ -75,6 +76,8 @@ namespace Check_Up {
     /// </summary>
     ///
     public partial class MainWindow : Window {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        System.Windows.Forms.NotifyIcon ni;
 
         OSDataCollection osDataCollector;
         Scripts scripts;
@@ -95,27 +98,20 @@ namespace Check_Up {
         public MainWindow() {
             InitializeComponent();
 
-            System.Windows.Forms.NotifyIcon ni = new System.Windows.Forms.NotifyIcon();
-            ni.Icon = new System.Drawing.Icon("Check Up.ico");
+            InitializeObjects();
+
+            InitializeEventHandlers();
+
             ni.Visible = true;
-            ni.DoubleClick +=
-                delegate(object sender, EventArgs args) {
-                    this.Show();
-                    this.WindowState = WindowState.Normal;
-                };
 
-            backgroundWorker = ((BackgroundWorker)this.FindResource("backgroundWorker"));
-
-            scripts = new Scripts();
             scripts.checkDirectory();
             scripts.runScripts();
 
             // initialize a cpuData collector
-            osDataCollector = new OSDataCollection();
+            
             if (!osDataCollector.canGatherNet) {
                 listview_warnings.Items.Add("Could not find network adapter");
             }
-            subWindows = new List<Window>();
 
             if (!Properties.Settings.Default.CPU &&
                 !Properties.Settings.Default.Memory &&
@@ -139,13 +135,31 @@ namespace Check_Up {
                 backgroundWorker.ReportProgress(100);
             }
 
+            button_stopMonitoring.IsEnabled = false;
+            button_resetChart.IsEnabled = false;
+        }
+
+        private void InitializeObjects() {
+            ni = new System.Windows.Forms.NotifyIcon();
+            ni.Icon = new System.Drawing.Icon("Check Up.ico");
+            scripts = new Scripts();
+            subWindows = new List<Window>();
+            osDataCollector = new OSDataCollection();
+
+            backgroundWorker = ((BackgroundWorker)this.FindResource("backgroundWorker"));
+
             cpuDataStorage = new cpuData();
             memDataStorage = new memoryData();
             diskDataStorage = new diskioData();
             netDataStorage = new networkData();
+        }
 
-            button_stopMonitoring.IsEnabled = false;
-            button_resetChart.IsEnabled = false;
+        private void InitializeEventHandlers() {
+            this.Closed += new EventHandler(MainWindow_Closed);
+            ni.DoubleClick += delegate(object sender, EventArgs args) {
+                this.Show();
+                this.WindowState = WindowState.Normal;
+            };
         }
 
         /// <summary>
@@ -210,9 +224,7 @@ namespace Check_Up {
                 backgroundWorker.RunWorkerAsync();
             }
             catch {
-#if DBEUG
-                Console.WriteLine("Could not start backgroundWorker")
-#endif
+                log.Error("Could not start backgroundWorker");
             }
         }
 
@@ -316,9 +328,7 @@ namespace Check_Up {
         }
 
         private void BackgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
-#if DEBUG
-            Console.WriteLine("Worker completed");
-#endif
+            log.Debug("Worker completed");
             // If the progress bar isn't full, force it
             progressBar.Value = 100;
             if (e.Error != null) {
@@ -379,16 +389,14 @@ namespace Check_Up {
 
                     // Calculate the percentage of the work which has been done
                     double percentage = (i / pollingTime) * 100;
-#if DEBUG
-                    Console.WriteLine("Percentage: " + percentage);
-#endif
+
                     if (percentage >= 100 || i >= pollingTime) {
                         backgroundWorker.CancelAsync();
                         percentage = Math.Round(percentage);
                         backgroundWorker.ReportProgress((int)percentage);
-#if DEBUG
-                        Console.WriteLine("Set cancellation to pending");
-#endif
+
+                        log.Debug("Set cancellation to pending");
+
                     }
                     else {
                         // Report the progress percentage
@@ -408,9 +416,7 @@ namespace Check_Up {
                 int timeElapsed = (DateTime.Now.Minute - timeMin) * 60 * 1000;
                 timeElapsed += (DateTime.Now.Second - timeSec) * 1000;
                 timeElapsed += (DateTime.Now.Millisecond - timeMsec);
-#if DEBUG
-                Console.WriteLine(String.Format("Sleep time: {0}", pollingInterval * 1000 - timeElapsed));
-#endif
+
                 // Sleep the backgroundWorker for the pollingInterval minus time already elapsed
                 if (pollingInterval * 1000 - timeElapsed >= 1) {
                     Thread.Sleep((int)(pollingInterval * 1000 - timeElapsed));
@@ -425,9 +431,7 @@ namespace Check_Up {
 
             // Announce if there is a pending cancellation
             if (backgroundWorker.CancellationPending) {
-#if DEBUG
-                Console.WriteLine("Cancellation is pending");
-#endif
+                log.Debug("Cancellation is pending");
                 e.Cancel = true;
                 return true;
             }
@@ -485,6 +489,29 @@ namespace Check_Up {
 
         }
 
+        private void MainWindow_Closed(object sender, EventArgs e) {
+            foreach (Window window in subWindows) {
+                try {
+                    window.Close();
+                }
+                catch {
+                    Console.WriteLine("Couldn't close sub window {0}", window.Name);
+                }
+            }
+            backgroundWorker.CancelAsync();
+            try {
+                base.OnClosing((CancelEventArgs)e);
+            }
+            catch {
+                Console.WriteLine("Couldn't call base form close");
+            }
+            ni.Visible = false;
+            System.Windows.Application.Current.Shutdown();
+        }
+
+        private void button_checkScripts_Click(object sender, EventArgs e) {
+            scripts.checkNewScripts();
+        }
     }
 }
 
