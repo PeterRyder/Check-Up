@@ -130,5 +130,16 @@ namespace Check_Up.Properties {
                 this["RealTime"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection Disks {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["Disks"]));
+            }
+            set {
+                this["Disks"] = value;
+            }
+        }
     }
 }
