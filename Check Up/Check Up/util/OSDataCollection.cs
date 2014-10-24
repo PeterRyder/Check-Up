@@ -123,7 +123,6 @@ namespace Check_Up.Util {
             }
             else {
                 DataValues[type] = (int)PerfCounters[type].NextValue();
-                Console.WriteLine("Disk {0} using {1}", type, DataValues[type]);
             }
             
         }

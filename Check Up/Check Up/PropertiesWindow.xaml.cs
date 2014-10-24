@@ -79,25 +79,6 @@ namespace Check_Up {
             }
             Properties.Settings.Default.Disks = DiskNames;
 
-            #region Properties debug output
-#if DEBUG
-            Console.WriteLine("Properties window closed using OK - settings should have saved");
-
-            Console.WriteLine("CPU checkbox: " + checkbox_CPU.IsChecked);
-            Console.WriteLine("Memory checkbox: " + checkbox_Memory.IsChecked);
-            Console.WriteLine("Network checkbox: " + checkbox_Network.IsChecked);
-            Console.WriteLine("DiskIO checkbox: " + checkbox_DiskIO.IsChecked);
-            //Console.WriteLine("Ignore Time checkbox: " + checkBox_ignoreTime.Checked);
-
-            Console.WriteLine("CPU property: " + Properties.Settings.Default.CPU);
-            Console.WriteLine("Memory property: " + Properties.Settings.Default.Memory);
-            Console.WriteLine("Network property: " + Properties.Settings.Default.Network);
-            Console.WriteLine("DiskIO property: " + Properties.Settings.Default.DiskIO);
-            Console.WriteLine("Real Time property: " + Properties.Settings.Default.RealTime);
-            Console.WriteLine("Ignore Time property: " + Properties.Settings.Default.IgnoreTime);
-#endif
-            #endregion
-
             this.Close();
         }
 
