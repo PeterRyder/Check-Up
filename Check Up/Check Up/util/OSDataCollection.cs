@@ -8,29 +8,24 @@ using System.Diagnostics;
 using System.Threading;
 using System.Net.NetworkInformation;
 using log4net;
+using Check_Up.Util;
 
 namespace Check_Up.Util {
-    class OSDataCollection : IDisposable{
+    class OSDataCollection : IDisposable {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        #region Performance Counters
-        // create perf mon objects
-        private PerformanceCounter perfCpuCount;
-        private PerformanceCounter perfMemCount;
-        private PerformanceCounter perfNetCount;
-        private PerformanceCounter perfDiskCount;
-        #endregion
 
-        public int currentCPUUsage { get; set; }
+        // create perf mon objects
+        private Dictionary<string, PerformanceCounter> PerfCounters = new Dictionary<string,PerformanceCounter>();
+
+        public Dictionary<string, int> DataValues = new Dictionary<string, int>();
 
         public double totalMemMBs { get; set; }
         public double availableMemMBs { get; set; }
-        public double currentMemUsage { get; set; }
 
         public int currentNetUsageBytes { get; set; }
-        public double currentNetUsageMBs { get; set; }
 
-        public int percentDiskTime { get; set; }
+        public List<int> percentDiskTimes { get; set; }
 
         public bool canGatherNet { get; set; }
 
@@ -40,13 +35,17 @@ namespace Check_Up.Util {
 
         private void InitializeCounters() {
             #region CPU Counter Initialization
-            perfCpuCount = new PerformanceCounter("Processor Information", "% Processor Time", "_Total");
+            PerformanceCounter perfCpuCount = new PerformanceCounter("Processor Information", "% Processor Time", "_Total");
+            PerfCounters.Add(CounterNames.CPUName, perfCpuCount);
+            DataValues.Add(CounterNames.CPUName, 0);
             #endregion
 
             #region Memory Counter Initialization
             ulong totalMemBytes = new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory;
             totalMemMBs = (int)(totalMemBytes / 1024 / 1024);
-            perfMemCount = new PerformanceCounter("Memory", "Available MBytes");
+            PerformanceCounter perfMemCount = new PerformanceCounter("Memory", "Available MBytes");
+            PerfCounters.Add(CounterNames.MemName, perfMemCount);
+            DataValues.Add(CounterNames.MemName, 0);
             #endregion
 
             #region Network Counter Initialization
@@ -67,10 +66,11 @@ namespace Check_Up.Util {
                     ethernetNicDescription = ethernetNicDescription.Replace(")", "]");
                 }
             }
-
+            PerformanceCounter perfNetCount;
             if (WifiNicDescription != "") {
                 try {
                     perfNetCount = new PerformanceCounter("Network Adapter", "Bytes Total/sec", WifiNicDescription);
+                    PerfCounters.Add(CounterNames.NetName, perfNetCount);
                     canGatherNet = true;
                 }
                 catch {
@@ -81,6 +81,7 @@ namespace Check_Up.Util {
 
                 try {
                     perfNetCount = new PerformanceCounter("Network Interface", "Bytes Total/sec", WifiNicDescription);
+                    PerfCounters.Add(CounterNames.NetName, perfNetCount);
                     canGatherNet = true;
                 }
                 catch {
@@ -90,33 +91,41 @@ namespace Check_Up.Util {
             }
             else {
                 perfNetCount = new PerformanceCounter("Network Adapter", "Bytes Total/sec", ethernetNicDescription);
+                PerfCounters.Add(CounterNames.NetName, perfNetCount);
             }
-
+            
+            DataValues.Add(CounterNames.NetName, 0);
             #endregion
 
-            #region Disk Counter Initialization
-            perfDiskCount = new PerformanceCounter("LogicalDisk", "% Disk Time", "C:");
-            #endregion
         }
 
-        public void GatherCPUData() {
-            currentCPUUsage = (int)perfCpuCount.NextValue();
-        }
-
-        public void GatherMemoryData() {
-            availableMemMBs = (int)perfMemCount.NextValue();
-            currentMemUsage = Math.Round((totalMemMBs - availableMemMBs) / totalMemMBs * 100d, 2);
-        }
-
-        public void GatherNetworkData() {
-            if (canGatherNet) {
-                currentNetUsageBytes = (int)perfNetCount.NextValue();
-                currentNetUsageMBs = Math.Round(currentNetUsageBytes / 1024d / 1024d, 2);
+        public void AddDiskCounter(string disk) {
+            try {
+                PerformanceCounter perfDisk = new PerformanceCounter("LogicalDisk", "% Disk Time", disk);
+                PerfCounters.Add(disk, perfDisk);
+                DataValues.Add(disk, 0);
+            }
+            catch {
+                log.Error(String.Format("Could not create performance counter for disk {0}", disk));
             }
         }
 
-        public void GatherDiskData() {
-            percentDiskTime = (int)perfDiskCount.NextValue();
+        public void GatherData(string type) {
+            if (type == CounterNames.MemName) {
+                availableMemMBs = (int)PerfCounters[type].NextValue();
+                DataValues[type] = (int)Math.Round((totalMemMBs - availableMemMBs) / totalMemMBs * 100d);
+            }
+            else if (type == CounterNames.NetName) {
+                if (canGatherNet) {
+                    currentNetUsageBytes = (int)PerfCounters[type].NextValue();
+                    DataValues[type] = (int)Math.Round(currentNetUsageBytes / 1024d / 1024d, 2);
+                }
+            }
+            else {
+                DataValues[type] = (int)PerfCounters[type].NextValue();
+                Console.WriteLine("Disk {0} using {1}", type, DataValues[type]);
+            }
+            
         }
 
         /// <summary>
@@ -162,10 +171,9 @@ namespace Check_Up.Util {
 
         public virtual void Dispose(bool disposing) {
             if (disposing) {
-                perfCpuCount.Dispose();
-                perfMemCount.Dispose();
-                perfNetCount.Dispose();
-                perfDiskCount.Dispose();
+                foreach (KeyValuePair<string, PerformanceCounter> count in PerfCounters) {
+                    count.Value.Dispose();
+                }
             }
         }
     }

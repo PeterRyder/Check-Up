@@ -133,9 +133,9 @@ namespace Check_Up.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Specialized.StringCollection Disks {
+        public global::System.Collections.Generic.List<System.String> Disks {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["Disks"]));
+                return ((global::System.Collections.Generic.List<System.String>)(this["Disks"]));
             }
             set {
                 this["Disks"] = value;

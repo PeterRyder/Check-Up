@@ -22,46 +22,10 @@ using log4net;
 
 namespace Check_Up {
 
-    public class cpuData {
+    public class GraphData {
         public ObservableCollection<KeyValuePair<int, int>> ValueList { get; private set; }
 
-        public cpuData() {
-            this.ValueList = new ObservableCollection<KeyValuePair<int, int>>();
-        }
-
-        public void Add(KeyValuePair<int, int> data) {
-            ValueList.Add(data);
-        }
-    }
-
-    public class memoryData {
-        public ObservableCollection<KeyValuePair<int, int>> ValueList { get; private set; }
-
-        public memoryData() {
-            this.ValueList = new ObservableCollection<KeyValuePair<int, int>>();
-        }
-
-        public void Add(KeyValuePair<int, int> data) {
-            ValueList.Add(data);
-        }
-    }
-
-    public class networkData {
-        public ObservableCollection<KeyValuePair<int, int>> ValueList { get; private set; }
-
-        public networkData() {
-            this.ValueList = new ObservableCollection<KeyValuePair<int, int>>();
-        }
-
-        public void Add(KeyValuePair<int, int> data) {
-            ValueList.Add(data);
-        }
-    }
-
-    public class diskioData {
-        public ObservableCollection<KeyValuePair<int, int>> ValueList { get; private set; }
-
-        public diskioData() {
+        public GraphData() {
             this.ValueList = new ObservableCollection<KeyValuePair<int, int>>();
         }
 
@@ -90,10 +54,7 @@ namespace Check_Up {
 
         private bool shouldGatherData;
 
-        private cpuData cpuDataStorage;
-        private memoryData memDataStorage;
-        private networkData netDataStorage;
-        private diskioData diskDataStorage;
+        private Dictionary<string, GraphData> GraphDataDict = new Dictionary<string, GraphData>();
 
         public MainWindow() {
             InitializeComponent();
@@ -108,7 +69,7 @@ namespace Check_Up {
             scripts.runScripts();
 
             // initialize a cpuData collector
-            
+
             if (!osDataCollector.canGatherNet) {
                 listview_warnings.Items.Add("Could not find network adapter");
             }
@@ -147,11 +108,6 @@ namespace Check_Up {
             osDataCollector = new OSDataCollection();
 
             backgroundWorker = ((BackgroundWorker)this.FindResource("backgroundWorker"));
-
-            cpuDataStorage = new cpuData();
-            memDataStorage = new memoryData();
-            diskDataStorage = new diskioData();
-            netDataStorage = new networkData();
         }
 
         private void InitializeEventHandlers() {
@@ -203,19 +159,23 @@ namespace Check_Up {
 
             #region Create Series
             if (Properties.Settings.Default.CPU) {
-                createSeries("CPU");
+                createSeries(CounterNames.CPUName);
             }
 
             if (Properties.Settings.Default.Memory) {
-                createSeries("Memory");
+                createSeries(CounterNames.MemName);
             }
 
             if (Properties.Settings.Default.Network) {
-                createSeries("Network");
+                createSeries(CounterNames.NetName);
             }
 
             if (Properties.Settings.Default.DiskIO) {
-                createSeries("DiskIO");
+                List<string> disks = Properties.Settings.Default.Disks;
+                for (int i = 0; i < disks.Count; i++) {
+                    createSeries(disks[i]);
+                    osDataCollector.AddDiskCounter(disks[i]);
+                }
             }
             #endregion
 
@@ -241,22 +201,16 @@ namespace Check_Up {
                 new Setter(BackgroundProperty, new SolidColorBrush(Colors.Red)));
 
             areaSeries.Title = type;
-            areaSeries.Name = type;
+            areaSeries.Name = "Disk" + type.TrimEnd(':');
             areaSeries.DependentValuePath = "Value";
             areaSeries.IndependentValuePath = "Key";
 
-            if (type == "CPU") {
-                areaSeries.ItemsSource = cpuDataStorage.ValueList;
+            if (!GraphDataDict.ContainsKey(type)) {
+                GraphDataDict.Add(type, new GraphData());
             }
-            else if (type == "Memory") {
-                areaSeries.ItemsSource = memDataStorage.ValueList;
-            }
-            else if (type == "Network") {
-                areaSeries.ItemsSource = netDataStorage.ValueList;
-            }
-            else if (type == "DiskIO") {
-                areaSeries.ItemsSource = diskDataStorage.ValueList;
-            }
+
+            areaSeries.ItemsSource = GraphDataDict[type].ValueList;
+
             chart.Series.Add(areaSeries);
         }
 
@@ -292,31 +246,13 @@ namespace Check_Up {
                 // Update the progress bar every time the backgroundWorker changes
                 progressBar.Value = e.ProgressPercentage;
 
-                // Update the label next to the progress bar
-                //label_percentage.Text = e.ProgressPercentage.ToString() + "%";
+                List<string> types = new List<string>(GraphDataDict.Keys);
+                for (int i = 0; i < types.Count; i++) {
 
-                // If cpuData cpuData should be gathered, update the graph
-                if (Properties.Settings.Default.CPU) {
-                    updateGraph("cpuData", cycles, (int)osDataCollector.currentCPUUsage);
-                }
-
-                // If memoryData cpuData should be gathered, update the graph
-                if (Properties.Settings.Default.Memory) {
-                    updateGraph("memoryData", cycles, (int)osDataCollector.currentMemUsage);
-                }
-
-                // If networkData cpuData should be gathered, update the graph
-                if (Properties.Settings.Default.Network && osDataCollector.canGatherNet) {
-                    updateGraph("networkData", cycles, (int)osDataCollector.currentNetUsageMBs);
-                }
-
-                // If Disk IO cpuData should be gathered, update the graph
-                if (Properties.Settings.Default.DiskIO) {
-                    updateGraph("Disk", cycles, (int)osDataCollector.percentDiskTime);
+                    updateGraph(types[i], cycles, osDataCollector.DataValues[types[i]]);
                 }
                 shouldGatherData = false;
             }
-
         }
 
         private void BackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
@@ -365,20 +301,9 @@ namespace Check_Up {
 
                 #region Data Gathering
                 // Gather data on the devices
-                if (Properties.Settings.Default.CPU) {
-                    osDataCollector.GatherCPUData();
-                }
-
-                if (Properties.Settings.Default.Memory) {
-                    osDataCollector.GatherMemoryData();
-                }
-
-                if (Properties.Settings.Default.Network) {
-                    osDataCollector.GatherNetworkData();
-                }
-
-                if (Properties.Settings.Default.DiskIO) {
-                    osDataCollector.GatherDiskData();
+                List<string> types = new List<string>(GraphDataDict.Keys);
+                for (int j = 0; j < types.Count; j++ ) {
+                    osDataCollector.GatherData(types[j]);
                 }
                 #endregion
 
@@ -441,19 +366,7 @@ namespace Check_Up {
 
 
         private void updateGraph(string type, int x, int y) {
-            // Add data points to the correct lists depending on the type
-            if (type == "cpuData") {
-                cpuDataStorage.Add(new KeyValuePair<int, int>(x, y));
-            }
-            else if (type == "memoryData") {
-                memDataStorage.Add(new KeyValuePair<int, int>(x, y));
-            }
-            else if (type == "networkData") {
-                netDataStorage.Add(new KeyValuePair<int, int>(x, y));
-            }
-            else if (type == "diskioData") {
-                diskDataStorage.Add(new KeyValuePair<int, int>(x, y));
-            }
+            GraphDataDict[type].Add(new KeyValuePair<int, int>(x, y));
         }
 
         /// <summary>
@@ -465,10 +378,9 @@ namespace Check_Up {
             chart.Series.Clear();
 
             // Remove the points from the lists
-            cpuDataStorage.ValueList.Clear();
-            memDataStorage.ValueList.Clear();
-            netDataStorage.ValueList.Clear();
-            diskDataStorage.ValueList.Clear();
+            foreach (KeyValuePair<string, GraphData> data in GraphDataDict) {
+                data.Value.ValueList.Clear();
+            }
 
             this.button_gatherData.IsEnabled = true;
             this.button_resetChart.IsEnabled = false;

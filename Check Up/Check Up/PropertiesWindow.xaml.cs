@@ -71,9 +71,13 @@ namespace Check_Up {
                 //Console.Error.WriteLine("Couldn't convert {0} to int", visiblePoints.Text);
             }
 
-            foreach (Disk item in SelectedDisks) {
-                Properties.Settings.Default.Disks.Add(item.DiskLetter);
+            List<string> DiskNames = new List<string>();
+            for (int i = 0; i < SelectedDisks.Count; i++) {
+                Disk item = SelectedDisks[i];
+                string DriveLetter = item.DiskLetter.TrimEnd('\\');
+                DiskNames.Add(DriveLetter);
             }
+            Properties.Settings.Default.Disks = DiskNames;
 
             #region Properties debug output
 #if DEBUG
@@ -131,7 +135,7 @@ namespace Check_Up {
             foreach (DriveInfo drive in RandomInfo.drives) {
                 items.Add(new Disk() { DiskType = drive.DriveType.ToString(), DiskLetter = drive.Name });
             }
-            listview_disks.ItemsSource = items;     
+            listview_disks.ItemsSource = items;
         }
 
         private void listview_disks_SelectionChanged(object sender, SelectionChangedEventArgs e) {
