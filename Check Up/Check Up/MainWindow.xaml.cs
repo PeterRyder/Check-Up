@@ -145,13 +145,9 @@ namespace Check_Up {
 
             backgroundWorkerChart.ProgressChanged += backgroundWorkerChart_ProgressChanged;
             backgroundWorkerChart.RunWorkerCompleted += backgroundWorkerChart_RunWorkerCompleted;
-            backgroundWorkerChart.WorkerSupportsCancellation = true;
-            backgroundWorkerChart.WorkerReportsProgress = true;
 
             backgroundWorkerLog.ProgressChanged += backgroundWorkerLog_ProgressChanged;
             backgroundWorkerLog.RunWorkerCompleted += backgroundWorkerLog_RunWorkerCompleted;
-            backgroundWorkerLog.WorkerSupportsCancellation = true;
-            backgroundWorkerLog.WorkerReportsProgress = true;
         }
 
         private void CreateOutputDirectory() {

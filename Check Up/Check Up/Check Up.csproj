@@ -72,9 +72,6 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="MahApps.Metro">
-      <HintPath>..\packages\MahApps.Metro.0.14.0.0\lib\net45\MahApps.Metro.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Dynamic, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Program Files (x86)\IronPython 2.7\Microsoft.Dynamic.dll</HintPath>
