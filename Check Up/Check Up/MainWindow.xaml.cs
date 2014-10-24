@@ -19,6 +19,8 @@ using System.Threading;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
 using log4net;
+using System.IO;
+using ReadWriteCsv;
 
 namespace Check_Up {
 
@@ -43,6 +45,12 @@ namespace Check_Up {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private Random rand = new Random();
 
+        private string OutputPath = "Data";
+        private string FullOutputPath = "";
+        private string OutputFileName;
+
+        private CsvFileWriter CsvWriter; 
+
         System.Windows.Forms.NotifyIcon ni;
 
         OSDataCollection osDataCollector;
@@ -50,7 +58,8 @@ namespace Check_Up {
 
         List<Window> subWindows;
 
-        private BackgroundWorker backgroundWorker;
+        private BackgroundWorker backgroundWorkerChart;
+        private BackgroundWorker backgroundWorkerLog;
 
         int cycles = 0;
 
@@ -67,8 +76,21 @@ namespace Check_Up {
 
             ni.Visible = true;
 
+            CreateOutputDirectory();
+
+            OutputFileName = "Data - " + DateTime.Now.ToString("yyyy-MM-dd") + ".csv";
+            
+            try {
+                CsvWriter = new CsvFileWriter(OutputFileName);
+            }
+            catch {
+                log.Error(String.Format("Could not create output csv file {0}", OutputFileName));
+            }
+
             scripts.checkDirectory();
             scripts.runScripts();
+
+            
 
             // initialize a cpuData collector
 
@@ -89,13 +111,14 @@ namespace Check_Up {
 
             // check if cpuData should be gathered
             if (shouldGatherData) {
-                backgroundWorker.DoWork += new DoWorkEventHandler(BackgroundWorker_DoWork);
+                backgroundWorkerChart.DoWork += backgroundWorkerChart_DoWork;
+                backgroundWorkerLog.DoWork += backgroundWorkerLog_DoWork;
             }
             else {
 
                 // Stop the backgroundWorker if cpuData shouldn't be gathered
-                backgroundWorker.CancelAsync();
-                backgroundWorker.ReportProgress(100);
+                backgroundWorkerChart.CancelAsync();
+                backgroundWorkerChart.ReportProgress(100);
             }
 
             button_stopMonitoring.IsEnabled = false;
@@ -109,7 +132,8 @@ namespace Check_Up {
             subWindows = new List<Window>();
             osDataCollector = new OSDataCollection();
 
-            backgroundWorker = ((BackgroundWorker)this.FindResource("backgroundWorker"));
+            backgroundWorkerChart = new BackgroundWorker();
+            backgroundWorkerLog = new BackgroundWorker();
         }
 
         private void InitializeEventHandlers() {
@@ -118,6 +142,19 @@ namespace Check_Up {
                 this.Show();
                 this.WindowState = WindowState.Normal;
             };
+
+            backgroundWorkerChart.ProgressChanged += backgroundWorkerChart_ProgressChanged;
+            backgroundWorkerChart.RunWorkerCompleted += backgroundWorkerChart_RunWorkerCompleted;
+
+            backgroundWorkerLog.ProgressChanged += backgroundWorkerLog_ProgressChanged;
+            backgroundWorkerLog.RunWorkerCompleted += backgroundWorkerLog_RunWorkerCompleted;
+        }
+
+        private void CreateOutputDirectory() {
+            FullOutputPath = System.IO.Path.GetFullPath(OutputPath);
+            if (!Directory.Exists(FullOutputPath)) {
+                Directory.CreateDirectory(FullOutputPath);
+            }
         }
 
         /// <summary>
@@ -183,7 +220,7 @@ namespace Check_Up {
 
             // Begin the backgroundWorker
             try {
-                backgroundWorker.RunWorkerAsync();
+                backgroundWorkerChart.RunWorkerAsync();
             }
             catch {
                 log.Error("Could not start backgroundWorker");
@@ -230,10 +267,10 @@ namespace Check_Up {
         /// <param name="e"></param>
         private void button_stopMonitoring_Click(object sender, RoutedEventArgs e) {
             // When the monitorStop button is clicked stop the backgroundWorker
-            backgroundWorker.CancelAsync();
+            backgroundWorkerChart.CancelAsync();
 
             // Announce that the backgroundWorker is 100 percent done
-            backgroundWorker.ReportProgress(100);
+            backgroundWorkerChart.ReportProgress(100);
 
             this.button_resetChart.IsEnabled = true;
             this.menuitem_Properties.IsEnabled = true;
@@ -249,7 +286,7 @@ namespace Check_Up {
             resetChartFunc();
         }
 
-        private void backgroundWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
+        private void backgroundWorkerChart_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
 
             if (shouldGatherData) {
                 // Update the progress bar every time the backgroundWorker changes
@@ -257,14 +294,13 @@ namespace Check_Up {
 
                 List<string> types = new List<string>(GraphDataDict.Keys);
                 for (int i = 0; i < types.Count; i++) {
-
                     updateGraph(types[i], cycles, osDataCollector.DataValues[types[i]]);
                 }
                 shouldGatherData = false;
             }
         }
 
-        private void BackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
+        private void backgroundWorkerChart_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
             // Create a BackgroundWorker object out of the sender
             BackgroundWorker worker = sender as BackgroundWorker;
 
@@ -272,7 +308,7 @@ namespace Check_Up {
             e.Result = GatherData(worker, e);
         }
 
-        private void BackgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
+        private void backgroundWorkerChart_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
             log.Debug("Worker completed");
             // If the progress bar isn't full, force it
             progressBar.Value = 100;
@@ -303,7 +339,7 @@ namespace Check_Up {
                 int timeMsec = DateTime.Now.Millisecond;
 
                 // If there is a pending cancellation break out of the loop
-                if (backgroundWorker.CancellationPending) {
+                if (backgroundWorkerChart.CancellationPending) {
                     e.Cancel = true;
                     return true;
                 }
@@ -325,9 +361,9 @@ namespace Check_Up {
                     double percentage = (i / pollingTime) * 100;
 
                     if (percentage >= 100 || i >= pollingTime) {
-                        backgroundWorker.CancelAsync();
+                        backgroundWorkerChart.CancelAsync();
                         percentage = Math.Round(percentage);
-                        backgroundWorker.ReportProgress((int)percentage);
+                        backgroundWorkerChart.ReportProgress((int)percentage);
 
                         log.Debug("Set cancellation to pending");
 
@@ -335,7 +371,7 @@ namespace Check_Up {
                     else {
                         // Report the progress percentage
                         percentage = Math.Round(percentage);
-                        backgroundWorker.ReportProgress((int)percentage);
+                        backgroundWorkerChart.ReportProgress((int)percentage);
                     }
 
                     // Increment the amount of time elapsed
@@ -344,7 +380,7 @@ namespace Check_Up {
                 else {
 
                     // If the polling time is not to be used keep the progress bar at 0 percent
-                    backgroundWorker.ReportProgress(0);
+                    backgroundWorkerChart.ReportProgress(0);
                 }
 
                 int timeElapsed = (DateTime.Now.Minute - timeMin) * 60 * 1000;
@@ -361,10 +397,10 @@ namespace Check_Up {
             }
 
             // If the loop is finished stop the backgroundWorker
-            backgroundWorker.CancelAsync();
+            backgroundWorkerChart.CancelAsync();
 
             // Announce if there is a pending cancellation
-            if (backgroundWorker.CancellationPending) {
+            if (backgroundWorkerChart.CancellationPending) {
                 log.Debug("Cancellation is pending");
                 e.Cancel = true;
                 return true;
@@ -406,10 +442,6 @@ namespace Check_Up {
             base.OnStateChanged(e);
         }
 
-        private void button_analyzeProcesses_Click(object sender, RoutedEventArgs e) {
-
-        }
-
         private void MainWindow_Closed(object sender, EventArgs e) {
             foreach (Window window in subWindows) {
                 try {
@@ -419,7 +451,7 @@ namespace Check_Up {
                     log.Error(String.Format("Couldn't close sub window {0}", window.Name));
                 }
             }
-            backgroundWorker.CancelAsync();
+            backgroundWorkerChart.CancelAsync();
             try {
                 base.OnClosing((CancelEventArgs)e);
             }
@@ -432,6 +464,38 @@ namespace Check_Up {
 
         private void button_checkScripts_Click(object sender, EventArgs e) {
             scripts.checkNewScripts();
+        }
+
+        private void button_logData_Click(object sender, RoutedEventArgs e) {
+            try {
+                backgroundWorkerLog.RunWorkerAsync();
+            }
+            catch {
+                log.Error("Could not start backgroundWorker");
+            }
+        }
+
+        private void backgroundWorkerLog_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
+            // Create a BackgroundWorker object out of the sender
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            // GatherData every time the background worker does work
+            Console.WriteLine("Starting logging worker");
+            e.Result = GatherData(worker, e);
+        }
+
+        private void backgroundWorkerLog_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
+
+            Console.WriteLine("Logging worker finished");
+        }
+
+        private void backgroundWorkerLog_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
+
+            Console.WriteLine("The logging worker progress was changed");
+        }
+
+        private void button_stopLoggingData_Click(object sender, RoutedEventArgs e) {
+            backgroundWorkerLog.CancelAsync();
         }
     }
 }

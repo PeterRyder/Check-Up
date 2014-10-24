@@ -30,8 +30,6 @@ namespace Check_Up.Util {
             if (!Directory.Exists(fullScriptPath)) {
                 Directory.CreateDirectory(fullScriptPath);
             }
-            else {
-            }
         }
 
         public void runScripts() {

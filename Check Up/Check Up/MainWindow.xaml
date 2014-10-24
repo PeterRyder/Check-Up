@@ -4,13 +4,7 @@
         xmlns:cm="clr-namespace:System.ComponentModel;assembly=System"
         xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" xmlns:Custom="http://schemas.microsoft.com/wpf/2008/toolkit" x:Name="mainWindow" x:Class="Check_Up.MainWindow"
         Title="Check Up" WindowStartupLocation="CenterScreen" WindowStyle="ThreeDBorderWindow" Background="{x:Null}" Foreground="{x:Null}" OpacityMask="Red" VerticalAlignment="Top" Height="773" Width="1298" MinWidth="762" MinHeight="486">
-
-    <Window.Resources>
-        <cm:BackgroundWorker x:Name="backgroundWorker" x:Key="backgroundWorker"
-        DoWork="BackgroundWorker_DoWork"
-        RunWorkerCompleted="BackgroundWorker_RunWorkerCompleted" WorkerReportsProgress="True" WorkerSupportsCancellation="True" ProgressChanged="backgroundWorker_ProgressChanged"/>
-    </Window.Resources>
-
+    
     <Grid Margin="0" Background="#FF424242" UseLayoutRounding="False">
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -41,7 +35,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <TabControl Height="199" Margin="14,26,26,0" VerticalAlignment="Top" Background="#FFE5E5E5" MinWidth="147" MinHeight="199" MaxWidth="273" MaxHeight="199" HorizontalAlignment="Left">
+        <TabControl Height="199" Margin="14,27,0,0" VerticalAlignment="Top" Background="#FFE5E5E5" MinWidth="147" MinHeight="199" MaxWidth="273" MaxHeight="199" HorizontalAlignment="Left">
             <TabItem Header="Chart Control">
                 <Grid Background="#FFE5E5E5">
                     <Button x:Name="button_gatherData" Content="Gather Data" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103" Click="button_gatherData_Click" ToolTip="Start Gathering Data"/>
@@ -54,9 +48,10 @@
                     <Button x:Name="button_checkScripts" Content="Check Scripts" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103" Click="button_checkScripts_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Process Control">
+            <TabItem Header="Background">
                 <Grid Background="#FFE5E5E5" Margin="0,0,0,63">
-                    <Button x:Name="button_analyzeProcesses" Content="Analyze Processes" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103" Click="button_analyzeProcesses_Click"/>
+                    <Button x:Name="button_logData" Content="Log Data" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103" Click="button_logData_Click"/>
+                    <Button x:Name="button_stopLoggingData" Content="Stop Logging Data" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="118" Click="button_stopLoggingData_Click"/>
 
                 </Grid>
             </TabItem>
