@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
 using Check_Up.Util;
+using log4net;
 
 namespace Check_Up {
     /// <summary>
@@ -21,9 +22,11 @@ namespace Check_Up {
     public partial class PropertiesWindow : Window {
 
         private List<Disk> SelectedDisks;
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public PropertiesWindow() {
             InitializeComponent();
+            
             SelectedDisks = new List<Disk>();
         }
 
@@ -33,9 +36,9 @@ namespace Check_Up {
             double pollingInterval = Convert.ToDouble(textbox_pollingInterval.Text);
 
             if (pollingTime < pollingInterval) {
-#if DEBUG
-                Console.WriteLine("Polling time greater than polling interval");
-#endif
+
+                log.Warn("Polling time greater than polling interval");
+
                 error1.Visibility = System.Windows.Visibility.Visible;
                 return;
             }
@@ -52,7 +55,7 @@ namespace Check_Up {
                 Properties.Settings.Default.PollingTime = pollingTime;
             }
             catch {
-                Console.Error.WriteLine("Couldn't convert {0} to double", textbox_pollingTime.Text);
+                log.Error(String.Format("Couldn't convert {0} to double", textbox_pollingTime.Text));
             }
 
             try {
@@ -60,7 +63,7 @@ namespace Check_Up {
                 Properties.Settings.Default.PollingInterval = pollingInterval;
             }
             catch {
-                Console.Error.WriteLine("Couldn't convert {0} to double", textbox_pollingInterval.Text);
+                log.Error(String.Format("Couldn't convert {0} to double", textbox_pollingInterval.Text));
             }
 
             try {
@@ -68,7 +71,7 @@ namespace Check_Up {
                 //Properties.Settings.Default.VisiblePoints = VisiblePoints;
             }
             catch {
-                //Console.Error.WriteLine("Couldn't convert {0} to int", visiblePoints.Text);
+                //log.Error(String.Format("Couldn't convert {0} to int", visiblePoints.Text));
             }
 
             List<string> DiskNames = new List<string>();

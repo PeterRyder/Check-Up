@@ -41,6 +41,8 @@ namespace Check_Up {
     ///
     public partial class MainWindow : Window {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private Random rand = new Random();
+
         System.Windows.Forms.NotifyIcon ni;
 
         OSDataCollection osDataCollector;
@@ -197,8 +199,11 @@ namespace Check_Up {
                 }
             };
 
+            // Generate a random color for the color of the line
+            Color randColor = GetRandomColor();
+
             areaSeries.DataPointStyle.Setters.Add(
-                new Setter(BackgroundProperty, new SolidColorBrush(Colors.Red)));
+                new Setter(BackgroundProperty, new SolidColorBrush(randColor)));
 
             areaSeries.Title = type;
             areaSeries.Name = "Disk" + type.TrimEnd(':');
@@ -212,6 +217,10 @@ namespace Check_Up {
             areaSeries.ItemsSource = GraphDataDict[type].ValueList;
 
             chart.Series.Add(areaSeries);
+        }
+
+        private Color GetRandomColor() {
+            return Color.FromRgb((byte)rand.Next(20, 236), (byte)this.rand.Next(20, 236), (byte)this.rand.Next(20, 236));
         }
 
         /// <summary>
@@ -407,7 +416,7 @@ namespace Check_Up {
                     window.Close();
                 }
                 catch {
-                    Console.WriteLine("Couldn't close sub window {0}", window.Name);
+                    log.Error(String.Format("Couldn't close sub window {0}", window.Name));
                 }
             }
             backgroundWorker.CancelAsync();
@@ -415,7 +424,7 @@ namespace Check_Up {
                 base.OnClosing((CancelEventArgs)e);
             }
             catch {
-                Console.WriteLine("Couldn't call base form close");
+                log.Error("Couldn't call base form close");
             }
             ni.Visible = false;
             System.Windows.Application.Current.Shutdown();

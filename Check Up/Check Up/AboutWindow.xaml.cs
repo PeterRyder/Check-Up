@@ -27,6 +27,4 @@ namespace Check_Up {
             this.Close();
         }
     }
-
-
 }
