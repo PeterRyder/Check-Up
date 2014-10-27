@@ -8,9 +8,11 @@ using Microsoft.Scripting.Hosting;
 using System.IO;
 using System.Diagnostics;
 using System.ComponentModel;
+using log4net;
 
 namespace Check_Up.Util {
     class Scripts {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private List<string> scripts = new List<string>();
         private List<BackgroundWorker> workers = new List<BackgroundWorker>();
@@ -26,15 +28,7 @@ namespace Check_Up.Util {
 
         public void checkDirectory() {
             if (!Directory.Exists(fullScriptPath)) {
-#if DEBUG
-                Console.WriteLine("Creating scripts directory");
-#endif
                 Directory.CreateDirectory(fullScriptPath);
-            }
-            else {
-#if DEBUG
-                Console.WriteLine("Scripts directory already exists");
-#endif
             }
         }
 
@@ -48,22 +42,30 @@ namespace Check_Up.Util {
             foreach (string filename in files) {
 
                 if (!scripts.Contains(filename)) {
-#if DEBUG
-                    Console.WriteLine("Found new script {0}", Path.GetFileName(filename));               
-#endif
-                    BackgroundWorker backgroundWorker = new BackgroundWorker();
-                    backgroundWorker.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
+                    log.Debug(String.Format("Found new script {0}", Path.GetFileName(filename)));
+                    if (SanityCheckScript(Path.GetFileName(filename))) {
+                        BackgroundWorker backgroundWorker = new BackgroundWorker();
+                        backgroundWorker.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
 
-                    backgroundWorker.RunWorkerAsync(filename);
-                    workers.Add(backgroundWorker);
+                        backgroundWorker.RunWorkerAsync(filename);
+                        workers.Add(backgroundWorker);
+                        scripts.Add(filename);
+                    }
+
                 }
                 else {
-#if DEBUG
-                    Console.WriteLine("Script {0} already running", Path.GetFileName(filename));
-#endif
+                    log.Warn(String.Format("Script {0} already running", Path.GetFileName(filename)));
                 }
+            }
+        }
 
-
+        private bool SanityCheckScript(String filename) {
+            if (Path.GetExtension(filename) != ".py") {
+                log.Error(String.Format("Script must be a Python file. Not executing file {0}", filename));
+                return false;
+            }
+            else {
+                return true;
             }
         }
 
@@ -74,8 +76,5 @@ namespace Check_Up.Util {
             scripts.Add(filename);
             test.main();
         }
-
-    
-
     }
 }

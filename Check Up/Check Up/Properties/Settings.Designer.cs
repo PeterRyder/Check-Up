@@ -97,13 +97,13 @@ namespace Check_Up.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool RealTime {
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int VisiblePoints {
             get {
-                return ((bool)(this["RealTime"]));
+                return ((int)(this["VisiblePoints"]));
             }
             set {
-                this["RealTime"] = value;
+                this["VisiblePoints"] = value;
             }
         }
         
@@ -121,13 +121,24 @@ namespace Check_Up.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
-        public int VisiblePoints {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool RealTime {
             get {
-                return ((int)(this["VisiblePoints"]));
+                return ((bool)(this["RealTime"]));
             }
             set {
-                this["VisiblePoints"] = value;
+                this["RealTime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Generic.List<System.String> Disks {
+            get {
+                return ((global::System.Collections.Generic.List<System.String>)(this["Disks"]));
+            }
+            set {
+                this["Disks"] = value;
             }
         }
     }
