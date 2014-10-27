@@ -20,23 +20,24 @@ namespace Check_Up.Util {
         private PerformanceCounter perfDiskCount;
         #endregion
 
+        // CPU Data
         public int currentCPUUsage;
 
+        // Memory Data
         public double totalMemMBs;
         public double availableMemMBs;
         public double currentMemUsage;
 
+        // Network Data
         public int currentNetUsageBytes;
         public double currentNetUsageMBs;
 
+        // Disk Data
         public int percentDiskTime;
 
         public bool canGatherNet;
 
         public OSDataCollection() {
-#if DEBUG
-            //ListCounters("Network Adapter");
-#endif
 
             #region CPU Counter Initialization
             perfCpuCount = new PerformanceCounter("Processor Information", "% Processor Time", "_Total");

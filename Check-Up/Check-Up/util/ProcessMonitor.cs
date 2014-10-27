@@ -11,17 +11,22 @@ namespace Check_Up.Util {
         string name = "";
         private long peakPagedMem = 0,
                      peakWorkingSet = 0,
-                     peakVirtualMem = 0;
+                     peakVirtualMem = 0,
+                     privateWorkingSet = 0;
 
         float cpuUsage = 0;
         float prevCpuUsage = -1;
+        long prevPrivateWorkingSet = -1;
         PerformanceCounter ProcessCPUUsage;
+        PerformanceCounter ProcessMemUsage;
 
         public ProcessMonitor(string name) {
             this.name = name;
             try {
                 ProcessCPUUsage = new PerformanceCounter("Process", "% Processor Time", name);
                 ProcessCPUUsage.NextValue();
+                ProcessMemUsage = new PerformanceCounter("Process", "Working Set - Private", name);
+                ProcessMemUsage.NextValue();
             }
             catch {
 #if DEBUG
@@ -34,6 +39,8 @@ namespace Check_Up.Util {
         public void GatherData() {
             this.prevCpuUsage = this.cpuUsage;
             this.cpuUsage = ProcessCPUUsage.NextValue() / RandomInfo.logicalCpuCount;
+            this.prevPrivateWorkingSet = this.privateWorkingSet;
+            this.privateWorkingSet = Convert.ToInt64(ProcessMemUsage.NextValue());
         }
 
         public override string ToString() {
@@ -58,6 +65,10 @@ namespace Check_Up.Util {
             this.peakWorkingSet = val;
         }
 
+        public void setPrivateWorkingSet(long val) {
+            this.privateWorkingSet = val;
+        }
+
         public void setPeakVirtualMem(long val) {
             this.peakVirtualMem = val;
         }
@@ -77,8 +88,16 @@ namespace Check_Up.Util {
             return this.peakWorkingSet;
         }
 
+        public long getPrivateWorkingSet() {
+            return this.privateWorkingSet;
+        }
+
         public long getPeakVirtualMem() {
             return this.peakVirtualMem;
+        }
+
+        public long getPrevPrivateWorkingSet(){
+            return this.prevPrivateWorkingSet;
         }
 
         public float getCpuUsage() {
