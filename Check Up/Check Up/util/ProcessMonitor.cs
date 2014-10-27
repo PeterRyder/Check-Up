@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using log4net;
 
 namespace Check_Up.Util {
     class ProcessMonitor : IComparable<ProcessMonitor> {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public string Name { get; set; }
 
@@ -33,9 +35,7 @@ namespace Check_Up.Util {
                 ProcessMemUsage.NextValue();
             }
             catch {
-#if DEBUG
-                Console.WriteLine("Could not initialize procMonitor for process {0}", name);
-#endif
+                log.Error(String.Format("Could not initialize Process Monitor for process {0}", name));
             }
 
         }
