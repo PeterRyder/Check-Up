@@ -54,8 +54,21 @@ namespace Check_Up {
                     }
                     catch {
 #if DEBUG
-                        Console.WriteLine("Couldn't update ListViewItem {0}", proc.getName());
+                        Console.WriteLine("CPU - Couldn't update ListViewItem {0}", proc.getName());
 #endif    
+                    }
+                }
+                if (proc.getPrevPrivateWorkingSet() != proc.getPrivateWorkingSet()) {
+                    try {
+
+                        ListViewItem item = listView1.FindItemWithText(proc.getName(), false, 0, false);
+                        item.SubItems[2].Text = (proc.getPrivateWorkingSet()/1024).ToString() + " K";
+
+                    }
+                    catch {
+#if DEBUG
+                        Console.WriteLine("MEM - Couldn't update ListViewItem {0}", proc.getName());
+#endif
                     }
                 }
             }
@@ -63,7 +76,7 @@ namespace Check_Up {
 
         private void initializeListView() {
             foreach (ProcessMonitor proc in processDataCollector.procMonitors) {
-                listView1.Items.Add(new ListViewItem(new string[] { proc.getName(), proc.getCpuUsage() + "%" }));
+                listView1.Items.Add(new ListViewItem(new string[] { proc.getName(), proc.getCpuUsage() + "%", (proc.getPrivateWorkingSet()/1024).ToString() + " K" }));
             }
         }
 
