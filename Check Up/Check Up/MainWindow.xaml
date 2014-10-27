@@ -4,7 +4,7 @@
         xmlns:cm="clr-namespace:System.ComponentModel;assembly=System"
         xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" xmlns:Custom="http://schemas.microsoft.com/wpf/2008/toolkit" x:Name="mainWindow" x:Class="Check_Up.MainWindow"
         Title="Check Up" WindowStartupLocation="CenterScreen" WindowStyle="ThreeDBorderWindow" Background="{x:Null}" Foreground="{x:Null}" OpacityMask="Red" VerticalAlignment="Top" Height="773" Width="1298" MinWidth="762" MinHeight="486">
-    
+
     <Grid Margin="0" Background="#FF424242" UseLayoutRounding="False">
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -52,12 +52,15 @@
                 <Grid Background="#FFE5E5E5" Margin="0,0,0,63">
                     <Button x:Name="button_logData" Content="Log Data" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103" Click="button_logData_Click" IsEnabled="False"/>
                     <Button x:Name="button_stopLoggingData" Content="Stop Logging Data" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="118" Click="button_stopLoggingData_Click" IsEnabled="False"/>
-
                 </Grid>
             </TabItem>
         </TabControl>
         <ProgressBar x:Name="progressBar" Height="18" Margin="9,0,10,43" VerticalAlignment="Bottom" Background="#FFE5E5E5" Grid.Column="1"/>
-        <chartingToolkit:Chart x:Name="chart" Margin="9,26,0,61" Title="Performance" BorderBrush="#FF424242" Background="#FF424242" Foreground="White" Grid.Column="1"/>
+        <chartingToolkit:Chart x:Name="chart" Margin="9,26,0,61" Title="Performance" BorderBrush="Black" Background="Black" Grid.Column="1" Foreground="White">
+            <chartingToolkit:Chart.Axes>
+                <chartingToolkit:LinearAxis Orientation="Y" Minimum="0" Maximum="100"/>
+            </chartingToolkit:Chart.Axes>
+        </chartingToolkit:Chart>
     </Grid>
 
 </Window>
