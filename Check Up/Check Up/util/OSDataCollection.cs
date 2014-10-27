@@ -110,7 +110,7 @@ namespace Check_Up.Util {
             }
         }
 
-        public void GatherData(string type) {
+        public bool GatherData(string type) {
             if (type == CounterNames.MemName) {
                 availableMemMBs = (int)PerfCounters[type].NextValue();
                 DataValues[type] = (int)Math.Round((totalMemMBs - availableMemMBs) / totalMemMBs * 100d);
@@ -122,8 +122,15 @@ namespace Check_Up.Util {
                 }
             }
             else {
-                DataValues[type] = (int)PerfCounters[type].NextValue();
+                try {
+                    DataValues[type] = (int)PerfCounters[type].NextValue();
+                }
+                catch {
+                    System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(String.Format("Cannot find drive {0} Is it a CD drive? \nNot monitoring drive {0}", type));
+                    return false;
+                }
             }
+            return true;
             
         }
 

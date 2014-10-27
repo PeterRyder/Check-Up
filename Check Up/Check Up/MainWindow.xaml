@@ -56,7 +56,7 @@
             </TabItem>
         </TabControl>
         <ProgressBar x:Name="progressBar" Height="18" Margin="9,0,10,43" VerticalAlignment="Bottom" Background="#FFE5E5E5" Grid.Column="1"/>
-        <chartingToolkit:Chart x:Name="chart" Margin="9,26,0,61" Title="Performance" BorderBrush="Black" Background="Black" Grid.Column="1" Foreground="White">
+        <chartingToolkit:Chart x:Name="chart" Margin="9,26,0,61" Title="Performance" BorderBrush="#FF424242" Background="#FF424242" Grid.Column="1" Foreground="White">
             <chartingToolkit:Chart.Axes>
                 <chartingToolkit:LinearAxis Orientation="Y" Minimum="0" Maximum="100"/>
             </chartingToolkit:Chart.Axes>

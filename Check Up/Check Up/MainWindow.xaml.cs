@@ -352,7 +352,9 @@ namespace Check_Up {
                 // Gather data on the devices
                 List<string> types = new List<string>(GraphDataDict.Keys);
                 for (int j = 0; j < types.Count; j++ ) {
-                    osDataCollector.GatherData(types[j]);
+                    if (osDataCollector.GatherData(types[j]) != true) {
+                        GraphDataDict.Remove(types[j]);
+                    }
                 }
                 #endregion
 
