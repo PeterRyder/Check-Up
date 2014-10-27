@@ -28,7 +28,7 @@
 			  Click="MenuItemAbout_Click"/>
             </MenuItem>
         </Menu>
-        <ListView x:Name="listview_warnings" ToolTip="Shows Warnings" Margin="14,230,0,10" Background="#FFE5E5E5" MaxWidth="273" HorizontalAlignment="Left">
+        <ListView x:Name="listview_warnings" ToolTip="Shows Warnings" Margin="14,230,0,10" Background="#FFE5E5E5" MaxWidth="273" HorizontalAlignment="Left" Width="247">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Warnings" Width="200"/>
