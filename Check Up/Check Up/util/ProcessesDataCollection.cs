@@ -34,8 +34,9 @@ namespace Check_Up.Util {
 
             foreach (ProcessMonitor proc in procMonitorsToRemove) {
                 procMonitors.Remove(proc);
-                procMonitorsToRemove.Remove(proc);
+                ///procMonitorsToRemove.Remove(proc);
             }
+            procMonitorsToRemove.Clear();
         }
     }
 }
