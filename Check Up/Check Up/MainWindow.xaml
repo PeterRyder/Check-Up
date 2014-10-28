@@ -50,7 +50,7 @@
             </TabItem>
             <TabItem Header="Background">
                 <Grid Background="#FFE5E5E5" Margin="0,0,0,63">
-                    <Button x:Name="button_logData" Content="Log Data" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103" Click="button_logData_Click" IsEnabled="False"/>
+                    <Button x:Name="button_logData" Content="Log Data" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103" Click="button_logData_Click"/>
                     <Button x:Name="button_stopLoggingData" Content="Stop Logging Data" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="118" Click="button_stopLoggingData_Click" IsEnabled="False"/>
                 </Grid>
             </TabItem>

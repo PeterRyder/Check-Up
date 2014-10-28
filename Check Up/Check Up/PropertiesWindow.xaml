@@ -41,6 +41,7 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
+                    <CheckBox x:Name="checkbox_monitorProcesses" Content="Monitor Checkboxes" HorizontalAlignment="Left" Margin="215,105,0,0" VerticalAlignment="Top" ToolTip="If processes should be monitored"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Chart Control">

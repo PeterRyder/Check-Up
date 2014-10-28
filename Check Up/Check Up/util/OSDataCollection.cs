@@ -14,8 +14,6 @@ namespace Check_Up.Util {
     class OSDataCollection : IDisposable {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-
-        // create perf mon objects
         private Dictionary<string, PerformanceCounter> PerfCounters = new Dictionary<string,PerformanceCounter>();
 
         public Dictionary<string, int> DataValues = new Dictionary<string, int>();
@@ -25,78 +23,133 @@ namespace Check_Up.Util {
 
         public int currentNetUsageBytes { get; set; }
 
-        public List<int> percentDiskTimes { get; set; }
-
         public bool canGatherNet { get; set; }
 
         public OSDataCollection() {
-            InitializeCounters();
+            
         }
 
-        private void InitializeCounters() {
+        public void InitializeCounters() {
             #region CPU Counter Initialization
-            PerformanceCounter perfCpuCount = new PerformanceCounter("Processor Information", "% Processor Time", "_Total");
-            PerfCounters.Add(CounterNames.CPUName, perfCpuCount);
-            DataValues.Add(CounterNames.CPUName, 0);
+            if (Properties.Settings.Default.CPU && !DataValues.ContainsKey(CounterNames.CPUName)) {
+                Console.WriteLine("Initializing a CPU Counter");
+                PerformanceCounter perfCpuCount = new PerformanceCounter("Processor Information", "% Processor Time", "_Total");
+                PerfCounters.Add(CounterNames.CPUName, perfCpuCount);
+                DataValues.Add(CounterNames.CPUName, 0);
+            }
             #endregion
 
             #region Memory Counter Initialization
-            ulong totalMemBytes = new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory;
-            totalMemMBs = (int)(totalMemBytes / 1024 / 1024);
-            PerformanceCounter perfMemCount = new PerformanceCounter("Memory", "Available MBytes");
-            PerfCounters.Add(CounterNames.MemName, perfMemCount);
-            DataValues.Add(CounterNames.MemName, 0);
+            if (Properties.Settings.Default.Memory && !DataValues.ContainsKey(CounterNames.MemName)) {
+                Console.WriteLine("Initializing a Memory Counter");
+                ulong totalMemBytes = new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory;
+                totalMemMBs = (int)(totalMemBytes / 1024 / 1024);
+                PerformanceCounter perfMemCount = new PerformanceCounter("Memory", "Available MBytes");
+                PerfCounters.Add(CounterNames.MemName, perfMemCount);
+                DataValues.Add(CounterNames.MemName, 0);
+            }
             #endregion
 
             #region Network Counter Initialization
-            string WifiNicDescription = "";
-            string ethernetNicDescription = "";
+            if (Properties.Settings.Default.Network && !DataValues.ContainsKey(CounterNames.NetName)) {
+                Console.WriteLine("Attempting to Initialize a Network Counter");
+                string WifiNicDescription = "";
+                string ethernetNicDescription = "";
 
-            // find the wifi network interface
-            foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces()) {
-                if (nic.Name == "Wi-Fi" || nic.Name == "Wireless Network Connection") {
-                    WifiNicDescription = nic.Description;
-                    WifiNicDescription = WifiNicDescription.Replace("(", "[");
-                    WifiNicDescription = WifiNicDescription.Replace(")", "]");
-                }
+                // find the wifi network interface
+                foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces()) {
+                    if (nic.Name == "Wi-Fi" || nic.Name == "Wireless Network Connection") {
+                        WifiNicDescription = nic.Description;
+                        WifiNicDescription = WifiNicDescription.Replace("(", "[");
+                        WifiNicDescription = WifiNicDescription.Replace(")", "]");
+                    }
 
-                if (nic.Name == "Ethernet" || nic.Name == "Local Area Connection") {
-                    ethernetNicDescription = nic.Description;
-                    ethernetNicDescription = ethernetNicDescription.Replace("(", "[");
-                    ethernetNicDescription = ethernetNicDescription.Replace(")", "]");
+                    if (nic.Name == "Ethernet" || nic.Name == "Local Area Connection") {
+                        ethernetNicDescription = nic.Description;
+                        ethernetNicDescription = ethernetNicDescription.Replace("(", "[");
+                        ethernetNicDescription = ethernetNicDescription.Replace(")", "]");
+                    }
                 }
-            }
-            PerformanceCounter perfNetCount;
-            if (WifiNicDescription != "") {
-                try {
-                    perfNetCount = new PerformanceCounter("Network Adapter", "Bytes Total/sec", WifiNicDescription);
+                PerformanceCounter perfNetCount;
+                if (WifiNicDescription != "") {
+                    try {
+                        perfNetCount = new PerformanceCounter("Network Adapter", "Bytes Total/sec", WifiNicDescription);
+                        PerfCounters.Add(CounterNames.NetName, perfNetCount);
+                        canGatherNet = true;
+                    }
+                    catch {
+                        log.Error("Could not find a counter for your network adapter");
+
+                        canGatherNet = false;
+                    }
+
+                    try {
+                        perfNetCount = new PerformanceCounter("Network Interface", "Bytes Total/sec", WifiNicDescription);
+                        PerfCounters.Add(CounterNames.NetName, perfNetCount);
+                        canGatherNet = true;
+                    }
+                    catch {
+                        log.Error("Could not find a counter for your network interface");
+                        canGatherNet = false;
+                    }
+                }
+                else {
+                    perfNetCount = new PerformanceCounter("Network Adapter", "Bytes Total/sec", ethernetNicDescription);
                     PerfCounters.Add(CounterNames.NetName, perfNetCount);
-                    canGatherNet = true;
-                }
-                catch {
-                    log.Error("Could not find a counter for your network adapter");
-
-                    canGatherNet = false;
                 }
 
-                try {
-                    perfNetCount = new PerformanceCounter("Network Interface", "Bytes Total/sec", WifiNicDescription);
-                    PerfCounters.Add(CounterNames.NetName, perfNetCount);
-                    canGatherNet = true;
-                }
-                catch {
-                    log.Error("Could not find a counter for your network interface");
-                    canGatherNet = false;
-                }
+                DataValues.Add(CounterNames.NetName, 0);
             }
-            else {
-                perfNetCount = new PerformanceCounter("Network Adapter", "Bytes Total/sec", ethernetNicDescription);
-                PerfCounters.Add(CounterNames.NetName, perfNetCount);
-            }
-            
-            DataValues.Add(CounterNames.NetName, 0);
             #endregion
 
+        }
+
+        public List<string> RemoveCounters() {
+            List<string> CountersToRemove = new List<string>();
+            if (!Properties.Settings.Default.CPU && DataValues.ContainsKey(CounterNames.CPUName)) {
+                RemoveCounter(CounterNames.CPUName);
+                CountersToRemove.Add(CounterNames.CPUName);
+            }
+
+            if (!Properties.Settings.Default.Memory && DataValues.ContainsKey(CounterNames.MemName)) {
+                RemoveCounter(CounterNames.MemName);
+                CountersToRemove.Add(CounterNames.MemName);
+            }
+
+            if (!Properties.Settings.Default.Network && DataValues.ContainsKey(CounterNames.NetName)) {
+                RemoveCounter(CounterNames.NetName);
+                CountersToRemove.Add(CounterNames.NetName);
+            }
+
+            List<string> disks = Properties.Settings.Default.Disks;
+            List<string> counters = new List<string>(DataValues.Keys);
+
+            for (int i = 0; i < counters.Count; i++) {
+                if (counters[i] != CounterNames.CPUName &&
+                    counters[i] != CounterNames.MemName &&
+                    counters[i] != CounterNames.NetName &&
+                    !disks.Contains(counters[i])) {
+                        RemoveCounter(counters[i]);
+                        CountersToRemove.Add(counters[i]);
+                }
+            }
+            return CountersToRemove;
+        }
+
+        public void RemoveCounter(string CounterType) {
+            Console.WriteLine("Attempting to remove counter {0}", CounterType);
+            try {
+                DataValues.Remove(CounterType);
+            }
+            catch {
+                log.Error(String.Format("Could not remove data {0} from list", CounterType));
+            }
+            try {
+                PerfCounters.Remove(CounterType);
+            }
+            catch {
+                log.Error(String.Format("Could not remove counter {0} from list", CounterType));
+            }
         }
 
         public void AddDiskCounter(string disk) {
