@@ -54,6 +54,7 @@ namespace Check_Up {
         System.Windows.Forms.NotifyIcon ni;
 
         OSDataCollection osDataCollector;
+        ProcessesDataCollection processDataCollector;
         Scripts scripts;
 
         List<Window> subWindows;
@@ -62,6 +63,8 @@ namespace Check_Up {
         private BackgroundWorker backgroundWorkerLog;
 
         int cycles = 0;
+
+        int updates = 0;
 
         private bool shouldGatherData;
 
@@ -89,8 +92,6 @@ namespace Check_Up {
 
             scripts.checkDirectory();
             scripts.runScripts();
-
-
 
             // initialize a cpuData collector
 
@@ -131,6 +132,7 @@ namespace Check_Up {
             scripts = new Scripts();
             subWindows = new List<Window>();
             osDataCollector = new OSDataCollection();
+            processDataCollector = new ProcessesDataCollection();
 
             backgroundWorkerChart = new BackgroundWorker();
             backgroundWorkerLog = new BackgroundWorker();
@@ -346,6 +348,9 @@ namespace Check_Up {
         /// <param name="e"></param>
         /// <returns></returns>
         private bool GatherData(BackgroundWorker sender, DoWorkEventArgs e) {
+
+            bool monitorProcesses = (bool)e.Argument;
+
             // Store the pollingTime and pollingInterval settings
             double pollingTime = Properties.Settings.Default.PollingTime;
             double pollingInterval = Properties.Settings.Default.PollingInterval;
@@ -364,12 +369,16 @@ namespace Check_Up {
 
                 #region Data Gathering
                 // Gather data on the devices
+                /*
                 List<string> types = new List<string>(osDataCollector.DataValues.Keys);
                 for (int j = 0; j < types.Count; j++) {
                     if (osDataCollector.GatherData(types[j]) != true) {
                         GraphDataDict.Remove(types[j]);
                     }
                 }
+                 */
+
+                processDataCollector.GatherData();
                 #endregion
 
                 shouldGatherData = true;
@@ -517,10 +526,14 @@ namespace Check_Up {
             }
 
             try {
-                backgroundWorkerLog.RunWorkerAsync();
+                bool monitorProcesses = false;
+                if (Properties.Settings.Default.MonitorProcesses) {
+                    monitorProcesses = true;
+                }
+                backgroundWorkerLog.RunWorkerAsync(monitorProcesses);
             }
             catch {
-                log.Error("Could not start backgroundWorker");
+                log.Error("Could not start Background Worker");
             }
             button_stopLoggingData.IsEnabled = true;
             button_logData.IsEnabled = false;
@@ -538,7 +551,7 @@ namespace Check_Up {
             BackgroundWorker worker = sender as BackgroundWorker;
 
             // GatherData every time the background worker does work
-            Console.WriteLine("Starting logging worker");
+            Console.WriteLine("Starting OS Level logging worker");
             e.Result = GatherData(worker, e);
         }
 
@@ -551,12 +564,21 @@ namespace Check_Up {
 
             List<string> types = new List<string>(GraphDataDict.Keys);
             for (int i = 0; i < types.Count; i++) {
-                OutputDataToCSV(types[i], osDataCollector.DataValues[types[i]]);
+                AnalyzeData(types[i], osDataCollector.DataValues[types[i]]);
             }
+
+            if (updates >= Properties.Settings.Default.ReanalyzeDataInterval) {
+                processDataCollector.AnalyzeData();
+                processDataCollector.PrintCalculatedData();
+                updates = 0;
+            }
+
             shouldGatherData = false;
+            Console.WriteLine("Updates: {0}", updates);
+            updates++;
         }
 
-        private void OutputDataToCSV(string type, int value) {
+        private void AnalyzeData(string type, int value) {
             Console.WriteLine("{0} : {1}", type, value);
         }
 

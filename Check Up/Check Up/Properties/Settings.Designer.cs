@@ -225,5 +225,17 @@ namespace Check_Up.Properties {
                 this["ProcMax"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public double ReanalyzeDataInterval {
+            get {
+                return ((double)(this["ReanalyzeDataInterval"]));
+            }
+            set {
+                this["ReanalyzeDataInterval"] = value;
+            }
+        }
     }
 }

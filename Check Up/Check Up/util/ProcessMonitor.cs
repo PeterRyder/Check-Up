@@ -12,11 +12,11 @@ namespace Check_Up.Util {
 
         public string Name { get; set; }
 
-        long privateWorkingSet;
+        public long privateWorkingSet { get; set; }
 
-        float cpuUsage;
+        public double cpuUsage { get; set; }
 
-        float prevCpuUsage;
+        double prevCpuUsage;
         long prevPrivateWorkingSet;
 
         PerformanceCounter ProcessCPUUsage;

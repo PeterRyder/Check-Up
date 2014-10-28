@@ -67,6 +67,8 @@
                             <CheckBox x:Name="checkbox_osMax" Content="Max" Canvas.Left="10" Canvas.Top="52"/>
                         </Canvas>
                     </GroupBox>
+                    <TextBox x:Name="textbox_reanalyzeDataInterval" HorizontalAlignment="Left" Height="23" Margin="177,160,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
+                    <Label Content="Reanalyze Data Interval (Sec)" HorizontalAlignment="Left" Margin="10,158,0,0" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
         </TabControl>
