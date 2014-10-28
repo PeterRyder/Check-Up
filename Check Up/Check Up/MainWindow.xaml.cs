@@ -558,6 +558,17 @@ namespace Check_Up {
         private void backgroundWorkerLog_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
 
             Console.WriteLine("Logging worker finished");
+
+            Console.WriteLine("Results from Process Monitoring");
+            Console.WriteLine("  CPU");
+            foreach (var item in processDataCollector.HighestCpuUsage) {
+                Console.WriteLine("    {0} : {1}%", item.Key, item.Value);
+            }
+
+            Console.WriteLine("  Memory");
+            foreach (var item in processDataCollector.HighestMemUsage) {
+                Console.WriteLine("    {0} : {1}MBs", item.Key, item.Value);
+            }
         }
 
         private void backgroundWorkerLog_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
@@ -565,12 +576,6 @@ namespace Check_Up {
             List<string> types = new List<string>(GraphDataDict.Keys);
             for (int i = 0; i < types.Count; i++) {
                 AnalyzeData(types[i], osDataCollector.DataValues[types[i]]);
-            }
-
-            if (updates >= Properties.Settings.Default.ReanalyzeDataInterval) {
-                processDataCollector.AnalyzeData();
-                processDataCollector.PrintCalculatedData();
-                updates = 0;
             }
 
             shouldGatherData = false;
