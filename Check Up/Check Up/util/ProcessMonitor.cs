@@ -12,10 +12,6 @@ namespace Check_Up.Util {
 
         public string Name { get; set; }
 
-        long peakPagedMem;
-        long peakWorkingSet;
-
-        long peakVirtualMem;
         long privateWorkingSet;
 
         float cpuUsage;

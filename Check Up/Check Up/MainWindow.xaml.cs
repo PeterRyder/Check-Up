@@ -487,9 +487,17 @@ namespace Check_Up {
         }
 
         private void button_logData_Click(object sender, RoutedEventArgs e) {
+
+            osDataCollector.InitializeCounters();
+            List<string> CountersRemoved = osDataCollector.RemoveCounters();
+            if (CountersRemoved.Count != 0) {
+                for (int i = 0; i < CountersRemoved.Count; i++) {
+                    GraphDataDict.Remove(CountersRemoved[i]);
+                }
+            }
+
             if (Properties.Settings.Default.CPU) {
                 AddToGraphData(CounterNames.CPUName);
-             
             }
 
             if (Properties.Settings.Default.Memory) {
@@ -543,13 +551,13 @@ namespace Check_Up {
 
             List<string> types = new List<string>(GraphDataDict.Keys);
             for (int i = 0; i < types.Count; i++) {
-                OutputDataToCSV();
+                OutputDataToCSV(types[i], osDataCollector.DataValues[types[i]]);
             }
             shouldGatherData = false;
         }
 
-        private void OutputDataToCSV() {
-            
+        private void OutputDataToCSV(string type, int value) {
+            Console.WriteLine("{0} : {1}", type, value);
         }
 
         private void button_stopLoggingData_Click(object sender, RoutedEventArgs e) {

@@ -48,7 +48,17 @@ namespace Check_Up {
             Properties.Settings.Default.Memory = (bool)checkbox_Memory.IsChecked;
             Properties.Settings.Default.Network = (bool)checkbox_Network.IsChecked;
             Properties.Settings.Default.DiskIO = (bool)checkbox_DiskIO.IsChecked;
+
             Properties.Settings.Default.MonitorProcesses = (bool)checkbox_monitorProcesses.IsChecked;
+
+            Properties.Settings.Default.OSAvg = (bool)checkbox_osAvg.IsChecked;
+            Properties.Settings.Default.OSMin = (bool)checkbox_osMin.IsChecked;
+            Properties.Settings.Default.OSMax = (bool)checkbox_osMax.IsChecked;
+
+            Properties.Settings.Default.ProcAvg = (bool)checkbox_processAvg.IsChecked;
+            Properties.Settings.Default.ProcMin = (bool)checkbox_processMin.IsChecked;
+            Properties.Settings.Default.ProcMax = (bool)checkbox_processMax.IsChecked;
+
 
             //Properties.Settings.Default.IgnoreTime = checkbox_ignoreTime.Checked;
 
@@ -97,7 +107,16 @@ namespace Check_Up {
             checkbox_Network.IsChecked = Properties.Settings.Default.Network;
             checkbox_DiskIO.IsChecked = Properties.Settings.Default.DiskIO;
             checkbox_ignoreTime.IsChecked = Properties.Settings.Default.IgnoreTime;
+
             checkbox_monitorProcesses.IsChecked = Properties.Settings.Default.MonitorProcesses;
+
+            checkbox_osAvg.IsChecked = Properties.Settings.Default.OSAvg;
+            checkbox_osMin.IsChecked = Properties.Settings.Default.OSMin;
+            checkbox_osMax.IsChecked = Properties.Settings.Default.OSMax;
+
+            checkbox_processAvg.IsChecked = Properties.Settings.Default.ProcAvg;
+            checkbox_processMin.IsChecked = Properties.Settings.Default.ProcMin;
+            checkbox_processMax.IsChecked = Properties.Settings.Default.ProcMax;
 
             if (checkbox_DiskIO.IsChecked == true) {
                 PopulateDriveList();
