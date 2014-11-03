@@ -8,15 +8,8 @@ using log4net;
 using System.IO;
 
 namespace Check_Up.Util {
-    class ProcessMonitor {
+    static class ProcessMonitor {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        public string name { get; set; }
-        public int Id { get; set; }
-
-        public ProcessMonitor(string name) {
-
-        }
 
         public static PerformanceCounter GetPerfCounterForProcessId(int processId, string processCounterName) {
             string instance = GetInstanceNameForProcessId(processId);

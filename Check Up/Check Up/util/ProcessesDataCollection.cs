@@ -34,7 +34,6 @@ namespace Check_Up.Util {
         }
 
         public void GatherData() {
-
             for (int i = 0; i < perfCounters.Count; i++ ) {
                 float data;
                 PerformanceCounter counter = perfCounters[i];
@@ -71,7 +70,6 @@ namespace Check_Up.Util {
                                 break;
                             }
                         }
-                        
                     }
                     continue;
                 }
@@ -99,7 +97,7 @@ namespace Check_Up.Util {
                         }
                     }
                 }
-
+                Thread.Sleep(50);
             }
         }
 

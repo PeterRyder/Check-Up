@@ -558,7 +558,24 @@ namespace Check_Up {
         private void backgroundWorkerLog_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
 
             Console.WriteLine("Logging worker finished");
+            PrintProcessResults();
+        }
 
+        private void backgroundWorkerLog_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
+
+            List<string> types = new List<string>(GraphDataDict.Keys);
+            for (int i = 0; i < types.Count; i++) {
+                AnalyzeData(types[i], osDataCollector.DataValues[types[i]]);
+            }
+
+            PrintProcessResults();
+
+            shouldGatherData = false;
+            Console.WriteLine("Updates: {0}", updates);
+            updates++;
+        }
+
+        private void PrintProcessResults() {
             Console.WriteLine("Results from Process Monitoring");
             Console.WriteLine("  CPU");
             foreach (var item in processDataCollector.HighestCpuUsage) {
@@ -569,18 +586,6 @@ namespace Check_Up {
             foreach (var item in processDataCollector.HighestMemUsage) {
                 Console.WriteLine("    {0} : {1}MBs", item.Key, item.Value);
             }
-        }
-
-        private void backgroundWorkerLog_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
-
-            List<string> types = new List<string>(GraphDataDict.Keys);
-            for (int i = 0; i < types.Count; i++) {
-                AnalyzeData(types[i], osDataCollector.DataValues[types[i]]);
-            }
-
-            shouldGatherData = false;
-            Console.WriteLine("Updates: {0}", updates);
-            updates++;
         }
 
         private void AnalyzeData(string type, int value) {
