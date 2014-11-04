@@ -54,7 +54,7 @@ namespace Check_Up {
         System.Windows.Forms.NotifyIcon ni;
 
         OSDataCollection osDataCollector;
-        ProcessesDataCollection processDataCollector;
+        //ProcessesDataCollection processDataCollector;
         Scripts scripts;
 
         List<Window> subWindows;
@@ -132,7 +132,7 @@ namespace Check_Up {
             scripts = new Scripts();
             subWindows = new List<Window>();
             osDataCollector = new OSDataCollection();
-            processDataCollector = new ProcessesDataCollection();
+            //processDataCollector = new ProcessesDataCollection();
 
             backgroundWorkerChart = new BackgroundWorker();
             backgroundWorkerLog = new BackgroundWorker();
@@ -349,7 +349,7 @@ namespace Check_Up {
         /// <returns></returns>
         private bool GatherData(BackgroundWorker sender, DoWorkEventArgs e) {
 
-            bool monitorProcesses = (bool)e.Argument;
+            //bool monitorProcesses = (bool)e.Argument;
 
             // Store the pollingTime and pollingInterval settings
             double pollingTime = Properties.Settings.Default.PollingTime;
@@ -369,16 +369,20 @@ namespace Check_Up {
 
                 #region Data Gathering
                 // Gather data on the devices
-                /*
+                
+                
                 List<string> types = new List<string>(osDataCollector.DataValues.Keys);
                 for (int j = 0; j < types.Count; j++) {
                     if (osDataCollector.GatherData(types[j]) != true) {
+                        Console.WriteLine("Removing {0}", types[j]);
                         GraphDataDict.Remove(types[j]);
                     }
                 }
-                 */
 
-                processDataCollector.GatherData();
+                if (Properties.Settings.Default.MonitorProcesses) {
+                    //processDataCollector.GatherData();
+                }
+                
                 #endregion
 
                 shouldGatherData = true;
@@ -526,11 +530,7 @@ namespace Check_Up {
             }
 
             try {
-                bool monitorProcesses = false;
-                if (Properties.Settings.Default.MonitorProcesses) {
-                    monitorProcesses = true;
-                }
-                backgroundWorkerLog.RunWorkerAsync(monitorProcesses);
+                backgroundWorkerLog.RunWorkerAsync();
             }
             catch {
                 log.Error("Could not start Background Worker");
@@ -558,7 +558,11 @@ namespace Check_Up {
         private void backgroundWorkerLog_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
 
             Console.WriteLine("Logging worker finished");
-            PrintProcessResults();
+
+            button_stopLoggingData.IsEnabled = false;
+            button_logData.IsEnabled = true;
+
+            //PrintProcessResults();
         }
 
         private void backgroundWorkerLog_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
@@ -568,16 +572,17 @@ namespace Check_Up {
                 AnalyzeData(types[i], osDataCollector.DataValues[types[i]]);
             }
 
-            PrintProcessResults();
+            //PrintProcessResults();
 
             shouldGatherData = false;
             Console.WriteLine("Updates: {0}", updates);
             updates++;
         }
-
+        /*
         private void PrintProcessResults() {
             Console.WriteLine("Results from Process Monitoring");
             Console.WriteLine("  CPU");
+
             foreach (var item in processDataCollector.HighestCpuUsage) {
                 Console.WriteLine("    {0} : {1}%", item.Key, item.Value);
             }
@@ -587,7 +592,7 @@ namespace Check_Up {
                 Console.WriteLine("    {0} : {1}MBs", item.Key, item.Value);
             }
         }
-
+        */
         private void AnalyzeData(string type, int value) {
             Console.WriteLine("{0} : {1}", type, value);
         }

@@ -12,6 +12,9 @@ namespace Check_Up.Util {
 
         public Dictionary<string, float> HighestCpuUsage = new Dictionary<string, float>();
         public Dictionary<string, float> HighestMemUsage = new Dictionary<string, float>();
+
+        private float MinHighestCpu;
+        private float MinHighestMem;
         
         List<PerformanceCounter> perfCounters = new List<PerformanceCounter>();
 
@@ -34,6 +37,9 @@ namespace Check_Up.Util {
         }
 
         public void GatherData() {
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             for (int i = 0; i < perfCounters.Count; i++ ) {
                 float data;
                 PerformanceCounter counter = perfCounters[i];
@@ -51,53 +57,73 @@ namespace Check_Up.Util {
 
                 if (counter.CounterName == "% Processor Time") {
                     data = data / (float)RandomInfo.logicalCpuCount;
-                    //Console.WriteLine("{0} {1} {2}%", counter.InstanceName, counter.CounterName, data);
                     if (HighestCpuUsage.Count < 5) {
                         HighestCpuUsage[counter.InstanceName] = data;
                     }
                     else {
-                        List<string> keys = new List<string>(HighestCpuUsage.Keys);
-                        foreach (string key in keys) {
-                            if (HighestCpuUsage[key] < data) {
-                                HighestCpuUsage.Remove(key);
-                                HighestCpuUsage[counter.InstanceName] = data;
-
-                                var items = from pair in HighestCpuUsage
-                                            orderby pair.Value ascending
-                                            select pair;
-
-                                HighestCpuUsage = items.ToDictionary<KeyValuePair<string, float>, string, float>(pair => pair.Key, pair => pair.Value);
-                                break;
-                            }
-                        }
+                        CheckData("CPU", counter, data, ref HighestCpuUsage);
                     }
                     continue;
                 }
 
                 if (counter.CounterName == "Working Set - Private") {
                     var MemMbs = data / 1024 / 1024;
-                    //Console.WriteLine("{0} {1} {2}Mbs", counter.InstanceName, counter.CounterName, MemMbs);
                     if (HighestMemUsage.Count < 5) {
                         HighestMemUsage[counter.InstanceName] = MemMbs;
                     }
                     else {
-                        List<string> keys = new List<string>(HighestMemUsage.Keys);
-                        foreach (string key in keys) {
-                            if (HighestMemUsage[key] < MemMbs) {
-                                HighestMemUsage.Remove(key);
-                                HighestMemUsage[counter.InstanceName] = MemMbs;
-
-                                var items = from pair in HighestMemUsage
-                                            orderby pair.Value ascending
-                                            select pair;
-
-                                HighestMemUsage = items.ToDictionary<KeyValuePair<string, float>, string, float>(pair => pair.Key, pair => pair.Value);
-                                break;
-                            }
-                        }
+                        CheckData("Memory", counter, MemMbs, ref HighestMemUsage);
                     }
                 }
-                Thread.Sleep(50);
+                 Thread.Sleep(30);
+            }
+
+            
+            watch.Stop();
+
+            TimeSpan ts = watch.Elapsed;
+
+            // Format and display the TimeSpan value.
+            
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                ts.Hours, ts.Minutes, ts.Seconds,
+                ts.Milliseconds / 10);
+            Console.WriteLine("RunTime " + elapsedTime);
+             
+        }
+
+        private void CheckData(string type, PerformanceCounter counter, float data, ref Dictionary<string, float> DataUsage) {
+            
+
+            List<string> keys = new List<string>(DataUsage.Keys);
+
+            string lowest_key = keys[0];
+            float lowest_value = DataUsage[keys[0]];
+
+            foreach (string key in keys) {
+
+                float current_value = DataUsage[key];
+
+
+                //Console.WriteLine("{0} : {1}", key, current_value);
+
+                if (current_value < lowest_value) {
+
+                    //Console.WriteLine("Prev Lowest Value: {0}, {1}",lowest_key, lowest_value);
+
+                    lowest_key = key;
+                    lowest_value = DataUsage[key];
+
+                    
+                    //Console.WriteLine("New Lowest Value: {0}, {1}", lowest_key, lowest_value);
+
+                    break;
+                }
+            }
+
+            if (lowest_value < data) {
+                DataUsage.Remove(lowest_key);
+                DataUsage[counter.InstanceName] = data;
             }
         }
 
