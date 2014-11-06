@@ -65,13 +65,16 @@ namespace Check_Up {
 
         int cycles = 0;
 
-        int updates = 0;
-
         private bool shouldGatherData;
 
         private Dictionary<string, GraphData> GraphDataDict = new Dictionary<string, GraphData>();
 
         public MainWindow() {
+
+            Thread LoadingWindow = new Thread(ShowLoadingWindow);
+            LoadingWindow.SetApartmentState(ApartmentState.STA);
+            LoadingWindow.Start();
+
             InitializeComponent();
 
             InitializeObjects();
@@ -124,6 +127,18 @@ namespace Check_Up {
 
             button_stopMonitoring.IsEnabled = false;
             button_resetChart.IsEnabled = false;
+
+            LoadingWindow.Abort();
+            LoadingWindow.Join();
+        }
+
+        private void ShowLoadingWindow() {
+            LoadingWindow window = new LoadingWindow();
+            //System.Windows.Threading.Dispatcher.Run();
+            window.Show();
+            window.Closed += (s, e) => System.Windows.Threading.Dispatcher.ExitAllFrames();
+
+            System.Windows.Threading.Dispatcher.Run();
         }
 
         private void InitializeObjects() {
@@ -367,10 +382,6 @@ namespace Check_Up {
                         Console.WriteLine("Removing {0}", types[j]);
                         GraphDataDict.Remove(types[j]);
                     }
-                }
-
-                if (Properties.Settings.Default.MonitorProcesses) {
-                    //processDataCollector.GatherData();
                 }
                 
                 #endregion
