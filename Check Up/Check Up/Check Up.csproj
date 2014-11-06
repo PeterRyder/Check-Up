@@ -61,9 +61,8 @@
     <ApplicationIcon>Check Up.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Hammer.SpinningWheel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\WPF Toolkit\v3.5.50211.1\Hammer.SpinningWheel.dll</HintPath>
+    <Reference Include="Hammer.SpinningWheel">
+      <HintPath>..\packages\Hammer.SpinningWheel.2.0\lib\net40\Hammer.SpinningWheel.dll</HintPath>
     </Reference>
     <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
