@@ -2,26 +2,12 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="About Check Up" Height="300" Width="300" ResizeMode="NoResize" Background="Black" WindowStartupLocation="CenterScreen" ScrollViewer.HorizontalScrollBarVisibility="Auto" WindowStyle="None">
-    <Grid Background="Black">
-        <Label Content="Check Up" Margin="0,20,0,0" VerticalAlignment="Top" FontSize="30" HorizontalContentAlignment="Center" Height="55" FontWeight="Bold" Background="Black">
-            <Label.Foreground>
-                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                    <GradientStop Color="#FF707070" Offset="1"/>
-                    <GradientStop Color="White"/>
-                </LinearGradientBrush>
-            </Label.Foreground>
-        </Label>
-        <Label Content="Peter Ryder" Margin="0,75,0,0" VerticalAlignment="Top" FontSize="20" HorizontalContentAlignment="Center" Background="Black">
-            <Label.Foreground>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FF707070" Offset="0"/>
-                    <GradientStop Color="#FFB8B8B8" Offset="1"/>
-                </LinearGradientBrush>
-            </Label.Foreground>
-        </Label>
-        <Label Content="Blake Lingenau" Margin="0,117,0,0" VerticalAlignment="Top" FontSize="20" HorizontalContentAlignment="Center" Foreground="#FF707070" Background="Black"/>
-        <Label Content="Mike Macelletti" Margin="0,159,0,0" VerticalAlignment="Top" FontSize="20" HorizontalContentAlignment="Center" Foreground="#FF707070" Background="Black"/>
-        <Button Content="OK" HorizontalAlignment="Center" VerticalAlignment="Bottom" HorizontalContentAlignment="Left" BorderBrush="{x:Null}" Margin="100,0,100,44" Width="100" Height="24" Click="Button_Click_1" Cursor="Hand" Foreground="#FF9B9B9B">
+    <Grid Background="#FF898989">
+        <Label Content="Check Up" Margin="0,20,0,0" VerticalAlignment="Top" FontSize="30" HorizontalContentAlignment="Center" Height="55" FontWeight="Bold" Background="#FF898989" Foreground="Black"/>
+        <Label Content="Peter Ryder" Margin="0,75,0,0" VerticalAlignment="Top" FontSize="20" HorizontalContentAlignment="Center" Background="#FF898989" Foreground="Black"/>
+        <Label Content="Blake Lingenau" Margin="0,117,0,0" VerticalAlignment="Top" FontSize="20" HorizontalContentAlignment="Center" Foreground="Black" Background="#FF898989"/>
+        <Label Content="Mike Macelletti" Margin="0,159,0,0" VerticalAlignment="Top" FontSize="20" HorizontalContentAlignment="Center" Foreground="Black" Background="#FF898989"/>
+        <Button Content="OK" HorizontalAlignment="Center" VerticalAlignment="Bottom" HorizontalContentAlignment="Left" BorderBrush="Black" Margin="100,0,100,44" Width="100" Height="24" Cursor="Hand" Foreground="Black" Background="#FF898989" Click="Button_Click">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="Background" Value="Black"/>
@@ -36,7 +22,7 @@
                     </Setter>
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#424242"/>
+                            <Setter Property="Background" Value="Azure"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>

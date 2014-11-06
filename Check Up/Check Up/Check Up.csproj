@@ -128,7 +128,6 @@
       <DependentUpon>LoadingWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="util\CounterNames.cs" />
-    <Compile Include="util\CSV.cs" />
     <Compile Include="util\Disk.cs" />
     <Compile Include="util\OSDataCollection.cs" />
     <Compile Include="util\ProcessesDataCollection.cs" />
