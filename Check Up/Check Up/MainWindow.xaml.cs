@@ -45,11 +45,11 @@ namespace Check_Up {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private Random rand = new Random();
 
-        private string OutputPath = "Data";
-        private string FullOutputPath = "";
-        private string OutputDataFileName;
+        private string OutputDirectory = "Data";
+        private string FullOutputDirectory = "";
 
-        private CsvFileWriter CsvWriter;
+        private string OutputDataFileName;
+        private string FullOutputDataFileName;
 
         System.Windows.Forms.NotifyIcon ni;
 
@@ -85,14 +85,9 @@ namespace Check_Up {
 
             CreateOutputDirectory();
 
-            OutputDataFileName = OutputPath + "/Data - " + DateTime.Now.ToString("yyyy-MM-dd") + ".csv";
+            OutputDataFileName = OutputDirectory + "\\Data-" + DateTime.Now.ToString("yyyy-MM-dd") + ".csv";
 
-            try {
-                CsvWriter = new CsvFileWriter(OutputDataFileName);
-            }
-            catch {
-                log.Error(String.Format("Could not create output csv file {0}", OutputDataFileName));
-            }
+            FullOutputDataFileName = System.IO.Path.GetFullPath(OutputDataFileName);
 
             scripts.checkDirectory();
             scripts.runScripts();
@@ -166,9 +161,9 @@ namespace Check_Up {
         }
 
         private void CreateOutputDirectory() {
-            FullOutputPath = System.IO.Path.GetFullPath(OutputPath);
-            if (!Directory.Exists(FullOutputPath)) {
-                Directory.CreateDirectory(FullOutputPath);
+            FullOutputDirectory = System.IO.Path.GetFullPath(OutputDirectory);
+            if (!Directory.Exists(FullOutputDirectory)) {
+                Directory.CreateDirectory(FullOutputDirectory);
             }
         }
 
@@ -374,8 +369,8 @@ namespace Check_Up {
                     return true;
                 }
 
-                #region Data Gathering                
-                
+                #region Data Gathering
+
                 List<string> types = new List<string>(osDataCollector.DataValues.Keys);
                 for (int j = 0; j < types.Count; j++) {
                     if (osDataCollector.GatherData(types[j]) != true) {
@@ -383,7 +378,7 @@ namespace Check_Up {
                         GraphDataDict.Remove(types[j]);
                     }
                 }
-                
+
                 #endregion
 
                 shouldGatherData = true;
@@ -601,22 +596,42 @@ namespace Check_Up {
                         orderby pair.Value descending
                         select pair;
 
+            Console.WriteLine("Writing Data to CSV file: {0}", FullOutputDataFileName);
 
+            // the boolean false represents whether it will be appended or not - currently overwriting
+            using (var w = new StreamWriter(FullOutputDataFileName, false)) {
 
-            Console.WriteLine("Results from Process Monitoring");
-            Console.WriteLine("  CPU");
+                var first = "Process Name";
+                var second = "CPU Usage";
+                var third = "Memory Usage";
 
-            foreach (KeyValuePair<string, float> item in CPUItems) {
-                Console.WriteLine("    {0} : {1}%", item.Key, item.Value);
+                var line = string.Format("{0},{1} (%),{2} (MB)", first, second, third);
+                w.WriteLine(line);
+                w.Flush();
+
+                int index = 0;
+                foreach (KeyValuePair<string, float> item in CPUItems) {
+
+                    var first1 = item.Key;
+                    var second1 = item.Value;
+                    float third1 = -1;
+
+                    foreach (KeyValuePair<string, float> item1 in MemoryItems) {
+                        if (item1.Key == item.Key) {
+                            third1 = item1.Value;
+                        }
+                    }
+
+                    var line1 = string.Format("{0},{1},{2}", first1, second1, third1);
+                    w.WriteLine(line1);
+                    w.Flush();
+
+                    index++;
+                }
+
             }
-
-            Console.WriteLine("  Memory");
-            foreach (KeyValuePair<string, float> item in MemoryItems) {
-                Console.WriteLine("    {0} : {1}MBs", item.Key, item.Value);
-            }
+            Console.WriteLine("Finished writing data to CSV");
         }
-
-
     }
 }
 

@@ -72,6 +72,8 @@ namespace Check_Up.Util {
                 HighestMemUsage = AggregateData(HighestMemUsage);
             }
 
+            Console.WriteLine("Finished gathering process data");
+
         }
 
 
