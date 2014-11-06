@@ -53,9 +53,7 @@
             <TabItem Header="Background">
                 <Grid Background="#FFE5E5E5" Margin="0,2,0,-2">
                     <CheckBox x:Name="checkbox_monitorProcesses" Content="Monitor Processes" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="If processes should be monitored" IsChecked="True"/>
-                    <CheckBox x:Name="checkbox_monitorProcesses_Copy" Content="Monitor Operating System" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" ToolTip="If the OS should be monitored"/>
-                    <Label Content="Amount of Processes to Monitor:" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
-                    <TextBox x:Name="textbox_numProcesses" HorizontalAlignment="Left" Height="23" Margin="199,54,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="120"/>
+                    <CheckBox x:Name="checkbox_monitorProcesses_Copy" Content="Monitor Operating System" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" ToolTip="If the OS should be monitored" IsEnabled="False"/>
                 </Grid>
             </TabItem>
         </TabControl>
