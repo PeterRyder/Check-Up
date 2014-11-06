@@ -578,15 +578,14 @@ namespace Check_Up {
             // Fire the NextValue function again to calculate the average usage for all processes during the runtime
             processDataCollector.GatherData(false);
 
-            // Debug output to the console
-            PrintProcessResults();
-
+            // Log output to CSV file
+            OutputProcessResults();
         }
 
         /// <summary>
         /// Debug Function to Output Results of Process Monitoring
         /// </summary>
-        private void PrintProcessResults() {
+        private void OutputProcessResults() {
 
             var CPUItems = from pair in processDataCollector.HighestCpuUsage
                         orderby pair.Value descending
