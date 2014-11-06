@@ -156,85 +156,13 @@ namespace Check_Up.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool OSAvg {
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int AmountProcesses {
             get {
-                return ((bool)(this["OSAvg"]));
+                return ((int)(this["AmountProcesses"]));
             }
             set {
-                this["OSAvg"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool OSMin {
-            get {
-                return ((bool)(this["OSMin"]));
-            }
-            set {
-                this["OSMin"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool OSMax {
-            get {
-                return ((bool)(this["OSMax"]));
-            }
-            set {
-                this["OSMax"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ProcAvg {
-            get {
-                return ((bool)(this["ProcAvg"]));
-            }
-            set {
-                this["ProcAvg"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ProcMin {
-            get {
-                return ((bool)(this["ProcMin"]));
-            }
-            set {
-                this["ProcMin"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ProcMax {
-            get {
-                return ((bool)(this["ProcMax"]));
-            }
-            set {
-                this["ProcMax"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
-        public double ReanalyzeDataInterval {
-            get {
-                return ((double)(this["ReanalyzeDataInterval"]));
-            }
-            set {
-                this["ReanalyzeDataInterval"] = value;
+                this["AmountProcesses"] = value;
             }
         }
     }

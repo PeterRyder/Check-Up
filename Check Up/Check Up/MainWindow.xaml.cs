@@ -530,14 +530,32 @@ namespace Check_Up {
                 }
             }
 
+            // Start the processes monitoring thread
             try {
                 new Thread(GatherDataProcesses).Start();
             }
             catch {
                 log.Error("Could not start Process Thread");
             }
+
+            // Start the OS monitoring thread
+            /*
+            try {
+                backgroundWorkerChart.RunWorkerAsync();
+            }
+            catch {
+                log.Error("Could not start backgroundWorker");
+            }
+             */
+
             button_stopLoggingData.IsEnabled = true;
             button_logData.IsEnabled = false;
+        }
+
+        private void button_stopLoggingData_Click(object sender, RoutedEventArgs e) {
+            handle.Set();
+            button_logData.IsEnabled = true;
+            button_stopLoggingData.IsEnabled = false;
         }
 
         private void AddToGraphData(string type) {
@@ -547,21 +565,29 @@ namespace Check_Up {
             }
         }
 
+        /// <summary>
+        /// Will Gather Data on All Processes
+        /// </summary>
         void GatherDataProcesses() {
-
             if (Properties.Settings.Default.MonitorProcesses) {
+                // Fire the NextValue function for all processes
                 processDataCollector.GatherData();
             }
             else {
                 Console.WriteLine("Will not monitor processes - setting is false");
             }
 
+            // Sleep the thread until the stop logging button is pressed
             handle.WaitOne();
 
+            // Debug output to the console
             PrintProcessResults();
 
         }
 
+        /// <summary>
+        /// Debug Function to Output Results of Process Monitoring
+        /// </summary>
         private void PrintProcessResults() {
             Console.WriteLine("Results from Process Monitoring");
             Console.WriteLine("  CPU");
@@ -576,11 +602,7 @@ namespace Check_Up {
             }
         }
 
-        private void button_stopLoggingData_Click(object sender, RoutedEventArgs e) {
-            handle.Set();
-            button_logData.IsEnabled = true;
-            button_stopLoggingData.IsEnabled = false;
-        }
+
     }
 }
 

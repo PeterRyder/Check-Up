@@ -10,10 +10,11 @@ namespace Check_Up.Util {
     class ProcessesDataCollection {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        // Maximum Values
         public Dictionary<string, float> HighestCpuUsage = new Dictionary<string, float>();
         public Dictionary<string, float> HighestMemUsage = new Dictionary<string, float>();
-        
-        List<PerformanceCounter> perfCounters = new List<PerformanceCounter>();
+
+        List<PerformanceCounter> ProcessPerfCounters = new List<PerformanceCounter>();
 
         public ProcessesDataCollection() {
             
@@ -23,23 +24,25 @@ namespace Check_Up.Util {
 
                 if (cpuCounter != null) {
                     cpuCounter.NextValue();
-                    perfCounters.Add(cpuCounter);
+                    ProcessPerfCounters.Add(cpuCounter);
                 }
 
                 if (memCounter != null) {
                     memCounter.NextValue();
-                    perfCounters.Add(memCounter);
+                    ProcessPerfCounters.Add(memCounter);
                 } 
             }
         }
 
         public void GatherData() {
+#if DEBUG
             Stopwatch watch = new Stopwatch();
             watch.Start();
+#endif
 
-            for (int i = 0; i < perfCounters.Count; i++ ) {
+            for (int i = 0; i < ProcessPerfCounters.Count; i++ ) {
                 float data;
-                PerformanceCounter counter = perfCounters[i];
+                PerformanceCounter counter = ProcessPerfCounters[i];
 
                 try {
                     data = counter.NextValue();
@@ -48,13 +51,13 @@ namespace Check_Up.Util {
                     Console.WriteLine("Could not get information on process {0}", counter.InstanceName);
                     Console.WriteLine("Removing process {0}", counter.InstanceName);
 
-                    perfCounters.Remove(counter);
+                    ProcessPerfCounters.Remove(counter);
                     continue;
                 }
 
                 if (counter.CounterName == "% Processor Time") {
                     data = data / (float)RandomInfo.logicalCpuCount;
-                    if (HighestCpuUsage.Count < 5) {
+                    if (HighestCpuUsage.Count < Properties.Settings.Default.AmountProcesses) {
                         HighestCpuUsage[counter.InstanceName] = data;
                     }
                     else {
@@ -65,7 +68,7 @@ namespace Check_Up.Util {
 
                 if (counter.CounterName == "Working Set - Private") {
                     var MemMbs = data / 1024 / 1024;
-                    if (HighestMemUsage.Count < 5) {
+                    if (HighestMemUsage.Count < Properties.Settings.Default.AmountProcesses) {
                         HighestMemUsage[counter.InstanceName] = MemMbs;
                     }
                     else {
@@ -75,7 +78,7 @@ namespace Check_Up.Util {
                  Thread.Sleep(30);
             }
 
-            
+#if DEBUG
             watch.Stop();
 
             TimeSpan ts = watch.Elapsed;
@@ -86,12 +89,10 @@ namespace Check_Up.Util {
                 ts.Hours, ts.Minutes, ts.Seconds,
                 ts.Milliseconds / 10);
             Console.WriteLine("RunTime " + elapsedTime);
-             
+#endif
         }
 
         private void CheckData(string type, PerformanceCounter counter, float data, ref Dictionary<string, float> DataUsage) {
-            
-
             List<string> keys = new List<string>(DataUsage.Keys);
 
             string lowest_key = keys[0];
@@ -99,22 +100,9 @@ namespace Check_Up.Util {
 
             foreach (string key in keys) {
 
-                float current_value = DataUsage[key];
-
-
-                //Console.WriteLine("{0} : {1}", key, current_value);
-
-                if (current_value < lowest_value) {
-
-                    //Console.WriteLine("Prev Lowest Value: {0}, {1}",lowest_key, lowest_value);
-
+                if (DataUsage[key] < lowest_value && key != lowest_key) {
                     lowest_key = key;
                     lowest_value = DataUsage[key];
-
-                    
-                    //Console.WriteLine("New Lowest Value: {0}, {1}", lowest_key, lowest_value);
-
-                    break;
                 }
             }
 

@@ -34,7 +34,7 @@ namespace Check_Up {
 
             double pollingTime = Convert.ToDouble(textbox_pollingTime.Text);
             double pollingInterval = Convert.ToDouble(textbox_pollingInterval.Text);
-            double reanalyzeDataInterval = Convert.ToDouble(textbox_reanalyzeDataInterval.Text);
+            int ProcessesToMonitor = Convert.ToInt32(textbox_numProcesses.Text);
 
             if (pollingTime < pollingInterval) {
                 log.Warn("Polling time greater than polling interval");
@@ -49,21 +49,13 @@ namespace Check_Up {
 
             Properties.Settings.Default.MonitorProcesses = (bool)checkbox_monitorProcesses.IsChecked;
 
-            Properties.Settings.Default.OSAvg = (bool)checkbox_osAvg.IsChecked;
-            Properties.Settings.Default.OSMin = (bool)checkbox_osMin.IsChecked;
-            Properties.Settings.Default.OSMax = (bool)checkbox_osMax.IsChecked;
-
-            Properties.Settings.Default.ProcAvg = (bool)checkbox_processAvg.IsChecked;
-            Properties.Settings.Default.ProcMin = (bool)checkbox_processMin.IsChecked;
-            Properties.Settings.Default.ProcMax = (bool)checkbox_processMax.IsChecked;
+            Properties.Settings.Default.AmountProcesses = ProcessesToMonitor;
 
             //Properties.Settings.Default.IgnoreTime = checkbox_ignoreTime.Checked;
 
             Properties.Settings.Default.PollingTime = pollingTime;
 
             Properties.Settings.Default.PollingInterval = pollingInterval;
-
-            Properties.Settings.Default.ReanalyzeDataInterval = reanalyzeDataInterval;
 
             //int VisiblePoints = Convert.ToInt32(visiblePoints.Text);
             //Properties.Settings.Default.VisiblePoints = VisiblePoints;
@@ -92,14 +84,6 @@ namespace Check_Up {
 
             checkbox_monitorProcesses.IsChecked = Properties.Settings.Default.MonitorProcesses;
 
-            checkbox_osAvg.IsChecked = Properties.Settings.Default.OSAvg;
-            checkbox_osMin.IsChecked = Properties.Settings.Default.OSMin;
-            checkbox_osMax.IsChecked = Properties.Settings.Default.OSMax;
-
-            checkbox_processAvg.IsChecked = Properties.Settings.Default.ProcAvg;
-            checkbox_processMin.IsChecked = Properties.Settings.Default.ProcMin;
-            checkbox_processMax.IsChecked = Properties.Settings.Default.ProcMax;
-
             if (checkbox_DiskIO.IsChecked == true) {
                 PopulateDriveList();
             }
@@ -107,7 +91,8 @@ namespace Check_Up {
             textbox_pollingTime.Text = Properties.Settings.Default.PollingTime.ToString();
             textbox_pollingInterval.Text = Properties.Settings.Default.PollingInterval.ToString();
             textbox_visiblePoints.Text = Properties.Settings.Default.VisiblePoints.ToString();
-            textbox_reanalyzeDataInterval.Text = Properties.Settings.Default.ReanalyzeDataInterval.ToString();
+
+            textbox_numProcesses.Text = Properties.Settings.Default.AmountProcesses.ToString();
         }
 
         private void checkbox_DiskIO_Click(object sender, RoutedEventArgs e) {

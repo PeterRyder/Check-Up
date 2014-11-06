@@ -41,7 +41,6 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
-                    <CheckBox x:Name="checkbox_monitorProcesses" Content="Monitor Processes" HorizontalAlignment="Left" Margin="215,105,0,0" VerticalAlignment="Top" ToolTip="If processes should be monitored"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Chart Control">
@@ -52,23 +51,11 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Background">
-                <Grid Background="#FFE5E5E5">
-                    <GroupBox Header="Process Level" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Height="132" Width="159">
-                        <Canvas Margin="0">
-                            <CheckBox x:Name="checkbox_processAvg" Content="Avg" Canvas.Left="10" Canvas.Top="10"/>
-                            <CheckBox x:Name="checkbox_processMin" Content="Min" Canvas.Left="10" Canvas.Top="31"/>
-                            <CheckBox x:Name="checkbox_processMax" Content="Max" Canvas.Left="10" Canvas.Top="52"/>
-                        </Canvas>
-                    </GroupBox>
-                    <GroupBox Header="OS Level" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="132" Width="159">
-                        <Canvas Margin="0">
-                            <CheckBox x:Name="checkbox_osAvg" Content="Avg" Canvas.Left="10" Canvas.Top="10"/>
-                            <CheckBox x:Name="checkbox_osMin" Content="Min" Canvas.Left="10" Canvas.Top="31"/>
-                            <CheckBox x:Name="checkbox_osMax" Content="Max" Canvas.Left="10" Canvas.Top="52"/>
-                        </Canvas>
-                    </GroupBox>
-                    <TextBox x:Name="textbox_reanalyzeDataInterval" HorizontalAlignment="Left" Height="23" Margin="177,160,0,0" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="120"/>
-                    <Label Content="Reanalyze Data Interval (Sec)" HorizontalAlignment="Left" Margin="10,158,0,0" VerticalAlignment="Top"/>
+                <Grid Background="#FFE5E5E5" Margin="0,2,0,-2">
+                    <CheckBox x:Name="checkbox_monitorProcesses" Content="Monitor Processes" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="If processes should be monitored"/>
+                    <CheckBox x:Name="checkbox_monitorProcesses_Copy" Content="Monitor Operating System" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" ToolTip="If the OS should be monitored"/>
+                    <Label Content="Amount of Processes to Monitor:" HorizontalAlignment="Left" Margin="10,52,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="textbox_numProcesses" HorizontalAlignment="Left" Height="23" Margin="199,54,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="120"/>
                 </Grid>
             </TabItem>
         </TabControl>
