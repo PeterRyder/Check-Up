@@ -32,13 +32,11 @@ namespace Check_Up.Util {
                     ProcessPerfCounters.Add(memCounter);
                 } 
             }
+
+
         }
 
-        public void GatherData() {
-#if DEBUG
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
-#endif
+        public void GatherData(bool FirstRun) {
 
             for (int i = 0; i < ProcessPerfCounters.Count; i++ ) {
                 float data;
@@ -55,42 +53,48 @@ namespace Check_Up.Util {
                     continue;
                 }
 
-                if (counter.CounterName == "% Processor Time") {
-                    data = data / (float)RandomInfo.logicalCpuCount;
-                    if (HighestCpuUsage.Count < Properties.Settings.Default.AmountProcesses) {
-                        HighestCpuUsage[counter.InstanceName] = data;
-                    }
-                    else {
-                        CheckData("CPU", counter, data, ref HighestCpuUsage);
-                    }
-                    continue;
-                }
+                if (!FirstRun) {
+                    if (counter.CounterName == "% Processor Time") {
 
-                if (counter.CounterName == "Working Set - Private") {
-                    var MemMbs = data / 1024 / 1024;
-                    if (HighestMemUsage.Count < Properties.Settings.Default.AmountProcesses) {
-                        HighestMemUsage[counter.InstanceName] = MemMbs;
+                        data = data / (float)RandomInfo.logicalCpuCount;
+                        HighestCpuUsage[counter.InstanceName] = data;
+
+                        /*
+                        data = data / (float)RandomInfo.logicalCpuCount;
+                        if (HighestCpuUsage.Count < Properties.Settings.Default.AmountProcesses) {
+                            HighestCpuUsage[counter.InstanceName] = data;
+                        }
+                        else {
+                            CheckData("CPU", counter, data, ref HighestCpuUsage);
+                        }
+                         */
                     }
-                    else {
-                        CheckData("Memory", counter, MemMbs, ref HighestMemUsage);
+
+                    if (counter.CounterName == "Working Set - Private") {
+
+                        HighestMemUsage[counter.InstanceName] = data / 1024 / 1024;
+
+                        /*
+                        var MemMbs = data / 1024 / 1024;
+                        if (HighestMemUsage.Count < Properties.Settings.Default.AmountProcesses) {
+                            HighestMemUsage[counter.InstanceName] = MemMbs;
+                        }
+                        else {
+                            CheckData("Memory", counter, MemMbs, ref HighestMemUsage);
+                        }
+                         */
                     }
                 }
-                 Thread.Sleep(30);
             }
 
-#if DEBUG
-            watch.Stop();
+            if (!FirstRun) {
+                HighestCpuUsage = AggregateData(HighestCpuUsage);
+                HighestMemUsage = AggregateData(HighestMemUsage);
+            }
 
-            TimeSpan ts = watch.Elapsed;
-
-            // Format and display the TimeSpan value.
-            
-            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-                ts.Hours, ts.Minutes, ts.Seconds,
-                ts.Milliseconds / 10);
-            Console.WriteLine("RunTime " + elapsedTime);
-#endif
         }
+
+
 
         private void CheckData(string type, PerformanceCounter counter, float data, ref Dictionary<string, float> DataUsage) {
             List<string> keys = new List<string>(DataUsage.Keys);
@@ -110,6 +114,35 @@ namespace Check_Up.Util {
                 DataUsage.Remove(lowest_key);
                 DataUsage[counter.InstanceName] = data;
             }
+        }
+
+        private Dictionary<string, float> AggregateData(Dictionary<string, float> DataUsage) {
+            List<string> keys = new List<string>(DataUsage.Keys);
+            Dictionary<string, float> NewData = new Dictionary<string,float>();
+
+            foreach (string key in keys) {
+                int PoundIndex = key.IndexOf('#');
+                if (PoundIndex != -1) {
+                    string newKey = key.Substring(0, PoundIndex);
+                    if (!NewData.ContainsKey(newKey)) {
+                        NewData[newKey] = DataUsage[key];
+                    }
+                    else {                        
+                        NewData[newKey] = NewData[newKey] + DataUsage[key];
+                    }
+                }
+                else {
+                    if (NewData.ContainsKey(key)) {
+                        NewData[key] = NewData[key] + DataUsage[key];
+                    }
+                    else {
+                        NewData[key] = DataUsage[key];
+                    }
+                    
+                }
+            }
+
+            return NewData;
         }
 
     }

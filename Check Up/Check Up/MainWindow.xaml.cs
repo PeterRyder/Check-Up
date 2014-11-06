@@ -571,7 +571,7 @@ namespace Check_Up {
         void GatherDataProcesses() {
             if (Properties.Settings.Default.MonitorProcesses) {
                 // Fire the NextValue function for all processes
-                processDataCollector.GatherData();
+                processDataCollector.GatherData(true);
             }
             else {
                 Console.WriteLine("Will not monitor processes - setting is false");
@@ -579,6 +579,9 @@ namespace Check_Up {
 
             // Sleep the thread until the stop logging button is pressed
             handle.WaitOne();
+
+            // Fire the NextValue function again to calculate the average usage for all processes during the runtime
+            processDataCollector.GatherData(false);
 
             // Debug output to the console
             PrintProcessResults();
@@ -589,15 +592,26 @@ namespace Check_Up {
         /// Debug Function to Output Results of Process Monitoring
         /// </summary>
         private void PrintProcessResults() {
+
+            var CPUItems = from pair in processDataCollector.HighestCpuUsage
+                        orderby pair.Value descending
+                        select pair;
+
+            var MemoryItems = from pair in processDataCollector.HighestMemUsage
+                        orderby pair.Value descending
+                        select pair;
+
+
+
             Console.WriteLine("Results from Process Monitoring");
             Console.WriteLine("  CPU");
 
-            foreach (var item in processDataCollector.HighestCpuUsage) {
+            foreach (KeyValuePair<string, float> item in CPUItems) {
                 Console.WriteLine("    {0} : {1}%", item.Key, item.Value);
             }
 
             Console.WriteLine("  Memory");
-            foreach (var item in processDataCollector.HighestMemUsage) {
+            foreach (KeyValuePair<string, float> item in MemoryItems) {
                 Console.WriteLine("    {0} : {1}MBs", item.Key, item.Value);
             }
         }
