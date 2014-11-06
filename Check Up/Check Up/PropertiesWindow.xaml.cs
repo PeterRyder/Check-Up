@@ -34,7 +34,6 @@ namespace Check_Up {
 
             double pollingTime = Convert.ToDouble(textbox_pollingTime.Text);
             double pollingInterval = Convert.ToDouble(textbox_pollingInterval.Text);
-            int ProcessesToMonitor = Convert.ToInt32(textbox_numProcesses.Text);
 
             if (pollingTime < pollingInterval) {
                 log.Warn("Polling time greater than polling interval");
@@ -48,8 +47,6 @@ namespace Check_Up {
             Properties.Settings.Default.DiskIO = (bool)checkbox_DiskIO.IsChecked;
 
             Properties.Settings.Default.MonitorProcesses = (bool)checkbox_monitorProcesses.IsChecked;
-
-            Properties.Settings.Default.AmountProcesses = ProcessesToMonitor;
 
             //Properties.Settings.Default.IgnoreTime = checkbox_ignoreTime.Checked;
 
@@ -92,7 +89,6 @@ namespace Check_Up {
             textbox_pollingInterval.Text = Properties.Settings.Default.PollingInterval.ToString();
             textbox_visiblePoints.Text = Properties.Settings.Default.VisiblePoints.ToString();
 
-            textbox_numProcesses.Text = Properties.Settings.Default.AmountProcesses.ToString();
         }
 
         private void checkbox_DiskIO_Click(object sender, RoutedEventArgs e) {
