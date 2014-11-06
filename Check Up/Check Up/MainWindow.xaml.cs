@@ -54,13 +54,14 @@ namespace Check_Up {
         System.Windows.Forms.NotifyIcon ni;
 
         OSDataCollection osDataCollector;
-        //ProcessesDataCollection processDataCollector;
+        ProcessesDataCollection processDataCollector;
         Scripts scripts;
 
         List<Window> subWindows;
 
+        static EventWaitHandle handle = new AutoResetEvent(false);
+
         private BackgroundWorker backgroundWorkerChart;
-        private BackgroundWorker backgroundWorkerLog;
 
         int cycles = 0;
 
@@ -113,7 +114,6 @@ namespace Check_Up {
             // check if cpuData should be gathered
             if (shouldGatherData) {
                 backgroundWorkerChart.DoWork += backgroundWorkerChart_DoWork;
-                backgroundWorkerLog.DoWork += backgroundWorkerLog_DoWork;
             }
             else {
 
@@ -132,10 +132,9 @@ namespace Check_Up {
             scripts = new Scripts();
             subWindows = new List<Window>();
             osDataCollector = new OSDataCollection();
-            //processDataCollector = new ProcessesDataCollection();
+            processDataCollector = new ProcessesDataCollection();
 
             backgroundWorkerChart = new BackgroundWorker();
-            backgroundWorkerLog = new BackgroundWorker();
         }
 
         private void InitializeEventHandlers() {
@@ -149,11 +148,6 @@ namespace Check_Up {
             backgroundWorkerChart.RunWorkerCompleted += backgroundWorkerChart_RunWorkerCompleted;
             backgroundWorkerChart.WorkerReportsProgress = true;
             backgroundWorkerChart.WorkerSupportsCancellation = true;
-
-            backgroundWorkerLog.ProgressChanged += backgroundWorkerLog_ProgressChanged;
-            backgroundWorkerLog.RunWorkerCompleted += backgroundWorkerLog_RunWorkerCompleted;
-            backgroundWorkerLog.WorkerReportsProgress = true;
-            backgroundWorkerLog.WorkerSupportsCancellation = true;
         }
 
         private void CreateOutputDirectory() {
@@ -325,7 +319,7 @@ namespace Check_Up {
             BackgroundWorker worker = sender as BackgroundWorker;
 
             // GatherData every time the background worker does work
-            e.Result = GatherData(worker, e);
+            e.Result = GatherDataOS(worker, e);
         }
 
         private void backgroundWorkerChart_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
@@ -347,9 +341,7 @@ namespace Check_Up {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         /// <returns></returns>
-        private bool GatherData(BackgroundWorker sender, DoWorkEventArgs e) {
-
-            //bool monitorProcesses = (bool)e.Argument;
+        private bool GatherDataOS(BackgroundWorker sender, DoWorkEventArgs e) {
 
             // Store the pollingTime and pollingInterval settings
             double pollingTime = Properties.Settings.Default.PollingTime;
@@ -367,9 +359,7 @@ namespace Check_Up {
                     return true;
                 }
 
-                #region Data Gathering
-                // Gather data on the devices
-                
+                #region Data Gathering                
                 
                 List<string> types = new List<string>(osDataCollector.DataValues.Keys);
                 for (int j = 0; j < types.Count; j++) {
@@ -530,10 +520,10 @@ namespace Check_Up {
             }
 
             try {
-                backgroundWorkerLog.RunWorkerAsync();
+                new Thread(GatherDataProcesses).Start();
             }
             catch {
-                log.Error("Could not start Background Worker");
+                log.Error("Could not start Process Thread");
             }
             button_stopLoggingData.IsEnabled = true;
             button_logData.IsEnabled = false;
@@ -546,39 +536,21 @@ namespace Check_Up {
             }
         }
 
-        private void backgroundWorkerLog_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
-            // Create a BackgroundWorker object out of the sender
-            BackgroundWorker worker = sender as BackgroundWorker;
+        void GatherDataProcesses() {
 
-            // GatherData every time the background worker does work
-            Console.WriteLine("Starting OS Level logging worker");
-            e.Result = GatherData(worker, e);
-        }
-
-        private void backgroundWorkerLog_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
-
-            Console.WriteLine("Logging worker finished");
-
-            button_stopLoggingData.IsEnabled = false;
-            button_logData.IsEnabled = true;
-
-            //PrintProcessResults();
-        }
-
-        private void backgroundWorkerLog_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
-
-            List<string> types = new List<string>(GraphDataDict.Keys);
-            for (int i = 0; i < types.Count; i++) {
-                AnalyzeData(types[i], osDataCollector.DataValues[types[i]]);
+            if (Properties.Settings.Default.MonitorProcesses) {
+                processDataCollector.GatherData();
+            }
+            else {
+                Console.WriteLine("Will not monitor processes - setting is false");
             }
 
-            //PrintProcessResults();
+            handle.WaitOne();
 
-            shouldGatherData = false;
-            Console.WriteLine("Updates: {0}", updates);
-            updates++;
+            PrintProcessResults();
+
         }
-        /*
+
         private void PrintProcessResults() {
             Console.WriteLine("Results from Process Monitoring");
             Console.WriteLine("  CPU");
@@ -592,13 +564,9 @@ namespace Check_Up {
                 Console.WriteLine("    {0} : {1}MBs", item.Key, item.Value);
             }
         }
-        */
-        private void AnalyzeData(string type, int value) {
-            Console.WriteLine("{0} : {1}", type, value);
-        }
 
         private void button_stopLoggingData_Click(object sender, RoutedEventArgs e) {
-            backgroundWorkerLog.CancelAsync();
+            handle.Set();
             button_logData.IsEnabled = true;
             button_stopLoggingData.IsEnabled = false;
         }

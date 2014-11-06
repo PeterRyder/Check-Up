@@ -12,9 +12,6 @@ namespace Check_Up.Util {
 
         public Dictionary<string, float> HighestCpuUsage = new Dictionary<string, float>();
         public Dictionary<string, float> HighestMemUsage = new Dictionary<string, float>();
-
-        private float MinHighestCpu;
-        private float MinHighestMem;
         
         List<PerformanceCounter> perfCounters = new List<PerformanceCounter>();
 
