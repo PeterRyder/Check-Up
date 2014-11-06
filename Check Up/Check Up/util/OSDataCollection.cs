@@ -26,7 +26,6 @@ namespace Check_Up.Util {
         public bool canGatherNet { get; set; }
 
         
-
         public OSDataCollection() {
             
         }

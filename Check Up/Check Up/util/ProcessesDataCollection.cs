@@ -58,31 +58,11 @@ namespace Check_Up.Util {
 
                         data = data / (float)RandomInfo.logicalCpuCount;
                         HighestCpuUsage[counter.InstanceName] = data;
-
-                        /*
-                        data = data / (float)RandomInfo.logicalCpuCount;
-                        if (HighestCpuUsage.Count < Properties.Settings.Default.AmountProcesses) {
-                            HighestCpuUsage[counter.InstanceName] = data;
-                        }
-                        else {
-                            CheckData("CPU", counter, data, ref HighestCpuUsage);
-                        }
-                         */
                     }
 
                     if (counter.CounterName == "Working Set - Private") {
 
                         HighestMemUsage[counter.InstanceName] = data / 1024 / 1024;
-
-                        /*
-                        var MemMbs = data / 1024 / 1024;
-                        if (HighestMemUsage.Count < Properties.Settings.Default.AmountProcesses) {
-                            HighestMemUsage[counter.InstanceName] = MemMbs;
-                        }
-                        else {
-                            CheckData("Memory", counter, MemMbs, ref HighestMemUsage);
-                        }
-                         */
                     }
                 }
             }

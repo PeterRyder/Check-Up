@@ -47,7 +47,7 @@ namespace Check_Up {
 
         private string OutputPath = "Data";
         private string FullOutputPath = "";
-        private string OutputFileName;
+        private string OutputDataFileName;
 
         private CsvFileWriter CsvWriter;
 
@@ -85,13 +85,13 @@ namespace Check_Up {
 
             CreateOutputDirectory();
 
-            OutputFileName = "Data - " + DateTime.Now.ToString("yyyy-MM-dd") + ".csv";
+            OutputDataFileName = OutputPath + "/Data - " + DateTime.Now.ToString("yyyy-MM-dd") + ".csv";
 
             try {
-                CsvWriter = new CsvFileWriter(OutputFileName);
+                CsvWriter = new CsvFileWriter(OutputDataFileName);
             }
             catch {
-                log.Error(String.Format("Could not create output csv file {0}", OutputFileName));
+                log.Error(String.Format("Could not create output csv file {0}", OutputDataFileName));
             }
 
             scripts.checkDirectory();
