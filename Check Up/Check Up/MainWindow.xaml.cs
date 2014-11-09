@@ -70,6 +70,7 @@ namespace Check_Up {
 
         public MainWindow() {
 
+            // create the loading window in a seperate thread before initialzing anything
             Thread LoadingWindow = new Thread(ShowLoadingWindow);
             LoadingWindow.SetApartmentState(ApartmentState.STA);
             LoadingWindow.Start();
@@ -288,7 +289,7 @@ namespace Check_Up {
             backgroundWorkerChart.ReportProgress(100);
 
             this.button_resetChart.IsEnabled = true;
-            this.menuitem_Properties.IsEnabled = true;
+            
 
         }
 
@@ -342,6 +343,7 @@ namespace Check_Up {
             // Disable the monitorStop button when the backgroundWorker is completed
             button_stopMonitoring.IsEnabled = false;
             button_resetChart.IsEnabled = true;
+            this.menuitem_Properties.IsEnabled = true;
         }
 
         /// <summary>

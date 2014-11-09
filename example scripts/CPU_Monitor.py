@@ -1,32 +1,28 @@
-'''
-Created on Aug 12, 2014
 
-@author: pwryder
-'''
-
-import sys
 import time
 
 # import this C# library to monitor the CPU
-from Check_Up.Util import *
+import System.Diagnostics
 
 
 def main():
     print("Running script...")
 
     # create a PerformanceMonitor object
-    data_collector = OSDataCollection()
+    perf = System.Diagnostics.PerformanceCounter("Processor Information",
+                                                 "% Processor Time",
+                                                 "_Total")
+
+    # call NextValue() once to initialize the counter
+    perf.NextValue()
 
     while(True):
 
-        data_collector.GatherCPUData()
+        # poll the cpu
+        cpuUsage = int(perf.NextValue())
 
         # do something with the data
-        print("Python: Cpu Usage " + str(data_collector.currentCPUUsage))
+        print("Python: Cpu Usage " + str(cpuUsage))
 
         # sleep for at least .05 seconds
         time.sleep(1)
-
-
-if __name__ == "__main__":
-    sys.exit(main())
