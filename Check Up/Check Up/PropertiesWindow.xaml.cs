@@ -26,7 +26,7 @@ namespace Check_Up {
 
         public PropertiesWindow() {
             InitializeComponent();
-            
+
             SelectedDisks = new List<Disk>();
         }
 
@@ -36,43 +36,26 @@ namespace Check_Up {
             double pollingInterval = Convert.ToDouble(textbox_pollingInterval.Text);
 
             if (pollingTime < pollingInterval) {
-
                 log.Warn("Polling time greater than polling interval");
-
                 error1.Visibility = System.Windows.Visibility.Visible;
                 return;
             }
-
 
             Properties.Settings.Default.CPU = (bool)checkbox_CPU.IsChecked;
             Properties.Settings.Default.Memory = (bool)checkbox_Memory.IsChecked;
             Properties.Settings.Default.Network = (bool)checkbox_Network.IsChecked;
             Properties.Settings.Default.DiskIO = (bool)checkbox_DiskIO.IsChecked;
+
+            Properties.Settings.Default.MonitorProcesses = (bool)checkbox_monitorProcesses.IsChecked;
+
             //Properties.Settings.Default.IgnoreTime = checkbox_ignoreTime.Checked;
 
-            try {
+            Properties.Settings.Default.PollingTime = pollingTime;
 
-                Properties.Settings.Default.PollingTime = pollingTime;
-            }
-            catch {
-                log.Error(String.Format("Couldn't convert {0} to double", textbox_pollingTime.Text));
-            }
+            Properties.Settings.Default.PollingInterval = pollingInterval;
 
-            try {
-
-                Properties.Settings.Default.PollingInterval = pollingInterval;
-            }
-            catch {
-                log.Error(String.Format("Couldn't convert {0} to double", textbox_pollingInterval.Text));
-            }
-
-            try {
-                //int VisiblePoints = Convert.ToInt32(visiblePoints.Text);
-                //Properties.Settings.Default.VisiblePoints = VisiblePoints;
-            }
-            catch {
-                //log.Error(String.Format("Couldn't convert {0} to int", visiblePoints.Text));
-            }
+            //int VisiblePoints = Convert.ToInt32(visiblePoints.Text);
+            //Properties.Settings.Default.VisiblePoints = VisiblePoints;
 
             List<string> DiskNames = new List<string>();
             for (int i = 0; i < SelectedDisks.Count; i++) {
@@ -96,13 +79,16 @@ namespace Check_Up {
             checkbox_DiskIO.IsChecked = Properties.Settings.Default.DiskIO;
             checkbox_ignoreTime.IsChecked = Properties.Settings.Default.IgnoreTime;
 
+            checkbox_monitorProcesses.IsChecked = Properties.Settings.Default.MonitorProcesses;
+
             if (checkbox_DiskIO.IsChecked == true) {
                 PopulateDriveList();
             }
 
-            textbox_pollingTime.Text = "" + Properties.Settings.Default.PollingTime;
-            textbox_pollingInterval.Text = "" + Properties.Settings.Default.PollingInterval;
-            textbox_visiblePoints.Text = "" + Properties.Settings.Default.VisiblePoints;
+            textbox_pollingTime.Text = Properties.Settings.Default.PollingTime.ToString();
+            textbox_pollingInterval.Text = Properties.Settings.Default.PollingInterval.ToString();
+            textbox_visiblePoints.Text = Properties.Settings.Default.VisiblePoints.ToString();
+
         }
 
         private void checkbox_DiskIO_Click(object sender, RoutedEventArgs e) {

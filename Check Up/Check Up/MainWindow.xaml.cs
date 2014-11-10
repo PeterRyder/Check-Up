@@ -20,7 +20,6 @@ using System.Collections.ObjectModel;
 using System.Windows.Forms;
 using log4net;
 using System.IO;
-using ReadWriteCsv;
 
 namespace Check_Up {
 
@@ -45,21 +44,23 @@ namespace Check_Up {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private Random rand = new Random();
 
-        private string OutputPath = "Data";
-        private string FullOutputPath = "";
-        private string OutputFileName;
+        private string OutputDirectory = "Data";
+        private string FullOutputDirectory = "";
 
-        private CsvFileWriter CsvWriter; 
+        private string OutputDataFileName;
+        private string FullOutputDataFileName;
 
         System.Windows.Forms.NotifyIcon ni;
 
         OSDataCollection osDataCollector;
+        ProcessesDataCollection processDataCollector;
         Scripts scripts;
 
         List<Window> subWindows;
 
+        static EventWaitHandle handle = new AutoResetEvent(false);
+
         private BackgroundWorker backgroundWorkerChart;
-        private BackgroundWorker backgroundWorkerLog;
 
         int cycles = 0;
 
@@ -68,6 +69,12 @@ namespace Check_Up {
         private Dictionary<string, GraphData> GraphDataDict = new Dictionary<string, GraphData>();
 
         public MainWindow() {
+
+            // create the loading window in a seperate thread before initialzing anything
+            Thread LoadingWindow = new Thread(ShowLoadingWindow);
+            LoadingWindow.SetApartmentState(ApartmentState.STA);
+            LoadingWindow.Start();
+
             InitializeComponent();
 
             InitializeObjects();
@@ -78,19 +85,12 @@ namespace Check_Up {
 
             CreateOutputDirectory();
 
-            OutputFileName = "Data - " + DateTime.Now.ToString("yyyy-MM-dd") + ".csv";
-            
-            try {
-                CsvWriter = new CsvFileWriter(OutputFileName);
-            }
-            catch {
-                log.Error(String.Format("Could not create output csv file {0}", OutputFileName));
-            }
+            OutputDataFileName = OutputDirectory + "\\Data-" + DateTime.Now.ToString("yyyy-MM-dd") + ".csv";
+
+            FullOutputDataFileName = System.IO.Path.GetFullPath(OutputDataFileName);
 
             scripts.checkDirectory();
             scripts.runScripts();
-
-            
 
             // initialize a cpuData collector
 
@@ -112,7 +112,6 @@ namespace Check_Up {
             // check if cpuData should be gathered
             if (shouldGatherData) {
                 backgroundWorkerChart.DoWork += backgroundWorkerChart_DoWork;
-                backgroundWorkerLog.DoWork += backgroundWorkerLog_DoWork;
             }
             else {
 
@@ -123,6 +122,18 @@ namespace Check_Up {
 
             button_stopMonitoring.IsEnabled = false;
             button_resetChart.IsEnabled = false;
+
+            LoadingWindow.Abort();
+            LoadingWindow.Join();
+        }
+
+        private void ShowLoadingWindow() {
+            LoadingWindow window = new LoadingWindow();
+            //System.Windows.Threading.Dispatcher.Run();
+            window.Show();
+            window.Closed += (s, e) => System.Windows.Threading.Dispatcher.ExitAllFrames();
+
+            System.Windows.Threading.Dispatcher.Run();
         }
 
         private void InitializeObjects() {
@@ -131,9 +142,9 @@ namespace Check_Up {
             scripts = new Scripts();
             subWindows = new List<Window>();
             osDataCollector = new OSDataCollection();
+            processDataCollector = new ProcessesDataCollection();
 
             backgroundWorkerChart = new BackgroundWorker();
-            backgroundWorkerLog = new BackgroundWorker();
         }
 
         private void InitializeEventHandlers() {
@@ -147,17 +158,12 @@ namespace Check_Up {
             backgroundWorkerChart.RunWorkerCompleted += backgroundWorkerChart_RunWorkerCompleted;
             backgroundWorkerChart.WorkerReportsProgress = true;
             backgroundWorkerChart.WorkerSupportsCancellation = true;
-
-            backgroundWorkerLog.ProgressChanged += backgroundWorkerLog_ProgressChanged;
-            backgroundWorkerLog.RunWorkerCompleted += backgroundWorkerLog_RunWorkerCompleted;
-            backgroundWorkerLog.WorkerReportsProgress = true;
-            backgroundWorkerLog.WorkerSupportsCancellation = true;
         }
 
         private void CreateOutputDirectory() {
-            FullOutputPath = System.IO.Path.GetFullPath(OutputPath);
-            if (!Directory.Exists(FullOutputPath)) {
-                Directory.CreateDirectory(FullOutputPath);
+            FullOutputDirectory = System.IO.Path.GetFullPath(OutputDirectory);
+            if (!Directory.Exists(FullOutputDirectory)) {
+                Directory.CreateDirectory(FullOutputDirectory);
             }
         }
 
@@ -197,6 +203,14 @@ namespace Check_Up {
             this.button_resetChart.IsEnabled = false;
             button_stopMonitoring.IsEnabled = true;
             this.menuitem_Properties.IsEnabled = false;
+
+            osDataCollector.InitializeCounters();
+            List<string> CountersRemoved = osDataCollector.RemoveCounters();
+            if (CountersRemoved.Count != 0) {
+                for (int i = 0; i < CountersRemoved.Count; i++) {
+                    GraphDataDict.Remove(CountersRemoved[i]);
+                }
+            }
 
             this.cycles = 1;
 
@@ -251,9 +265,7 @@ namespace Check_Up {
             areaSeries.DependentValuePath = "Value";
             areaSeries.IndependentValuePath = "Key";
 
-            if (!GraphDataDict.ContainsKey(type)) {
-                GraphDataDict.Add(type, new GraphData());
-            }
+            AddToGraphData(type);
 
             areaSeries.ItemsSource = GraphDataDict[type].ValueList;
 
@@ -277,7 +289,7 @@ namespace Check_Up {
             backgroundWorkerChart.ReportProgress(100);
 
             this.button_resetChart.IsEnabled = true;
-            this.menuitem_Properties.IsEnabled = true;
+            
 
         }
 
@@ -298,7 +310,15 @@ namespace Check_Up {
 
                 List<string> types = new List<string>(GraphDataDict.Keys);
                 for (int i = 0; i < types.Count; i++) {
-                    updateGraph(types[i], cycles, osDataCollector.DataValues[types[i]]);
+                    try {
+                        updateGraph(types[i], cycles, osDataCollector.DataValues[types[i]]);
+                    }
+                    catch {
+                        log.Error(String.Format("Could not update graph for type {0}", types[i]));
+                        log.Info(String.Format("Removing type {0} from lists", types[i]));
+                        GraphDataDict.Remove(types[i]);
+                        osDataCollector.RemoveCounter(types[i]);
+                    }
                 }
                 shouldGatherData = false;
             }
@@ -309,7 +329,7 @@ namespace Check_Up {
             BackgroundWorker worker = sender as BackgroundWorker;
 
             // GatherData every time the background worker does work
-            e.Result = GatherData(worker, e);
+            e.Result = GatherDataOS(worker, e);
         }
 
         private void backgroundWorkerChart_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
@@ -323,6 +343,7 @@ namespace Check_Up {
             // Disable the monitorStop button when the backgroundWorker is completed
             button_stopMonitoring.IsEnabled = false;
             button_resetChart.IsEnabled = true;
+            this.menuitem_Properties.IsEnabled = true;
         }
 
         /// <summary>
@@ -331,7 +352,8 @@ namespace Check_Up {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         /// <returns></returns>
-        private bool GatherData(BackgroundWorker sender, DoWorkEventArgs e) {
+        private bool GatherDataOS(BackgroundWorker sender, DoWorkEventArgs e) {
+
             // Store the pollingTime and pollingInterval settings
             double pollingTime = Properties.Settings.Default.PollingTime;
             double pollingInterval = Properties.Settings.Default.PollingInterval;
@@ -343,19 +365,21 @@ namespace Check_Up {
                 int timeMsec = DateTime.Now.Millisecond;
 
                 // If there is a pending cancellation break out of the loop
-                if (backgroundWorkerChart.CancellationPending) {
+                if (sender.CancellationPending) {
                     e.Cancel = true;
                     return true;
                 }
 
                 #region Data Gathering
-                // Gather data on the devices
-                List<string> types = new List<string>(GraphDataDict.Keys);
-                for (int j = 0; j < types.Count; j++ ) {
+
+                List<string> types = new List<string>(osDataCollector.DataValues.Keys);
+                for (int j = 0; j < types.Count; j++) {
                     if (osDataCollector.GatherData(types[j]) != true) {
+                        Console.WriteLine("Removing {0}", types[j]);
                         GraphDataDict.Remove(types[j]);
                     }
                 }
+
                 #endregion
 
                 shouldGatherData = true;
@@ -367,9 +391,9 @@ namespace Check_Up {
                     double percentage = (i / pollingTime) * 100;
 
                     if (percentage >= 100 || i >= pollingTime) {
-                        backgroundWorkerChart.CancelAsync();
+                        sender.CancelAsync();
                         percentage = Math.Round(percentage);
-                        backgroundWorkerChart.ReportProgress((int)percentage);
+                        sender.ReportProgress((int)percentage);
 
                         log.Debug("Set cancellation to pending");
 
@@ -377,7 +401,7 @@ namespace Check_Up {
                     else {
                         // Report the progress percentage
                         percentage = Math.Round(percentage);
-                        backgroundWorkerChart.ReportProgress((int)percentage);
+                        sender.ReportProgress((int)percentage);
                     }
 
                     // Increment the amount of time elapsed
@@ -386,7 +410,7 @@ namespace Check_Up {
                 else {
 
                     // If the polling time is not to be used keep the progress bar at 0 percent
-                    backgroundWorkerChart.ReportProgress(0);
+                    sender.ReportProgress(0);
                 }
 
                 int timeElapsed = (DateTime.Now.Minute - timeMin) * 60 * 1000;
@@ -403,10 +427,10 @@ namespace Check_Up {
             }
 
             // If the loop is finished stop the backgroundWorker
-            backgroundWorkerChart.CancelAsync();
+            sender.CancelAsync();
 
             // Announce if there is a pending cancellation
-            if (backgroundWorkerChart.CancellationPending) {
+            if (sender.CancellationPending) {
                 log.Debug("Cancellation is pending");
                 e.Cancel = true;
                 return true;
@@ -473,35 +497,140 @@ namespace Check_Up {
         }
 
         private void button_logData_Click(object sender, RoutedEventArgs e) {
+
+            osDataCollector.InitializeCounters();
+            List<string> CountersRemoved = osDataCollector.RemoveCounters();
+            if (CountersRemoved.Count != 0) {
+                for (int i = 0; i < CountersRemoved.Count; i++) {
+                    GraphDataDict.Remove(CountersRemoved[i]);
+                }
+            }
+
+            if (Properties.Settings.Default.CPU) {
+                AddToGraphData(CounterNames.CPUName);
+            }
+
+            if (Properties.Settings.Default.Memory) {
+                AddToGraphData(CounterNames.MemName);
+            }
+
+            if (Properties.Settings.Default.Network) {
+                AddToGraphData(CounterNames.NetName);
+            }
+
+            if (Properties.Settings.Default.DiskIO) {
+                List<string> disks = Properties.Settings.Default.Disks;
+                for (int i = 0; i < disks.Count; i++) {
+                    AddToGraphData(disks[i]);
+                    osDataCollector.AddDiskCounter(disks[i]);
+                }
+            }
+
+            // Start the processes monitoring thread
             try {
-                backgroundWorkerLog.RunWorkerAsync();
+                new Thread(GatherDataProcesses).Start();
+            }
+            catch {
+                log.Error("Could not start Process Thread");
+            }
+
+            // Start the OS monitoring thread
+            /*
+            try {
+                backgroundWorkerChart.RunWorkerAsync();
             }
             catch {
                 log.Error("Could not start backgroundWorker");
             }
-        }
+             */
 
-        private void backgroundWorkerLog_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
-            // Create a BackgroundWorker object out of the sender
-            BackgroundWorker worker = sender as BackgroundWorker;
-
-            // GatherData every time the background worker does work
-            Console.WriteLine("Starting logging worker");
-            e.Result = GatherData(worker, e);
-        }
-
-        private void backgroundWorkerLog_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
-
-            Console.WriteLine("Logging worker finished");
-        }
-
-        private void backgroundWorkerLog_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
-
-            Console.WriteLine("The logging worker progress was changed");
+            button_stopLoggingData.IsEnabled = true;
+            button_logData.IsEnabled = false;
         }
 
         private void button_stopLoggingData_Click(object sender, RoutedEventArgs e) {
-            backgroundWorkerLog.CancelAsync();
+            handle.Set();
+            button_logData.IsEnabled = true;
+            button_stopLoggingData.IsEnabled = false;
+        }
+
+        private void AddToGraphData(string type) {
+            if (!GraphDataDict.ContainsKey(type)) {
+                GraphDataDict.Add(type, new GraphData());
+                Console.WriteLine("Added {0} to GraphDataDict", type);
+            }
+        }
+
+        /// <summary>
+        /// Will Gather Data on All Processes
+        /// </summary>
+        void GatherDataProcesses() {
+            if (Properties.Settings.Default.MonitorProcesses) {
+                // Fire the NextValue function for all processes
+                processDataCollector.GatherData(true);
+            }
+            else {
+                Console.WriteLine("Will not monitor processes - setting is false");
+            }
+
+            // Sleep the thread until the stop logging button is pressed
+            handle.WaitOne();
+
+            // Fire the NextValue function again to calculate the average usage for all processes during the runtime
+            processDataCollector.GatherData(false);
+
+            // Log output to CSV file
+            OutputProcessResults();
+        }
+
+        /// <summary>
+        /// Debug Function to Output Results of Process Monitoring
+        /// </summary>
+        private void OutputProcessResults() {
+
+            var CPUItems = from pair in processDataCollector.HighestCpuUsage
+                        orderby pair.Value descending
+                        select pair;
+
+            var MemoryItems = from pair in processDataCollector.HighestMemUsage
+                        orderby pair.Value descending
+                        select pair;
+
+            Console.WriteLine("Writing Data to CSV file: {0}", FullOutputDataFileName);
+
+            // the boolean false represents whether it will be appended or not - currently overwriting
+            using (var w = new StreamWriter(FullOutputDataFileName, false)) {
+
+                var first = "Process Name";
+                var second = "CPU Usage";
+                var third = "Memory Usage";
+
+                var line = string.Format("{0},{1} (%),{2} (MB)", first, second, third);
+                w.WriteLine(line);
+                w.Flush();
+
+                int index = 0;
+                foreach (KeyValuePair<string, float> item in CPUItems) {
+
+                    var first1 = item.Key;
+                    var second1 = item.Value;
+                    float third1 = -1;
+
+                    foreach (KeyValuePair<string, float> item1 in MemoryItems) {
+                        if (item1.Key == item.Key) {
+                            third1 = item1.Value;
+                        }
+                    }
+
+                    var line1 = string.Format("{0},{1},{2}", first1, second1, third1);
+                    w.WriteLine(line1);
+                    w.Flush();
+
+                    index++;
+                }
+
+            }
+            Console.WriteLine("Finished writing data to CSV");
         }
     }
 }

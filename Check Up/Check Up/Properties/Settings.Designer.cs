@@ -141,5 +141,17 @@ namespace Check_Up.Properties {
                 this["Disks"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool MonitorProcesses {
+            get {
+                return ((bool)(this["MonitorProcesses"]));
+            }
+            set {
+                this["MonitorProcesses"] = value;
+            }
+        }
     }
 }

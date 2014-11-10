@@ -14,17 +14,12 @@ using System.Windows.Shapes;
 
 namespace Check_Up {
     /// <summary>
-    /// Interaction logic for AboutWindow.xaml
+    /// Interaction logic for LoadingWindow.xaml
     /// </summary>
-
-    public partial class AboutWindow : Window {
-
-        public AboutWindow() {
+    public partial class LoadingWindow : Window {
+        public LoadingWindow() {
             InitializeComponent();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e) {
-            this.Close();
+            items.Text = "Loading Process Performance Counters";
         }
     }
 }
