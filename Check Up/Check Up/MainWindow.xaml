@@ -14,7 +14,7 @@
             <ColumnDefinition Width="951*"/>
         </Grid.ColumnDefinitions>
 
-        <Menu x:Name="menu_bar" VerticalAlignment="Top" Height="18" Grid.ColumnSpan="2">
+        <Menu x:Name="menu_bar" VerticalAlignment="Top" Height="20" Grid.ColumnSpan="2">
             <MenuItem x:Name="menuitem_file" Header="File">
                 <MenuItem x:Name="menuitem_Properties" Header="Properties" HorizontalAlignment="Left" Width="160"
 			  Click="MenuItemProperties_Click"/>
