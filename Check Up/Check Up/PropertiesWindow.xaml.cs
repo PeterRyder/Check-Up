@@ -35,6 +35,12 @@ namespace Check_Up {
             double pollingTime = Convert.ToDouble(textbox_pollingTime.Text);
             double pollingInterval = Convert.ToDouble(textbox_pollingInterval.Text);
 
+            // Prevent program from polling more frequently than .2 seconds
+            if (pollingInterval < .2)
+            {
+                pollingInterval = .2;
+            }
+
             if (pollingTime < pollingInterval) {
                 log.Warn("Polling time greater than polling interval");
                 error1.Visibility = System.Windows.Visibility.Visible;
