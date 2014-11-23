@@ -12,3 +12,19 @@ Planning to do:
 - Different color palette presets to choose from
 - Performance improvements
 - Add user manual to README
+
+User manual:
+
+After starting Check Up, the first step is opening the Properties window from
+the File drop down menu. From here, numerous data logging settings can be changed.
+
+First, up to four different processes can be monitored: CPU usage, Memory
+usage, Network activity, and Disk I/O. The total polling time over which
+data will be collected and interval between polls can also be changed.
+
+Under the Chart Control tab, there are two options. Checking the box next to
+ignore time will cause the program to log data until the user stops it by
+clicking "Stop Monitoring" on the main screen next to the chart.
+
+Under the Background tab, the Monitor Processes check box controls whether the
+program will still collect data when minimized to the taskbar.
