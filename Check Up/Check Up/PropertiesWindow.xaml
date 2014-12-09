@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Check_Up.PropertiesWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Check Up Properties" Height="201" Width="250" Initialized="Window_Initialized" MinWidth="404" MinHeight="286">
+        Title="Check Up Properties" Height="201" Width="250" Initialized="Window_Initialized" MinWidth="412" MinHeight="286">
     <Grid Background="#FF898989">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
