@@ -81,7 +81,7 @@ namespace Check_Up.Util {
             backgroundWorker.RunWorkerAsync(scriptName);
             workers.Add(scriptName, backgroundWorker);
 
-            Console.WriteLine("Started Script {0}", scriptName);
+            Console.WriteLine("Started BackgroundWorker for script {0}", System.IO.Path.GetFileName(scriptName));
 
             return true;
         }
@@ -91,10 +91,16 @@ namespace Check_Up.Util {
                 Console.WriteLine("Couldn't find script {0} to close", scriptName);
                 return false;
             }
-
+            
             foreach (KeyValuePair<String, dynamic> pair in runningScripts) {
                 if (pair.Key.Equals(scriptName)) {
-                    pair.Value.close();
+                    try {
+                        // call the close method within the script to end the loop
+                        pair.Value.close();
+                    }
+                    catch {
+                        Console.WriteLine("Couldn't find close method in {0} script", scriptName);
+                    }
                 }
             }
 
@@ -102,13 +108,15 @@ namespace Check_Up.Util {
             foreach (KeyValuePair<String, BackgroundWorker> pair in workers) {
                 if (pair.Key.Equals(scriptName)) {
                     pair.Value.CancelAsync();
+                    // store the name of the script to remove
                     toRemove = pair.Key;
                 }
             }
 
             if (toRemove != "") {
-                Console.WriteLine("Removing worker for script {0}", scriptName);
+                Console.WriteLine("Removing worker for script {0}", System.IO.Path.GetFileName(scriptName));
                 if (workers.Keys.Contains(toRemove)) {
+                    // remove the worker from the list of workers
                     workers.Remove(toRemove);
                 }
                 else {
@@ -116,6 +124,7 @@ namespace Check_Up.Util {
                 }
 
                 if (runningScripts.Keys.Contains(toRemove)) {
+                    // remove the script from running scri[ts
                     runningScripts.Remove(toRemove);
                 }
                 else {
@@ -134,8 +143,10 @@ namespace Check_Up.Util {
             string filename = (string)e.Argument;
 
             dynamic script = ipy.UseFile(filename);
-            Console.WriteLine("Starting script {0}", filename);
+            Console.WriteLine("BackgroundWorker starting script {0}", System.IO.Path.GetFileName(filename));
             runningScripts.Add(filename, script);
+
+            // call the scripts main method
             script.main();
             e.Cancel = true;
             return;
