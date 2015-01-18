@@ -127,13 +127,16 @@
     <Compile Include="LoadingWindow.xaml.cs">
       <DependentUpon>LoadingWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ScriptWindow.xaml.cs">
+      <DependentUpon>ScriptWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="util\CounterNames.cs" />
     <Compile Include="util\Disk.cs" />
     <Compile Include="util\OSDataCollection.cs" />
     <Compile Include="util\ProcessesDataCollection.cs" />
     <Compile Include="util\ProcessMonitor.cs" />
     <Compile Include="util\RandomInfo.cs" />
-    <Compile Include="util\Scripts.cs" />
+    <Compile Include="util\ScriptControl.cs" />
     <Page Include="AboutWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -155,6 +158,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="PropertiesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ScriptWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

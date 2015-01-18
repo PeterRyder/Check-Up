@@ -45,7 +45,7 @@
             </TabItem>
             <TabItem Header="Script Control">
                 <Grid Background="#FFC1C1C1">
-                    <Button x:Name="button_checkScripts" Content="Check Scripts" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103" Click="button_checkScripts_Click"/>
+                    <Button x:Name="button_checkScripts" Content="Script Control" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="button_checkScripts_Click" Width="101"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Background">

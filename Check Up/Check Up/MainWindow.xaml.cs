@@ -54,7 +54,6 @@ namespace Check_Up {
 
         OSDataCollection osDataCollector;
         ProcessesDataCollection processDataCollector;
-        Scripts scripts;
 
         List<Window> subWindows;
 
@@ -89,10 +88,7 @@ namespace Check_Up {
 
             FullOutputDataFileName = System.IO.Path.GetFullPath(OutputDataFileName);
 
-            scripts.checkDirectory();
-            scripts.runScripts();
-
-            // initialize a cpuData collector
+            // check for scipts directory
 
             if (!osDataCollector.canGatherNet) {
                 listview_warnings.Items.Add("Could not find network adapter");
@@ -139,7 +135,6 @@ namespace Check_Up {
         private void InitializeObjects() {
             ni = new System.Windows.Forms.NotifyIcon();
             ni.Icon = new System.Drawing.Icon("Check Up.ico");
-            scripts = new Scripts();
             subWindows = new List<Window>();
             osDataCollector = new OSDataCollection();
             processDataCollector = new ProcessesDataCollection();
@@ -462,7 +457,11 @@ namespace Check_Up {
         }
 
         private void button_checkScripts_Click(object sender, RoutedEventArgs e) {
-            scripts.runScripts();
+            //scripts.runScripts();
+
+            ScriptWindow subWindow = new ScriptWindow();
+            subWindows.Add(subWindow);
+            subWindow.Show();
         }
 
         protected override void OnStateChanged(EventArgs e) {
@@ -490,10 +489,6 @@ namespace Check_Up {
             }
             ni.Visible = false;
             System.Windows.Application.Current.Shutdown();
-        }
-
-        private void button_checkScripts_Click(object sender, EventArgs e) {
-            scripts.checkNewScripts();
         }
 
         private void button_logData_Click(object sender, RoutedEventArgs e) {

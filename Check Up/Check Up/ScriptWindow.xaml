@@ -1,0 +1,32 @@
+﻿<Window x:Class="Check_Up.ScriptWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="Script Control" Height="576" Width="614" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <ListView ItemsSource="{Binding ScriptCollection}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="140" Header="Script Name" 
+              DisplayMemberBinding="{Binding ScriptName}"  />
+                    <GridViewColumn Header="Start" Width="140">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Start" Width="80" Click="StartScript" CommandParameter="{Binding}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Stop" Width="140">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Stop" Width="80" Click="StopScript" CommandParameter="{Binding}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+    </Grid>
+</Window>
