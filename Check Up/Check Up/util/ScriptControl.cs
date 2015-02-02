@@ -45,7 +45,7 @@ namespace Check_Up.Util {
 
                 if (!scripts.Contains(filename)) {
                     log.Debug(String.Format("Found new script {0}", Path.GetFileName(filename)));
-                    if (SanityCheckScript(Path.GetFileName(filename))) {
+                    if (SanityCheckScript(filename)) {
                         scripts.Add(filename);
                     }
                 }
@@ -53,12 +53,56 @@ namespace Check_Up.Util {
         }
 
         private bool SanityCheckScript(String filename) {
-            if (Path.GetExtension(filename) != ".py") {
+            if (Path.GetExtension(Path.GetFileName(filename)) != ".py") {
                 log.Error(String.Format("Script must be a Python file. Not executing file {0}", filename));
+
                 return false;
             }
             else {
+                if (CheckFunctions(filename)) {
+                    Console.WriteLine("Script {0} has both a main and close method", Path.GetFileName(filename));
+                }
+                else {
+                    Console.WriteLine("ERROR: Script {0} does not contain a close or main method", Path.GetFileName(filename));
+                }
                 return true;
+            }
+        }
+
+        private bool CheckFunctions(String filename) {
+            string line;
+            System.IO.StreamReader file = null;
+
+            try {
+                // open the file with a reader
+                file = new System.IO.StreamReader(filename);
+            }
+            catch {
+                Console.WriteLine("Couldn't open file {0}", filename);
+                return false;
+            }
+
+            bool foundMain = false;
+            bool foundClose = false;
+
+            while ((line = file.ReadLine()) != null) {
+                if (line == "def main():") {
+                    foundMain = true;
+                }
+
+                if (line == "def close():") {
+                    foundClose = true;
+                }
+            }
+            
+            // close the file
+            file.Close();
+
+            if (foundMain && foundClose) {
+                return true;
+            }
+            else {
+                return false;
             }
         }
 
