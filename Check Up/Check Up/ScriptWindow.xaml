@@ -4,7 +4,7 @@
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="Script Control" Height="576" Width="614" WindowStartupLocation="CenterScreen">
     <Grid>
-        <ListView ItemsSource="{Binding ScriptCollection}">
+        <ListView ItemsSource="{Binding ScriptCollection}" Background="#FF898989">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="140" Header="Script Name" 
