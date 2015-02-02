@@ -125,7 +125,6 @@ namespace Check_Up {
 
         private void ShowLoadingWindow() {
             LoadingWindow window = new LoadingWindow();
-            //System.Windows.Threading.Dispatcher.Run();
             window.Show();
             window.Closed += (s, e) => System.Windows.Threading.Dispatcher.ExitAllFrames();
 
@@ -144,10 +143,12 @@ namespace Check_Up {
 
         private void InitializeEventHandlers() {
             this.Closed += new EventHandler(MainWindow_Closed);
+            
             ni.DoubleClick += delegate(object sender, EventArgs args) {
                 this.Show();
                 this.WindowState = WindowState.Normal;
             };
+            
 
             backgroundWorkerChart.ProgressChanged += backgroundWorkerChart_ProgressChanged;
             backgroundWorkerChart.RunWorkerCompleted += backgroundWorkerChart_RunWorkerCompleted;
@@ -457,8 +458,6 @@ namespace Check_Up {
         }
 
         private void button_checkScripts_Click(object sender, RoutedEventArgs e) {
-            //scripts.runScripts();
-
             ScriptWindow subWindow = new ScriptWindow();
             subWindows.Add(subWindow);
             subWindow.Show();

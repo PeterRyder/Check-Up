@@ -29,6 +29,7 @@ namespace Check_Up.Util {
 
         public ScriptControl() {
             fullScriptPath = Path.GetFullPath(scriptPath);
+            checkDirectory();
             checkNewScripts();
         }
 
@@ -60,10 +61,10 @@ namespace Check_Up.Util {
             }
             else {
                 if (CheckFunctions(filename)) {
-                    Console.WriteLine("Script {0} has both a main and close method", Path.GetFileName(filename));
+                    log.Warn(string.Format("Script {0} has both a main and close method", Path.GetFileName(filename)));
                 }
                 else {
-                    Console.WriteLine("ERROR: Script {0} does not contain a close or main method", Path.GetFileName(filename));
+                    log.Error(string.Format("Script {0} does not contain a close or main method", Path.GetFileName(filename)));
                 }
                 return true;
             }
@@ -78,7 +79,7 @@ namespace Check_Up.Util {
                 file = new System.IO.StreamReader(filename);
             }
             catch {
-                Console.WriteLine("Couldn't open file {0}", filename);
+                log.Error(string.Format("Couldn't open file {0}", Path.GetFileName(filename)));
                 return false;
             }
 
@@ -109,12 +110,12 @@ namespace Check_Up.Util {
         public bool runScript(String scriptName) {
 
             if (!scripts.Contains(scriptName)) {
-                Console.WriteLine(" Couldn't find script {0} to start", scriptName);
+                log.Error(string.Format("Couldn't find script {0} to start", Path.GetFileName(scriptName)));
                 return false;
             }
 
             if (workers.Keys.Contains(scriptName)) {
-                Console.WriteLine("Script {0} is already running", scriptName);
+                log.Warn(string.Format("Script {0} is already running", Path.GetFileName(scriptName)));
                 return false;
             }
 
@@ -125,14 +126,14 @@ namespace Check_Up.Util {
             backgroundWorker.RunWorkerAsync(scriptName);
             workers.Add(scriptName, backgroundWorker);
 
-            Console.WriteLine("Started BackgroundWorker for script {0}", System.IO.Path.GetFileName(scriptName));
+            log.Debug(string.Format("Started BackgroundWorker for script {0}", Path.GetFileName(scriptName)));
 
             return true;
         }
 
         public bool stopScript(String scriptName) {
             if (!runningScripts.Keys.Contains(scriptName)) {
-                Console.WriteLine("Couldn't find script {0} to close", scriptName);
+                log.Error(string.Format("Couldn't find script {0} to close", scriptName));
                 return false;
             }
             
@@ -143,7 +144,7 @@ namespace Check_Up.Util {
                         pair.Value.close();
                     }
                     catch {
-                        Console.WriteLine("Couldn't find close method in {0} script", scriptName);
+                        log.Error(string.Format("Couldn't find close method in {0} script", scriptName));
                     }
                 }
             }
@@ -158,13 +159,13 @@ namespace Check_Up.Util {
             }
 
             if (toRemove != "") {
-                Console.WriteLine("Removing worker for script {0}", System.IO.Path.GetFileName(scriptName));
+                log.Debug(string.Format("Removing worker for script {0}", Path.GetFileName(scriptName)));
                 if (workers.Keys.Contains(toRemove)) {
                     // remove the worker from the list of workers
                     workers.Remove(toRemove);
                 }
                 else {
-                    Console.WriteLine("Workers does not contain {0}", toRemove);
+                    log.Error(string.Format("Workers does not contain {0}", toRemove));
                 }
 
                 if (runningScripts.Keys.Contains(toRemove)) {
@@ -172,12 +173,12 @@ namespace Check_Up.Util {
                     runningScripts.Remove(toRemove);
                 }
                 else {
-                    Console.WriteLine("Running Scripts does not contain {0}", toRemove);
+                    log.Error(string.Format("Running Scripts does not contain {0}", toRemove));
                 }
                 
             }
             else {
-                Console.WriteLine("Couldn't find worker to remove");
+                log.Error("Couldn't find worker to remove");
             }
 
             return true;
@@ -187,7 +188,7 @@ namespace Check_Up.Util {
             string filename = (string)e.Argument;
 
             dynamic script = ipy.UseFile(filename);
-            Console.WriteLine("BackgroundWorker starting script {0}", System.IO.Path.GetFileName(filename));
+            log.Debug(string.Format("BackgroundWorker starting script {0}", Path.GetFileName(filename)));
             runningScripts.Add(filename, script);
 
             // call the scripts main method
