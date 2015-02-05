@@ -25,7 +25,7 @@ namespace Check_Up.Util {
                 process = Process.GetProcessById(processId);
             }
             catch {
-                Console.WriteLine("Could not get process {0} by ID", processId);
+                log.Error(string.Format("Could not get process {0} by ID", processId));
                 return null;
             }
             string processName = Path.GetFileNameWithoutExtension(process.ProcessName);
@@ -45,6 +45,21 @@ namespace Check_Up.Util {
                 }
             }
             return null;
+        }
+
+        public static List<PerformanceCounter> GetPerfCountersOfProcesses(string processCounterName) {
+            PerformanceCounterCategory cat = new PerformanceCounterCategory("Process");
+            string[] instances = cat.GetInstanceNames().ToArray();
+            List<PerformanceCounter> counters = new List<PerformanceCounter>();
+
+            foreach (string instance in instances) {
+                PerformanceCounter cnt = new PerformanceCounter("Process", "ID Process", instance, true);
+                if (!counters.Contains(cnt)) {
+                    counters.Add(cnt);
+                }
+            }
+
+            return counters;
         }
 
     }

@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Diagnostics;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -74,12 +75,23 @@ namespace Check_Up {
             LoadingWindow.SetApartmentState(ApartmentState.STA);
             LoadingWindow.Start();
 
+            Stopwatch stopwatch = Stopwatch.StartNew(); //creates and start the instance of Stopwatch
             InitializeComponent();
+            stopwatch.Stop();
+            Console.WriteLine("[time] InitializeComponent: " + stopwatch.ElapsedMilliseconds + "ms");
 
+            stopwatch.Reset();
+            stopwatch.Start();
             InitializeObjects();
+            stopwatch.Stop();
+            Console.WriteLine("[time] InitializeObjects: " + stopwatch.ElapsedMilliseconds + "ms");
 
+            stopwatch.Reset();
+            stopwatch.Start();
             InitializeEventHandlers();
-
+            stopwatch.Stop();
+            Console.WriteLine("[time] InitializeEventHandlers: " + stopwatch.ElapsedMilliseconds + "ms");
+           
             ni.Visible = true;
 
             CreateOutputDirectory();
@@ -135,9 +147,18 @@ namespace Check_Up {
             ni = new System.Windows.Forms.NotifyIcon();
             ni.Icon = new System.Drawing.Icon("Check Up.ico");
             subWindows = new List<Window>();
-            osDataCollector = new OSDataCollection();
-            processDataCollector = new ProcessesDataCollection();
 
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            osDataCollector = new OSDataCollection();
+            stopwatch.Stop();
+            Console.WriteLine("[time] OSDataCollection Constructor: " + stopwatch.ElapsedMilliseconds + "ms");
+
+            stopwatch.Reset();
+            stopwatch.Start();
+            processDataCollector = new ProcessesDataCollection();
+            stopwatch.Stop();
+            Console.WriteLine("[time] ProcessDataCollection constructor: " + stopwatch.ElapsedMilliseconds + "ms");
+            
             backgroundWorkerChart = new BackgroundWorker();
         }
 
