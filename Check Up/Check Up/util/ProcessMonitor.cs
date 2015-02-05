@@ -53,8 +53,15 @@ namespace Check_Up.Util {
             List<PerformanceCounter> counters = new List<PerformanceCounter>();
 
             foreach (string instance in instances) {
-                PerformanceCounter cnt = new PerformanceCounter("Process", "ID Process", instance, true);
+                PerformanceCounter cnt = new PerformanceCounter("Process", processCounterName, instance, true);
                 if (!counters.Contains(cnt)) {
+                    /*
+                    Console.WriteLine("Counter Name: " + cnt.CounterName);
+                    Console.WriteLine("Counter Type: " + cnt.CounterType);
+                    Console.WriteLine("Instance Name: " + cnt.InstanceName);
+                    Console.WriteLine("Category Name: " + cnt.CategoryName);
+                    Console.WriteLine("");
+                     */
                     counters.Add(cnt);
                 }
             }
