@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.ComponentModel;
 using Check_Up.Util;
 using System.IO;
 using System.Collections.ObjectModel;
@@ -30,30 +31,29 @@ namespace Check_Up {
 
         private ScriptControl scripts;
 
+        BackgroundWorker worker;
+
         public ScriptWindow() {
             InitializeComponent();
-
             scripts = new ScriptControl();
+            
+            worker = new BackgroundWorker();
+            worker.DoWork += worker_DoWork;
+            worker.ProgressChanged += worker_ProgressChanged;
+            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+            worker.WorkerReportsProgress = true;
+            worker.WorkerSupportsCancellation = true;
 
             InitializeListView();
-
         }
 
         public ObservableCollection<ScriptData> ScriptCollection { get { return _ScriptCollection; } }
 
         public void InitializeListView() {
-            scripts.checkNewScripts();
-
-            foreach (String script in scripts.getScripts()) {
-                _ScriptCollection.Add(new ScriptData {
-                    ScriptName = System.IO.Path.GetFileName(script),
-                    FullPath = script
-                });
-            }
+            worker.RunWorkerAsync();
         }
 
         private void StartScript(object sender, RoutedEventArgs e) {
-
             Button b = sender as Button;
             ScriptData scriptData = b.CommandParameter as ScriptData;
 
@@ -69,6 +69,34 @@ namespace Check_Up {
 
             if (scripts.stopScript(scriptData.FullPath)) {
                 //b.IsEnabled = false;
+            }
+        }
+
+        private void worker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
+            string[] files = Directory.GetFiles(scripts.fullScriptPath);
+            BackgroundWorker w = sender as BackgroundWorker;
+
+            int i = 1;
+            foreach (string filename in files) {
+                scripts.checkNewScript(filename);
+                w.ReportProgress((int)(i / files.Length * 100));
+                i++;
+            }
+        }
+
+        private void worker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
+            Console.WriteLine("Progress Changed " + e.ProgressPercentage);
+        }
+
+        private void worker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
+            Console.WriteLine("Worker completed");
+            List<string> scriptList = scripts.getScripts();
+
+            foreach (string script in scriptList) {
+                _ScriptCollection.Add(new ScriptData {
+                    ScriptName = System.IO.Path.GetFileName(script),
+                    FullPath = script
+                });
             }
         }
     }

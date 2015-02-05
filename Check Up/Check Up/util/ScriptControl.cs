@@ -22,15 +22,14 @@ namespace Check_Up.Util {
         // relative path
         private string scriptPath = "scripts";
 
-        private string fullScriptPath;
+        public string fullScriptPath;
 
         ScriptRuntime ipy = Python.CreateRuntime();
-       
+
 
         public ScriptControl() {
             fullScriptPath = Path.GetFullPath(scriptPath);
             checkDirectory();
-            checkNewScripts();
         }
 
         public void checkDirectory() {
@@ -39,16 +38,11 @@ namespace Check_Up.Util {
             }
         }
 
-        public void checkNewScripts() {
-            string[] files = Directory.GetFiles(fullScriptPath);
-
-            foreach (string filename in files) {
-
-                if (!scripts.Contains(filename)) {
-                    log.Debug(String.Format("Found new script {0}", Path.GetFileName(filename)));
-                    if (SanityCheckScript(filename)) {
-                        scripts.Add(filename);
-                    }
+        public void checkNewScript(string filename) {
+            if (!scripts.Contains(filename)) {
+                log.Debug(String.Format("Found new script {0}", Path.GetFileName(filename)));
+                if (SanityCheckScript(filename)) {
+                    scripts.Add(filename);
                 }
             }
         }
@@ -95,7 +89,7 @@ namespace Check_Up.Util {
                     foundClose = true;
                 }
             }
-            
+
             // close the file
             file.Close();
 
@@ -120,7 +114,7 @@ namespace Check_Up.Util {
             }
 
             BackgroundWorker backgroundWorker = new BackgroundWorker();
-            backgroundWorker.DoWork += new DoWorkEventHandler(backgroundWorker1_DoWork);
+            backgroundWorker.DoWork += new DoWorkEventHandler(backgroundWorker_DoWork);
             backgroundWorker.WorkerSupportsCancellation = true;
 
             backgroundWorker.RunWorkerAsync(scriptName);
@@ -136,7 +130,7 @@ namespace Check_Up.Util {
                 log.Error(string.Format("Couldn't find script {0} to close", scriptName));
                 return false;
             }
-            
+
             foreach (KeyValuePair<String, dynamic> pair in runningScripts) {
                 if (pair.Key.Equals(scriptName)) {
                     try {
@@ -175,7 +169,7 @@ namespace Check_Up.Util {
                 else {
                     log.Error(string.Format("Running Scripts does not contain {0}", toRemove));
                 }
-                
+
             }
             else {
                 log.Error("Couldn't find worker to remove");
@@ -184,7 +178,7 @@ namespace Check_Up.Util {
             return true;
         }
 
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e) {
+        private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
             string filename = (string)e.Argument;
 
             dynamic script = ipy.UseFile(filename);
