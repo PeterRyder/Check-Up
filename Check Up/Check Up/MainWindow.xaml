@@ -10,11 +10,12 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="313*"/>
-            <ColumnDefinition Width="951*"/>
+            <ColumnDefinition Width="319*"/>
+            <ColumnDefinition Width="346*"/>
+            <ColumnDefinition Width="625*"/>
         </Grid.ColumnDefinitions>
 
-        <Menu x:Name="menu_bar" VerticalAlignment="Top" Height="20" Grid.ColumnSpan="2">
+        <Menu x:Name="menu_bar" VerticalAlignment="Top" Height="20" Grid.ColumnSpan="3">
             <MenuItem x:Name="menuitem_file" Header="File">
                 <MenuItem x:Name="menuitem_Properties" Header="Properties" HorizontalAlignment="Left" Width="160"
 			  Click="MenuItemProperties_Click"/>
@@ -55,8 +56,8 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <ProgressBar x:Name="progressBar" Height="18" Margin="9,0,10,43" VerticalAlignment="Bottom" Background="#FFE5E5E5" Grid.Column="1"/>
-        <chartingToolkit:Chart x:Name="chart" Margin="9,26,0,61" Title="Performance" BorderBrush="#FF898989" Background="#FF898989" Grid.Column="1" Foreground="Black">
+        <ProgressBar x:Name="progressBar" Height="18" Margin="9,0,10,43" VerticalAlignment="Bottom" Background="#FFE5E5E5" Grid.Column="1" Foreground="#FF767676" Grid.ColumnSpan="2"/>
+        <chartingToolkit:Chart x:Name="chart" Margin="9,26,0,61" Title="Performance" BorderBrush="#FF898989" Background="#FF898989" Grid.Column="1" Foreground="Black" Grid.ColumnSpan="2">
             <chartingToolkit:Chart.Axes>
                 <chartingToolkit:LinearAxis Orientation="Y" Minimum="0" Maximum="100"/>
             </chartingToolkit:Chart.Axes>
