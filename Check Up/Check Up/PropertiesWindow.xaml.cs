@@ -123,5 +123,10 @@ namespace Check_Up {
                 SelectedDisks.Add(item);
             }
         }
+
+        private void testColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e) {
+            testLabel.Foreground = new SolidColorBrush(e.NewValue);
+        }
+   
     }
 }
