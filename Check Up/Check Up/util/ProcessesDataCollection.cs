@@ -49,15 +49,12 @@ namespace Check_Up.Util {
             Console.WriteLine("Total Time: " + total_time);
             Console.WriteLine("Total Counters: " + ProcessPerfCounters.Count);
             Console.WriteLine("Total Processes: " + processes);
-             */
+            */
 
             ProcessPerfCounters = ProcessMonitor.GetPerfCountersOfProcesses("% Processor Time");
             List<PerformanceCounter> temp = ProcessMonitor.GetPerfCountersOfProcesses("Working Set - Private");
 
-            ProcessPerfCounters.AddRange(temp);
-
-            Console.WriteLine(ProcessPerfCounters.Count);
-            
+            ProcessPerfCounters.AddRange(temp);            
         }
 
         public void GatherData(bool FirstRun) {
@@ -70,8 +67,8 @@ namespace Check_Up.Util {
                     data = counter.NextValue();
                 }
                 catch {
-                    Console.WriteLine("Could not get information on process {0}", counter.InstanceName);
-                    Console.WriteLine("Removing process {0}", counter.InstanceName);
+                    log.Warn(string.Format("Could not get information on process {0}", counter.InstanceName));
+                    log.Warn(string.Format("Removing process {0}", counter.InstanceName));
 
                     ProcessPerfCounters.Remove(counter);
                     continue;
@@ -79,13 +76,11 @@ namespace Check_Up.Util {
 
                 if (!FirstRun) {
                     if (counter.CounterName == "% Processor Time") {
-
                         data = data / (float)RandomInfo.logicalCpuCount;
                         HighestCpuUsage[counter.InstanceName] = data;
                     }
 
                     if (counter.CounterName == "Working Set - Private") {
-
                         HighestMemUsage[counter.InstanceName] = data / 1024 / 1024;
                     }
                 }
@@ -95,11 +90,8 @@ namespace Check_Up.Util {
                 HighestCpuUsage = AggregateData(HighestCpuUsage);
                 HighestMemUsage = AggregateData(HighestMemUsage);
             }
-
-            Console.WriteLine("Finished gathering process data");
-
+            log.Debug("Finished gathering process data");
         }
-
 
 
         private void CheckData(string type, PerformanceCounter counter, float data, ref Dictionary<string, float> DataUsage) {
@@ -143,11 +135,9 @@ namespace Check_Up.Util {
                     }
                     else {
                         NewData[key] = DataUsage[key];
-                    }
-                    
+                    }       
                 }
             }
-
             return NewData;
         }
 

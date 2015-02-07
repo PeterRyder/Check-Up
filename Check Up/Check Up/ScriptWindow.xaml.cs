@@ -15,12 +15,15 @@ using System.ComponentModel;
 using Check_Up.Util;
 using System.IO;
 using System.Collections.ObjectModel;
+using log4net;
 
 namespace Check_Up {
     /// <summary>
     /// Interaction logic for ScriptWindow.xaml
     /// </summary>
     public partial class ScriptWindow : Window {
+
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public class ScriptData {
             public string ScriptName { get; set; }
@@ -79,7 +82,8 @@ namespace Check_Up {
             int i = 1;
             foreach (string filename in files) {
                 scripts.checkNewScript(filename);
-                w.ReportProgress((int)(i / files.Length * 100));
+                float progress = ((float)i / files.Length) * 100;
+                w.ReportProgress((int)progress);
                 i++;
             }
         }
@@ -89,7 +93,7 @@ namespace Check_Up {
         }
 
         private void worker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
-            Console.WriteLine("Worker completed");
+            log.Debug("Script Window Worker completed");
             List<string> scriptList = scripts.getScripts();
 
             foreach (string script in scriptList) {
