@@ -9,7 +9,7 @@
         </Grid.ColumnDefinitions>
         <TabControl Margin="5,5,0,0" Background="#FF898989">
             <TabItem Header="Data Control">
-                <Grid Background="#FFC1C1C1">
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
@@ -62,14 +62,14 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Themes">
-                <Grid Background="#FFC1C1C1">
+                <Grid>
                     <Label x:Name="testLabel" Content="Label" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
                     <xctk:ColorPicker x:Name="testColorPicker" HorizontalAlignment="Left" Margin="89,14,0,0" VerticalAlignment="Top" SelectedColorChanged="testColorPicker_SelectedColorChanged"/>
 
                 </Grid>
             </TabItem>
             <TabItem Header="Chart Control">
-                <Grid Background="#FFC1C1C1">
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
@@ -79,7 +79,7 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Background">
-                <Grid Background="#FFC1C1C1" Margin="0,2,0,-2">
+                <Grid Margin="0,2,0,-2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>

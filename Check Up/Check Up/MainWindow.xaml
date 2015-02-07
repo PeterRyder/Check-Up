@@ -15,7 +15,7 @@
             <ColumnDefinition Width="625*"/>
         </Grid.ColumnDefinitions>
 
-        <Menu x:Name="menu_bar" VerticalAlignment="Top" Height="20" Grid.ColumnSpan="3">
+        <Menu x:Name="menu_bar" VerticalAlignment="Top" Height="27" Grid.ColumnSpan="3">
             <MenuItem x:Name="menuitem_file" Header="File">
                 <MenuItem x:Name="menuitem_Properties" Header="Properties" HorizontalAlignment="Left" Width="160"
 			  Click="MenuItemProperties_Click"/>
@@ -38,26 +38,26 @@
         </ListView>
         <TabControl Height="199" Margin="14,27,0,0" VerticalAlignment="Top" Background="#FFC1C1C1" MinWidth="147" MinHeight="199" MaxWidth="273" MaxHeight="199" HorizontalAlignment="Left" BorderBrush="#FFC1C1C1">
             <TabItem Header="Chart Control">
-                <Grid Background="#FFC1C1C1">
+                <Grid>
                     <Button x:Name="button_gatherData" Content="Gather Data" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103" Click="button_gatherData_Click" ToolTip="Start Gathering Data"/>
                     <Button x:Name="button_stopMonitoring" Content="Stop Monitoring" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="103" Click="button_stopMonitoring_Click" ToolTip="Stop Gathering Data"/>
                     <Button x:Name="button_resetChart" Content="Reset Chart" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Width="103" Click="button_resetChart_Click" ToolTip="Reset the Graph"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Script Control">
-                <Grid Background="#FFC1C1C1">
+                <Grid>
                     <Button x:Name="button_checkScripts" Content="Script Control" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="button_checkScripts_Click" Width="101"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Background">
-                <Grid Background="#FFC1C1C1" Margin="0,0,0,63">
+                <Grid Margin="0">
                     <Button x:Name="button_logData" Content="Log Data" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103" Click="button_logData_Click"/>
                     <Button x:Name="button_stopLoggingData" Content="Stop Logging Data" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="118" Click="button_stopLoggingData_Click" IsEnabled="False"/>
                 </Grid>
             </TabItem>
         </TabControl>
         <ProgressBar x:Name="progressBar" Height="18" Margin="9,0,10,43" VerticalAlignment="Bottom" Background="#FFE5E5E5" Grid.Column="1" Foreground="#FF767676" Grid.ColumnSpan="2"/>
-        <chartingToolkit:Chart x:Name="chart" Margin="9,26,0,61" Title="Performance" BorderBrush="#FF898989" Background="#FF898989" Grid.Column="1" Foreground="Black" Grid.ColumnSpan="2">
+        <chartingToolkit:Chart x:Name="chart" Margin="9,27,0,61" Title="Performance" BorderBrush="#FF898989" Background="#FF898989" Grid.Column="1" Foreground="Black" Grid.ColumnSpan="2">
             <chartingToolkit:Chart.Axes>
                 <chartingToolkit:LinearAxis Orientation="Y" Minimum="0" Maximum="100"/>
             </chartingToolkit:Chart.Axes>
