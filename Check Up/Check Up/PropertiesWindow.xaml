@@ -27,7 +27,7 @@
                         <TextBox x:Name="textbox_pollingInterval" HorizontalAlignment="Right" Height="23" Margin="0,0,10,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="120" Text="1" ToolTip="Interval Between Collection"/>
                     </Grid>
                     <Label x:Name="error1" Content="Error: Polling Interval is greater than Polling Time" HorizontalAlignment="Left" Margin="91,74,0,0" VerticalAlignment="Top" Background="#00000000" Foreground="#FFFF0A0A" Visibility="Hidden" Height="26" Width="269"/>
-                    <ListView x:Name="listview_disks" HorizontalAlignment="Left" Margin="10,105,0,0" VerticalAlignment="Top" MinHeight="100" SelectionChanged="listview_disks_SelectionChanged">
+                    <ListView x:Name="listview_disks" HorizontalAlignment="Left" Margin="10,105,0,0" VerticalAlignment="Top" MinHeight="100" SelectionChanged="listview_disks_SelectionChanged" Foreground="White">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn>
