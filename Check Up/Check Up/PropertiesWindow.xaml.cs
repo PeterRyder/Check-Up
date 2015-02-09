@@ -36,8 +36,7 @@ namespace Check_Up {
             double pollingInterval = Convert.ToDouble(textbox_pollingInterval.Text);
 
             // Prevent program from polling more frequently than .2 seconds
-            if (pollingInterval < .2)
-            {
+            if (pollingInterval < .2) {
                 pollingInterval = .2;
             }
 
