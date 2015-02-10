@@ -169,7 +169,6 @@ namespace Check_Up {
                 this.Show();
                 this.WindowState = WindowState.Normal;
             };
-            
 
             backgroundWorkerChart.ProgressChanged += backgroundWorkerChart_ProgressChanged;
             backgroundWorkerChart.RunWorkerCompleted += backgroundWorkerChart_RunWorkerCompleted;

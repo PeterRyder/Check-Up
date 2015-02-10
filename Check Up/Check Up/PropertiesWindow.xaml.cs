@@ -12,8 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
-using Check_Up.Util;
 using log4net;
+using Check_Up.Util;
 
 namespace Check_Up {
     /// <summary>
@@ -26,7 +26,9 @@ namespace Check_Up {
 
         public PropertiesWindow() {
             InitializeComponent();
-
+            Console.WriteLine("Properties Window Constructor");
+            ThemeManager themeManager = new ThemeManager();
+            ComboBoxThemes.ItemsSource = themeManager.themes;
             SelectedDisks = new List<Disk>();
         }
 
@@ -123,8 +125,14 @@ namespace Check_Up {
             }
         }
 
-        private void testColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e) {
-            testLabel.Foreground = new SolidColorBrush(e.NewValue);
+        private void ComboBoxThemes_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            ComboBox cmb = (ComboBox)sender;
+            string s = "/Themes/" + cmb.SelectedItem;
+
+            Application.Current.Resources.MergedDictionaries.Clear();
+            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary() {
+                Source = new Uri(s, UriKind.RelativeOrAbsolute)
+            });
         }
    
     }
