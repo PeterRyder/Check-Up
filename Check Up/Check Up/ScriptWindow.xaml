@@ -34,9 +34,8 @@
                             <ControlTemplate TargetType="{x:Type ListViewItem}">
                                 <Border
                          BorderBrush="Transparent"
-                         BorderThickness="0"
-                         Background="{TemplateBinding Background}">
-                                    <GridViewRowPresenter HorizontalAlignment="Stretch" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Width="Auto" Margin="0" Content="{TemplateBinding Content}"/>
+                         BorderThickness="0">
+                                    <GridViewRowPresenter HorizontalAlignment="Stretch" Width="Auto" Margin="0" Content="{TemplateBinding Content}"/>
                                 </Border>
                             </ControlTemplate>
                         </Setter.Value>

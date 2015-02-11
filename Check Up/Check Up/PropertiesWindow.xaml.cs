@@ -23,11 +23,12 @@ namespace Check_Up {
 
         private List<Disk> SelectedDisks;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private ThemeManager themeManager;
 
         public PropertiesWindow() {
             InitializeComponent();
             Console.WriteLine("Properties Window Constructor");
-            ThemeManager themeManager = new ThemeManager();
+            themeManager = new ThemeManager();
             ComboBoxThemes.ItemsSource = themeManager.themes;
             SelectedDisks = new List<Disk>();
         }
@@ -127,7 +128,7 @@ namespace Check_Up {
 
         private void ComboBoxThemes_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             ComboBox cmb = (ComboBox)sender;
-            string s = "/Themes/" + cmb.SelectedItem;
+            string s = themeManager.themeDir + "\\" + cmb.SelectedItem;
 
             Application.Current.Resources.MergedDictionaries.Clear();
             Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary() {

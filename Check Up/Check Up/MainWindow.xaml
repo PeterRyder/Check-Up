@@ -25,8 +25,7 @@
             </MenuItem>
 
             <MenuItem x:Name="menuitem_help" Header="Help">
-                <MenuItem x:Name="menuitem_AboutCheckUp" Header="About Check Up" HorizontalAlignment="Left" Width="180"
-			  Click="MenuItemAbout_Click"/>
+                <MenuItem x:Name="menuitem_AboutCheckUp" Header="About Check Up" HorizontalAlignment="Left" Width="180" Click="MenuItemAbout_Click"/>
             </MenuItem>
         </Menu>
         <ListView x:Name="listview_warnings" ToolTip="Shows Warnings" Margin="14,230,0,10" Background="#FFC1C1C1" MaxWidth="273" HorizontalAlignment="Left" Width="247">

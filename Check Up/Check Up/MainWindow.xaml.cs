@@ -201,9 +201,7 @@ namespace Check_Up {
         }
 
         private void MenuItemAbout_Click(object sender, RoutedEventArgs e) {
-            AboutWindow subWindow = new AboutWindow();
-            subWindows.Add(subWindow);
-            subWindow.Show();
+            System.Windows.Forms.MessageBox.Show("About Window is WIP");   
         }
 
         /// <summary>
@@ -302,8 +300,6 @@ namespace Check_Up {
             backgroundWorkerChart.ReportProgress(100);
 
             this.button_resetChart.IsEnabled = true;
-            
-
         }
 
         /// <summary>
