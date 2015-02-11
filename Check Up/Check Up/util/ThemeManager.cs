@@ -26,10 +26,8 @@ namespace Check_Up.Util {
 
         public void LoadThemes(string directory) {
             string[] files = Directory.GetFiles(directory);
-            Console.WriteLine(files.Length);
             foreach (string file in files) {
                 string parsedFile = ParseTheme(file);
-                Console.WriteLine(parsedFile);
                 themes.Add(parsedFile);
             }
         }
