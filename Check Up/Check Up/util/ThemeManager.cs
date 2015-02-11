@@ -14,7 +14,6 @@ namespace Check_Up.Util {
         public ObservableCollection<string> themes = new ObservableCollection<string>();
 
         public ThemeManager() {
-            Console.WriteLine("Theme Manager Constructor");
             CheckDirectory();
             LoadThemes(themeDir);
         }

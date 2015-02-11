@@ -27,9 +27,9 @@ namespace Check_Up {
 
         public PropertiesWindow() {
             InitializeComponent();
-            Console.WriteLine("Properties Window Constructor");
             themeManager = new ThemeManager();
             ComboBoxThemes.ItemsSource = themeManager.themes;
+            ComboBoxThemes.SelectedItem = "ExpressionDark.xaml";
             SelectedDisks = new List<Disk>();
         }
 
@@ -96,7 +96,6 @@ namespace Check_Up {
             textbox_pollingTime.Text = Properties.Settings.Default.PollingTime.ToString();
             textbox_pollingInterval.Text = Properties.Settings.Default.PollingInterval.ToString();
             textbox_visiblePoints.Text = Properties.Settings.Default.VisiblePoints.ToString();
-
         }
 
         private void checkbox_DiskIO_Click(object sender, RoutedEventArgs e) {
