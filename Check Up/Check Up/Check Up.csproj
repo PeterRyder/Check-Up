@@ -27,7 +27,7 @@
     <InstallUrl>http://ryderp.myrpi.org/check_up/</InstallUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -73,10 +73,10 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>F72CD144BFC65EDDAE310D61D746DD8E01299090</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>8913A30D579CB4243EDF1414749F4111B0D893AC</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>Check Up_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>Check Up_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Hammer.SpinningWheel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -230,6 +230,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Check Up_1_TemporaryKey.pfx" />
     <None Include="Check Up_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
