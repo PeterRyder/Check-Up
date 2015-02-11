@@ -19,16 +19,14 @@ namespace Check_Up.Util {
 
         private Dictionary<String, BackgroundWorker> workers = new Dictionary<String, BackgroundWorker>();
 
-        // relative path
-        private string scriptPath = "scripts";
-
         public string fullScriptPath;
-
         ScriptRuntime ipy = Python.CreateRuntime();
 
 
         public ScriptControl() {
-            fullScriptPath = Path.GetFullPath(scriptPath);
+            string path = RandomInfo.roamingDir + "\\" + RandomInfo.scriptDir;
+            Console.WriteLine("HERE" + path);
+            fullScriptPath = Path.GetFullPath(path);
             checkDirectory();
         }
 

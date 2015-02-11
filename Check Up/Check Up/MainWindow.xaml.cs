@@ -36,7 +36,6 @@ namespace Check_Up {
         }
     }
 
-
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -45,7 +44,7 @@ namespace Check_Up {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private Random rand = new Random();
 
-        private string OutputDirectory = "Data";
+        private string OutputDirectory = RandomInfo.roamingDir + "\\" + RandomInfo.dataDir;
         private string FullOutputDirectory = "";
 
         private string OutputDataFileName;
@@ -101,7 +100,6 @@ namespace Check_Up {
             FullOutputDataFileName = System.IO.Path.GetFullPath(OutputDataFileName);
 
             // check for scipts directory
-
             if (!osDataCollector.canGatherNet) {
                 listview_warnings.Items.Add("Could not find network adapter");
             }

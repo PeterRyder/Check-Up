@@ -9,13 +9,20 @@ using System.Collections.ObjectModel;
 namespace Check_Up.Util {
     class ThemeManager {
 
-        string directoryString = "../../Themes";
+        public string themeDir = RandomInfo.roamingDir + "\\" + RandomInfo.themeDir;
 
         public ObservableCollection<string> themes = new ObservableCollection<string>();
 
         public ThemeManager() {
             Console.WriteLine("Theme Manager Constructor");
-            LoadThemes(directoryString);
+            CheckDirectory();
+            LoadThemes(themeDir);
+        }
+
+        private void CheckDirectory() {
+            if (!Directory.Exists(themeDir)) {
+                Directory.CreateDirectory(themeDir);
+            }
         }
 
         public void LoadThemes(string directory) {

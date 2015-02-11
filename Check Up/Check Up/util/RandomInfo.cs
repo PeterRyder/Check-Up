@@ -11,6 +11,13 @@ namespace Check_Up.Util {
         public static int logicalCpuCount = Environment.ProcessorCount;
         public static DriveInfo[] drives = DriveInfo.GetDrives();
 
+        // Storage Vars local to APPDATA/ROAMING/
+        public static string roamingDir = Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData) + "\\Check Up";
+
+        public static string dataDir = "Data";
+        public static string scriptDir = "Scripts";
+        public static string themeDir = "Themes";
+
         public static void PrintDrives() {
             Console.WriteLine("\nPrinting Drive Info\n");
             foreach (DriveInfo drive in drives) {
