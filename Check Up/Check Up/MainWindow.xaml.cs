@@ -145,7 +145,6 @@ namespace Check_Up {
 
         private void InitializeObjects() {
             ni = new System.Windows.Forms.NotifyIcon();
-            ni.Icon = new System.Drawing.Icon("Check Up.ico");
             subWindows = new List<Window>();
 
             Stopwatch stopwatch = Stopwatch.StartNew();
