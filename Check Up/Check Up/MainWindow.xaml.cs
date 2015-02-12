@@ -240,9 +240,11 @@ namespace Check_Up {
 
             if (Properties.Settings.Default.DiskIO) {
                 List<string> disks = Properties.Settings.Default.Disks;
-                for (int i = 0; i < disks.Count; i++) {
-                    createSeries(disks[i]);
-                    osDataCollector.AddDiskCounter(disks[i]);
+                foreach (string disk in disks) {
+                    string name = disk.TrimEnd('\\');
+                    osDataCollector.AddDiskCounter(name);
+                    createSeries(name);
+                    
                 }
             }
             #endregion
@@ -527,9 +529,12 @@ namespace Check_Up {
 
             if (Properties.Settings.Default.DiskIO) {
                 List<string> disks = Properties.Settings.Default.Disks;
-                for (int i = 0; i < disks.Count; i++) {
-                    AddToGraphData(disks[i]);
-                    osDataCollector.AddDiskCounter(disks[i]);
+                foreach (string disk in disks) {
+                    string name = disk.TrimEnd('\\');
+                    name = name.TrimEnd(':');
+                    Console.WriteLine("HERE: " + name);
+                    AddToGraphData(name);
+                    osDataCollector.AddDiskCounter(disk);
                 }
             }
 

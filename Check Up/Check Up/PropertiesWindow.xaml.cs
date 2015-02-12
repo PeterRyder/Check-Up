@@ -72,6 +72,7 @@ namespace Check_Up {
 
                 foreach (Disk item in items) {
                     if (item.IsChecked) {
+                        Console.WriteLine("Saving disk as " + item.DiskLetter);
                         DiskNames.Add(item.DiskLetter);
                     }  
                 }
@@ -107,11 +108,11 @@ namespace Check_Up {
             List<string> selectedDisks = Properties.Settings.Default.Disks;
 
             if (selectedDisks == null) {
-                Console.WriteLine("No selected disks");
+                //Console.WriteLine("No selected disks");
             }
             else {
                 foreach (Disk disk in items) {
-                    Console.WriteLine("Disk: " + disk);
+                    //Console.WriteLine("Disk: " + disk);
                     if (selectedDisks.Contains(disk.DiskLetter)) {
                         disk.IsChecked = true;
                     }
@@ -136,17 +137,17 @@ namespace Check_Up {
         }
 
         private void listview_disks_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            Console.WriteLine("Selection Changed");
-            Console.WriteLine("Adding " + e.AddedItems.Count);
-            Console.WriteLine("Removing " + e.RemovedItems.Count);
+            //Console.WriteLine("Selection Changed");
+            //Console.WriteLine("Adding " + e.AddedItems.Count);
+            //Console.WriteLine("Removing " + e.RemovedItems.Count);
 
             foreach (Disk item in e.RemovedItems) {
-                Console.WriteLine("Removed disk " + item.DiskLetter + " from checked items");
+                //Console.WriteLine("Removed disk " + item.DiskLetter + " from checked items");
                 item.IsChecked = false;
             }
 
             foreach (Disk item in e.AddedItems) {
-                Console.WriteLine("Added disk " + item.DiskLetter + " to checked items");
+                //Console.WriteLine("Added disk " + item.DiskLetter + " to checked items");
                 item.IsChecked = true;
             }
         }

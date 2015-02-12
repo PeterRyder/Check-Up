@@ -125,7 +125,13 @@ namespace Check_Up.Util {
             List<string> disks = Properties.Settings.Default.Disks;
             List<string> counters = new List<string>(DataValues.Keys);
 
+            foreach (string disk in disks) {
+                Console.WriteLine("Disk " + disk);
+            }
+
             for (int i = 0; i < counters.Count; i++) {
+                Console.WriteLine("DataValue Key " + counters[i]);
+
                 if (counters[i] != CounterNames.CPUName &&
                     counters[i] != CounterNames.MemName &&
                     counters[i] != CounterNames.NetName &&
@@ -155,6 +161,7 @@ namespace Check_Up.Util {
 
         public void AddDiskCounter(string disk) {
             try {
+                Console.WriteLine("Created disk counter with name " + disk);
                 PerformanceCounter perfDisk = new PerformanceCounter("LogicalDisk", "% Disk Time", disk);
                 PerfCounters.Add(disk, perfDisk);
                 DataValues.Add(disk, 0);
