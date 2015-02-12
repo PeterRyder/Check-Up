@@ -45,10 +45,16 @@ namespace Check_Up.Util {
         public void ChangeTheme(string theme) {
             string s = themeDir + "\\" + theme;
 
-            Application.Current.Resources.MergedDictionaries.Clear();
-            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary() {
-                Source = new Uri(s, UriKind.RelativeOrAbsolute)
-            });
+            try {
+                Application.Current.Resources.MergedDictionaries.Clear();
+                Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary() {
+                    Source = new Uri(s, UriKind.RelativeOrAbsolute)
+                });
+            }
+            catch {
+                Console.WriteLine("Couldn't change theme to " + theme);
+            }
+            
         }
 
     }
