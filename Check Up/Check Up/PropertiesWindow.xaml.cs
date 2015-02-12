@@ -12,8 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
-using Check_Up.Util;
 using log4net;
+using Check_Up.Util;
 
 namespace Check_Up {
     /// <summary>
@@ -25,11 +25,14 @@ namespace Check_Up {
         List<Disk> items;
 
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private ThemeManager themeManager;
 
         public PropertiesWindow() {
             InitializeComponent();
-
             items = new List<Disk>();
+            themeManager = new ThemeManager();
+            ComboBoxThemes.ItemsSource = themeManager.themes;
+            ComboBoxThemes.SelectedItem = "ExpressionDark.xaml";
             SelectedDisks = new List<Disk>();
         }
 
@@ -39,8 +42,7 @@ namespace Check_Up {
             double pollingInterval = Convert.ToDouble(textbox_pollingInterval.Text);
 
             // Prevent program from polling more frequently than .2 seconds
-            if (pollingInterval < .2)
-            {
+            if (pollingInterval < .2) {
                 pollingInterval = .2;
             }
 
@@ -140,5 +142,16 @@ namespace Check_Up {
                 SelectedDisks.Add(item);
             }
         }
+
+        private void ComboBoxThemes_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            ComboBox cmb = (ComboBox)sender;
+            string s = themeManager.themeDir + "\\" + cmb.SelectedItem;
+
+            Application.Current.Resources.MergedDictionaries.Clear();
+            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary() {
+                Source = new Uri(s, UriKind.RelativeOrAbsolute)
+            });
+        }
+   
     }
 }
