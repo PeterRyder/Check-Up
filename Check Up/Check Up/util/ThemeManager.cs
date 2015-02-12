@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace Check_Up.Util {
     class ThemeManager {
@@ -15,7 +16,6 @@ namespace Check_Up.Util {
 
         public ThemeManager() {
             CheckDirectory();
-            LoadThemes(themeDir);
         }
 
         private void CheckDirectory() {
@@ -24,16 +24,31 @@ namespace Check_Up.Util {
             }
         }
 
+        public void LoadThemes() {
+            LoadThemes(themeDir);
+        }
+
         public void LoadThemes(string directory) {
+            Console.WriteLine("Loading Themes...");
             string[] files = Directory.GetFiles(directory);
             foreach (string file in files) {
                 string parsedFile = ParseTheme(file);
+                Console.WriteLine("Found Theme " + parsedFile);
                 themes.Add(parsedFile);
             }
         }
 
         public string ParseTheme(string file) {
             return Path.GetFileName(file);
+        }
+
+        public void ChangeTheme(string theme) {
+            string s = themeDir + "\\" + theme;
+
+            Application.Current.Resources.MergedDictionaries.Clear();
+            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary() {
+                Source = new Uri(s, UriKind.RelativeOrAbsolute)
+            });
         }
 
     }

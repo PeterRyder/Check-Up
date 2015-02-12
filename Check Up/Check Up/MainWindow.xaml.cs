@@ -54,6 +54,7 @@ namespace Check_Up {
 
         OSDataCollection osDataCollector;
         ProcessesDataCollection processDataCollector;
+        ThemeManager themeManager;
 
         List<Window> subWindows;
 
@@ -155,7 +156,11 @@ namespace Check_Up {
             processDataCollector = new ProcessesDataCollection();
             stopwatch.Stop();
             Console.WriteLine("[time] ProcessDataCollection constructor: " + stopwatch.ElapsedMilliseconds + "ms");
-            
+
+            themeManager = new ThemeManager();
+            themeManager.LoadThemes();
+            themeManager.ChangeTheme("ExpressionDark.xaml");
+
             backgroundWorkerChart = new BackgroundWorker();
         }
 

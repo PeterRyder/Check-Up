@@ -31,6 +31,7 @@ namespace Check_Up {
             InitializeComponent();
             
             themeManager = new ThemeManager();
+            themeManager.LoadThemes();
             ComboBoxThemes.ItemsSource = themeManager.themes;
             ComboBoxThemes.SelectedItem = "ExpressionDark.xaml";
             
@@ -154,12 +155,7 @@ namespace Check_Up {
 
         private void ComboBoxThemes_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             ComboBox cmb = (ComboBox)sender;
-            string s = themeManager.themeDir + "\\" + cmb.SelectedItem;
-
-            Application.Current.Resources.MergedDictionaries.Clear();
-            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary() {
-                Source = new Uri(s, UriKind.RelativeOrAbsolute)
-            });
+            themeManager.ChangeTheme(cmb.SelectedItem.ToString());
         }
    
     }
