@@ -21,19 +21,19 @@ namespace Check_Up {
     /// </summary>
     public partial class PropertiesWindow : Window {
 
-        private List<Disk> SelectedDisks;
         List<Disk> items;
 
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private ThemeManager themeManager;
 
         public PropertiesWindow() {
-            InitializeComponent();
             items = new List<Disk>();
+            InitializeComponent();
+            
             themeManager = new ThemeManager();
             ComboBoxThemes.ItemsSource = themeManager.themes;
             ComboBoxThemes.SelectedItem = "ExpressionDark.xaml";
-            SelectedDisks = new List<Disk>();
+            
         }
 
         private void button_OK_Click(object sender, RoutedEventArgs e) {
@@ -69,11 +69,13 @@ namespace Check_Up {
             //Properties.Settings.Default.VisiblePoints = VisiblePoints;
 
             List<string> DiskNames = new List<string>();
-            for (int i = 0; i < SelectedDisks.Count; i++) {
-                Disk item = SelectedDisks[i];
-                string DriveLetter = item.DiskLetter.TrimEnd('\\');
-                DiskNames.Add(DriveLetter);
-            }
+
+                foreach (Disk item in items) {
+                    if (item.IsChecked) {
+                        DiskNames.Add(item.DiskLetter);
+                    }  
+                }
+
             Properties.Settings.Default.Disks = DiskNames;
 
             this.Close();
@@ -93,6 +95,7 @@ namespace Check_Up {
             checkbox_monitorProcesses.IsChecked = Properties.Settings.Default.MonitorProcesses;
 
             if (checkbox_DiskIO.IsChecked == true) {
+                Console.WriteLine("Populating Drive List");
                 PopulateDriveList();
             }
 
@@ -103,18 +106,17 @@ namespace Check_Up {
             // load selected disks from properties here
             List<string> selectedDisks = Properties.Settings.Default.Disks;
 
-            foreach (String disk in selectedDisks) {
-                Console.WriteLine("selectedDisk: " + disk);
+            if (selectedDisks == null) {
+                Console.WriteLine("No selected disks");
             }
-
-            foreach (Disk disk in items) {
-                Console.WriteLine("Disk Letter: " + disk.DiskLetter);
-                
-                if (selectedDisks.Contains(disk.DiskLetter)) {
-                    SelectedDisks.Add(disk);
+            else {
+                foreach (Disk disk in items) {
+                    Console.WriteLine("Disk: " + disk);
+                    if (selectedDisks.Contains(disk.DiskLetter)) {
+                        disk.IsChecked = true;
+                    }
                 }
             }
-
         }
 
         private void checkbox_DiskIO_Click(object sender, RoutedEventArgs e) {
@@ -128,18 +130,24 @@ namespace Check_Up {
 
         private void PopulateDriveList() {
             foreach (DriveInfo drive in RandomInfo.drives) {
-                items.Add(new Disk() { DiskType = drive.DriveType.ToString(), DiskLetter = drive.Name });
+                items.Add(new Disk() { DiskType = drive.DriveType.ToString(), DiskLetter = drive.Name, IsChecked = false});
             }
             listview_disks.ItemsSource = items;
         }
 
         private void listview_disks_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            Console.WriteLine("Selection Changed");
+            Console.WriteLine("Adding " + e.AddedItems.Count);
+            Console.WriteLine("Removing " + e.RemovedItems.Count);
+
             foreach (Disk item in e.RemovedItems) {
-                SelectedDisks.Remove(item);
+                Console.WriteLine("Removed disk " + item.DiskLetter + " from checked items");
+                item.IsChecked = false;
             }
 
             foreach (Disk item in e.AddedItems) {
-                SelectedDisks.Add(item);
+                Console.WriteLine("Added disk " + item.DiskLetter + " to checked items");
+                item.IsChecked = true;
             }
         }
 
