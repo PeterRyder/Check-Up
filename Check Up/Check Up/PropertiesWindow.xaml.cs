@@ -22,11 +22,14 @@ namespace Check_Up {
     public partial class PropertiesWindow : Window {
 
         private List<Disk> SelectedDisks;
+        List<Disk> items;
+
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public PropertiesWindow() {
             InitializeComponent();
 
+            items = new List<Disk>();
             SelectedDisks = new List<Disk>();
         }
 
@@ -95,6 +98,21 @@ namespace Check_Up {
             textbox_pollingInterval.Text = Properties.Settings.Default.PollingInterval.ToString();
             textbox_visiblePoints.Text = Properties.Settings.Default.VisiblePoints.ToString();
 
+            // load selected disks from properties here
+            List<string> selectedDisks = Properties.Settings.Default.Disks;
+
+            foreach (String disk in selectedDisks) {
+                Console.WriteLine("selectedDisk: " + disk);
+            }
+
+            foreach (Disk disk in items) {
+                Console.WriteLine("Disk Letter: " + disk.DiskLetter);
+                
+                if (selectedDisks.Contains(disk.DiskLetter)) {
+                    SelectedDisks.Add(disk);
+                }
+            }
+
         }
 
         private void checkbox_DiskIO_Click(object sender, RoutedEventArgs e) {
@@ -107,7 +125,6 @@ namespace Check_Up {
         }
 
         private void PopulateDriveList() {
-            List<Disk> items = new List<Disk>();
             foreach (DriveInfo drive in RandomInfo.drives) {
                 items.Add(new Disk() { DiskType = drive.DriveType.ToString(), DiskLetter = drive.Name });
             }
