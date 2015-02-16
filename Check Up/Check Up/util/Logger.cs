@@ -11,9 +11,6 @@ namespace Check_Up.Util
 
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public Logger() {
-        }
-
         public static void Debug(string msg) {
             log.Debug(msg);
         }

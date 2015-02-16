@@ -136,7 +136,7 @@ namespace Check_Up.Util {
         }
 
         public void RemoveCounter(string CounterType) {
-            Logger.Info("Attempting to remove counter {0}", CounterType);
+            Logger.Info(string.Format("Attempting to remove counter {0}", CounterType));
             try {
                 DataValues.Remove(CounterType);
             }
@@ -179,7 +179,7 @@ namespace Check_Up.Util {
                     DataValues[type] = (int)PerfCounters[type].NextValue();
                 }
                 catch {
-                    System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(String.Format("Cannot find drive {0} Is it a CD drive? \nNot monitoring drive {0}", type));
+                    System.Windows.MessageBox.Show(String.Format("Cannot find drive {0} Is it a CD drive? \nNot monitoring drive {0}", type));
                     return false;
                 }
             }

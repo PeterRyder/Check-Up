@@ -157,6 +157,7 @@
     </Compile>
     <Compile Include="util\CounterNames.cs" />
     <Compile Include="util\Disk.cs" />
+    <Compile Include="util\Logger.cs" />
     <Compile Include="util\OSDataCollection.cs" />
     <Compile Include="util\ProcessesDataCollection.cs" />
     <Compile Include="util\ProcessMonitor.cs" />

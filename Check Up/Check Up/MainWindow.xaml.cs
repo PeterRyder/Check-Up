@@ -505,13 +505,16 @@ namespace Check_Up {
                     Logger.Error(String.Format("Couldn't close sub window {0}", window.Name));
                 }
             }
+
             backgroundWorkerChart.CancelAsync();
+
             try {
                 base.OnClosing((CancelEventArgs)e);
             }
             catch {
                 Logger.Error("Couldn't call base form close");
             }
+
             ni.Visible = false;
             System.Windows.Application.Current.Shutdown();
         }
