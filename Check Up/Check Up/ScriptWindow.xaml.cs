@@ -39,6 +39,7 @@ namespace Check_Up {
 
             InitializeWorker();
             InitializeListView();
+            Console.WriteLine("Script Window constructor finished");
         }
 
         private void InitializeWorker() {
@@ -102,6 +103,8 @@ namespace Check_Up {
                     FullPath = script
                 });
             }
+
+            Console.WriteLine("Background worker completed");
         }
     }
 }
