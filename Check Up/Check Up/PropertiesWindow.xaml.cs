@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
-using log4net;
 using Check_Up.Util;
 
 namespace Check_Up {
@@ -22,8 +21,6 @@ namespace Check_Up {
     public partial class PropertiesWindow : Window {
 
         List<Disk> items;
-
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private ThemeManager themeManager;
 
         public PropertiesWindow() {
@@ -48,7 +45,7 @@ namespace Check_Up {
             }
 
             if (pollingTime < pollingInterval) {
-                log.Warn("Polling time greater than polling interval");
+                Logger.Warn("Polling time greater than polling interval");
                 error1.Visibility = System.Windows.Visibility.Visible;
                 return;
             }
@@ -138,17 +135,11 @@ namespace Check_Up {
         }
 
         private void listview_disks_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            //Console.WriteLine("Selection Changed");
-            //Console.WriteLine("Adding " + e.AddedItems.Count);
-            //Console.WriteLine("Removing " + e.RemovedItems.Count);
-
             foreach (Disk item in e.RemovedItems) {
-                //Console.WriteLine("Removed disk " + item.DiskLetter + " from checked items");
                 item.IsChecked = false;
             }
 
             foreach (Disk item in e.AddedItems) {
-                //Console.WriteLine("Added disk " + item.DiskLetter + " to checked items");
                 item.IsChecked = true;
             }
         }

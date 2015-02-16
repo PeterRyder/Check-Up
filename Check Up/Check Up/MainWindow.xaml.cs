@@ -19,7 +19,6 @@ using Check_Up.Util;
 using System.Threading;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
-using log4net;
 using System.IO;
 
 namespace Check_Up {
@@ -41,7 +40,6 @@ namespace Check_Up {
     /// </summary>
     ///
     public partial class MainWindow : Window {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private Random rand = new Random();
 
         private string OutputDirectory = RandomInfo.roamingDir + "\\" + RandomInfo.dataDir;
@@ -75,22 +73,30 @@ namespace Check_Up {
             LoadingWindow.SetApartmentState(ApartmentState.STA);
             LoadingWindow.Start();
 
+#if DEBUG
             Stopwatch stopwatch = Stopwatch.StartNew(); //creates and start the instance of Stopwatch
+#endif
             InitializeComponent();
+#if DEBUG
             stopwatch.Stop();
-            Console.WriteLine("[time] InitializeComponent: " + stopwatch.ElapsedMilliseconds + "ms");
+            Logger.Debug("[time] InitializeComponent: " + stopwatch.ElapsedMilliseconds + "ms");
 
             stopwatch.Reset();
             stopwatch.Start();
+#endif
             InitializeObjects();
+#if DEBUG
             stopwatch.Stop();
-            Console.WriteLine("[time] InitializeObjects: " + stopwatch.ElapsedMilliseconds + "ms");
+            Logger.Debug("[time] InitializeObjects: " + stopwatch.ElapsedMilliseconds + "ms");
 
             stopwatch.Reset();
             stopwatch.Start();
+#endif
             InitializeEventHandlers();
+#if DEBUG
             stopwatch.Stop();
-            Console.WriteLine("[time] InitializeEventHandlers: " + stopwatch.ElapsedMilliseconds + "ms");
+            Logger.Debug("[time] InitializeEventHandlers: " + stopwatch.ElapsedMilliseconds + "ms");
+#endif
            
             ni.Visible = true;
 
@@ -259,7 +265,7 @@ namespace Check_Up {
                 backgroundWorkerChart.RunWorkerAsync();
             }
             catch {
-                log.Error("Could not start backgroundWorker");
+                Logger.Error("Could not start backgroundWorker");
             }
         }
 
@@ -330,8 +336,8 @@ namespace Check_Up {
                         updateGraph(types[i], cycles, osDataCollector.DataValues[types[i]]);
                     }
                     catch {
-                        log.Error(String.Format("Could not update graph for type {0}", types[i]));
-                        log.Info(String.Format("Removing type {0} from lists", types[i]));
+                        Logger.Error(String.Format("Could not update graph for type {0}", types[i]));
+                        Logger.Info(String.Format("Removing type {0} from lists", types[i]));
                         GraphDataDict.Remove(types[i]);
                         osDataCollector.RemoveCounter(types[i]);
                     }
@@ -349,7 +355,7 @@ namespace Check_Up {
         }
 
         private void backgroundWorkerChart_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
-            log.Debug("Worker completed");
+            Logger.Info("Worker completed");
             // If the progress bar isn't full, force it
             progressBar.Value = 100;
             if (e.Error != null) {
@@ -411,7 +417,7 @@ namespace Check_Up {
                         percentage = Math.Round(percentage);
                         sender.ReportProgress((int)percentage);
 
-                        log.Debug("Set cancellation to pending");
+                        Logger.Info("Set cancellation to pending");
 
                     }
                     else {
@@ -447,7 +453,7 @@ namespace Check_Up {
 
             // Announce if there is a pending cancellation
             if (sender.CancellationPending) {
-                log.Debug("Cancellation is pending");
+                Logger.Info("Cancellation is pending");
                 e.Cancel = true;
                 return true;
             }
@@ -496,7 +502,7 @@ namespace Check_Up {
                     window.Close();
                 }
                 catch {
-                    log.Error(String.Format("Couldn't close sub window {0}", window.Name));
+                    Logger.Error(String.Format("Couldn't close sub window {0}", window.Name));
                 }
             }
             backgroundWorkerChart.CancelAsync();
@@ -504,7 +510,7 @@ namespace Check_Up {
                 base.OnClosing((CancelEventArgs)e);
             }
             catch {
-                log.Error("Couldn't call base form close");
+                Logger.Error("Couldn't call base form close");
             }
             ni.Visible = false;
             System.Windows.Application.Current.Shutdown();
@@ -537,7 +543,6 @@ namespace Check_Up {
                 foreach (string disk in disks) {
                     string name = disk.TrimEnd('\\');
                     name = name.TrimEnd(':');
-                    Console.WriteLine("HERE: " + name);
                     AddToGraphData(name);
                     osDataCollector.AddDiskCounter(disk);
                 }
@@ -548,7 +553,7 @@ namespace Check_Up {
                 new Thread(GatherDataProcesses).Start();
             }
             catch {
-                log.Error("Could not start Process Thread");
+                Logger.Error("Could not start Process Thread");
             }
 
             // Start the OS monitoring thread
@@ -613,7 +618,7 @@ namespace Check_Up {
                         orderby pair.Value descending
                         select pair;
 
-            Console.WriteLine("Writing Data to CSV file: {0}", FullOutputDataFileName);
+            Logger.Info(string.Format("Writing Data to CSV file: {0}", FullOutputDataFileName));
 
             // the boolean false represents whether it will be appended or not - currently overwriting
             using (var w = new StreamWriter(FullOutputDataFileName, false)) {
@@ -647,7 +652,7 @@ namespace Check_Up {
                 }
 
             }
-            Console.WriteLine("Finished writing data to CSV");
+            Logger.Info("Finished writing data to CSV");
         }
     }
 }

@@ -15,15 +15,12 @@ using System.ComponentModel;
 using Check_Up.Util;
 using System.IO;
 using System.Collections.ObjectModel;
-using log4net;
 
 namespace Check_Up {
     /// <summary>
     /// Interaction logic for ScriptWindow.xaml
     /// </summary>
     public partial class ScriptWindow : Window {
-
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public class ScriptData {
             public string ScriptName { get; set; }
@@ -34,27 +31,30 @@ namespace Check_Up {
 
         private ScriptControl scripts;
 
-        BackgroundWorker worker;
+        private BackgroundWorker worker;
 
         public ScriptWindow() {
             InitializeComponent();
             scripts = new ScriptControl();
-            
+
+            InitializeWorker();
+            InitializeListView();
+        }
+
+        private void InitializeWorker() {
             worker = new BackgroundWorker();
             worker.DoWork += worker_DoWork;
             worker.ProgressChanged += worker_ProgressChanged;
             worker.RunWorkerCompleted += worker_RunWorkerCompleted;
             worker.WorkerReportsProgress = true;
             worker.WorkerSupportsCancellation = true;
-
-            InitializeListView();
         }
-
-        public ObservableCollection<ScriptData> ScriptCollection { get { return _ScriptCollection; } }
 
         public void InitializeListView() {
             worker.RunWorkerAsync();
         }
+
+        public ObservableCollection<ScriptData> ScriptCollection { get { return _ScriptCollection; } }
 
         private void StartScript(object sender, RoutedEventArgs e) {
             Button b = sender as Button;
@@ -89,11 +89,11 @@ namespace Check_Up {
         }
 
         private void worker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
-            Console.WriteLine("Progress Changed " + e.ProgressPercentage);
+            //Console.WriteLine("Progress Changed " + e.ProgressPercentage);
         }
 
         private void worker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
-            log.Debug("Script Window Worker completed");
+            Logger.Info("Script Window Worker completed");
             List<string> scriptList = scripts.getScripts();
 
             foreach (string script in scriptList) {

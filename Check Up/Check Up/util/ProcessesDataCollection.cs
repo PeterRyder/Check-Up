@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Diagnostics;
-using log4net;
 
 namespace Check_Up.Util {
     class ProcessesDataCollection {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         // Maximum Values
         public Dictionary<string, float> HighestCpuUsage = new Dictionary<string, float>();
@@ -67,8 +65,8 @@ namespace Check_Up.Util {
                     data = counter.NextValue();
                 }
                 catch {
-                    log.Warn(string.Format("Could not get information on process {0}", counter.InstanceName));
-                    log.Warn(string.Format("Removing process {0}", counter.InstanceName));
+                    Logger.Warn(string.Format("Could not get information on process {0}", counter.InstanceName));
+                    Logger.Warn(string.Format("Removing process {0}", counter.InstanceName));
 
                     ProcessPerfCounters.Remove(counter);
                     continue;
@@ -90,7 +88,7 @@ namespace Check_Up.Util {
                 HighestCpuUsage = AggregateData(HighestCpuUsage);
                 HighestMemUsage = AggregateData(HighestMemUsage);
             }
-            log.Debug("Finished gathering process data");
+            Logger.Debug("Finished gathering process data");
         }
 
 

@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Threading;
 using System.Net.NetworkInformation;
-using log4net;
 using Check_Up.Util;
 
 namespace Check_Up.Util {
     class OSDataCollection : IDisposable {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private Dictionary<string, PerformanceCounter> PerfCounters = new Dictionary<string,PerformanceCounter>();
 
@@ -33,7 +31,7 @@ namespace Check_Up.Util {
         public void InitializeCounters() {
             #region CPU Counter Initialization
             if (Properties.Settings.Default.CPU && !DataValues.ContainsKey(CounterNames.CPUName)) {
-                Console.WriteLine("Initializing a CPU Counter");
+                Logger.Info("Initializing a CPU Counter");
                 PerformanceCounter perfCpuCount = new PerformanceCounter("Processor Information", "% Processor Time", "_Total");
                 PerfCounters.Add(CounterNames.CPUName, perfCpuCount);
                 DataValues.Add(CounterNames.CPUName, 0);
@@ -42,7 +40,7 @@ namespace Check_Up.Util {
 
             #region Memory Counter Initialization
             if (Properties.Settings.Default.Memory && !DataValues.ContainsKey(CounterNames.MemName)) {
-                Console.WriteLine("Initializing a Memory Counter");
+                Logger.Info("Initializing a Memory Counter");
                 ulong totalMemBytes = new Microsoft.VisualBasic.Devices.ComputerInfo().TotalPhysicalMemory;
                 totalMemMBs = (int)(totalMemBytes / 1024 / 1024);
                 PerformanceCounter perfMemCount = new PerformanceCounter("Memory", "Available MBytes");
@@ -53,7 +51,7 @@ namespace Check_Up.Util {
 
             #region Network Counter Initialization
             if (Properties.Settings.Default.Network && !DataValues.ContainsKey(CounterNames.NetName)) {
-                Console.WriteLine("Attempting to Initialize a Network Counter");
+                Logger.Debug("Attempting to Initialize a Network Counter");
                 string WifiNicDescription = "";
                 string ethernetNicDescription = "";
 
@@ -79,7 +77,7 @@ namespace Check_Up.Util {
                         canGatherNet = true;
                     }
                     catch {
-                        log.Error("Could not find a counter for your network adapter");
+                        Logger.Error("Could not find a counter for your network adapter");
 
                         canGatherNet = false;
                     }
@@ -90,7 +88,7 @@ namespace Check_Up.Util {
                         canGatherNet = true;
                     }
                     catch {
-                        log.Error("Could not find a counter for your network interface");
+                        Logger.Error("Could not find a counter for your network interface");
                         canGatherNet = false;
                     }
                 }
@@ -125,13 +123,7 @@ namespace Check_Up.Util {
             List<string> disks = Properties.Settings.Default.Disks;
             List<string> counters = new List<string>(DataValues.Keys);
 
-            foreach (string disk in disks) {
-                Console.WriteLine("Disk " + disk);
-            }
-
             for (int i = 0; i < counters.Count; i++) {
-                Console.WriteLine("DataValue Key " + counters[i]);
-
                 if (counters[i] != CounterNames.CPUName &&
                     counters[i] != CounterNames.MemName &&
                     counters[i] != CounterNames.NetName &&
@@ -144,30 +136,30 @@ namespace Check_Up.Util {
         }
 
         public void RemoveCounter(string CounterType) {
-            Console.WriteLine("Attempting to remove counter {0}", CounterType);
+            Logger.Info("Attempting to remove counter {0}", CounterType);
             try {
                 DataValues.Remove(CounterType);
             }
             catch {
-                log.Error(String.Format("Could not remove data {0} from list", CounterType));
+                Logger.Error(String.Format("Could not remove data {0} from list", CounterType));
             }
             try {
                 PerfCounters.Remove(CounterType);
             }
             catch {
-                log.Error(String.Format("Could not remove counter {0} from list", CounterType));
+                Logger.Error(String.Format("Could not remove counter {0} from list", CounterType));
             }
         }
 
         public void AddDiskCounter(string disk) {
             try {
-                Console.WriteLine("Created disk counter with name " + disk);
+                Logger.Info("Created disk counter with name " + disk);
                 PerformanceCounter perfDisk = new PerformanceCounter("LogicalDisk", "% Disk Time", disk);
                 PerfCounters.Add(disk, perfDisk);
                 DataValues.Add(disk, 0);
             }
             catch {
-                log.Error(String.Format("Could not create performance counter for disk {0}", disk));
+                Logger.Error(String.Format("Could not create performance counter for disk {0}", disk));
             }
         }
 

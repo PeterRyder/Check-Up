@@ -8,11 +8,9 @@ using Microsoft.Scripting.Hosting;
 using System.IO;
 using System.Diagnostics;
 using System.ComponentModel;
-using log4net;
 
 namespace Check_Up.Util {
     class ScriptControl {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private List<string> scripts = new List<string>();
         private Dictionary<String, dynamic> runningScripts = new Dictionary<String, dynamic>();
@@ -25,7 +23,6 @@ namespace Check_Up.Util {
 
         public ScriptControl() {
             string path = RandomInfo.roamingDir + "\\" + RandomInfo.scriptDir;
-            Console.WriteLine("HERE" + path);
             fullScriptPath = Path.GetFullPath(path);
             checkDirectory();
         }
@@ -38,7 +35,7 @@ namespace Check_Up.Util {
 
         public void checkNewScript(string filename) {
             if (!scripts.Contains(filename)) {
-                log.Debug(String.Format("Found new script {0}", Path.GetFileName(filename)));
+                Logger.Debug(String.Format("Found new script {0}", Path.GetFileName(filename)));
                 if (SanityCheckScript(filename)) {
                     scripts.Add(filename);
                 }
@@ -47,16 +44,16 @@ namespace Check_Up.Util {
 
         private bool SanityCheckScript(String filename) {
             if (Path.GetExtension(Path.GetFileName(filename)) != ".py") {
-                log.Error(String.Format("Script must be a Python file. Not executing file {0}", filename));
+                Logger.Error(String.Format("Script must be a Python file. Not executing file {0}", filename));
 
                 return false;
             }
             else {
                 if (CheckFunctions(filename)) {
-                    log.Warn(string.Format("Script {0} has both a main and close method", Path.GetFileName(filename)));
+                    Logger.Info(string.Format("Script {0} has both a main and close method", Path.GetFileName(filename)));
                 }
                 else {
-                    log.Error(string.Format("Script {0} does not contain a close or main method", Path.GetFileName(filename)));
+                    Logger.Error(string.Format("Script {0} does not contain a close or main method", Path.GetFileName(filename)));
                 }
                 return true;
             }
@@ -67,11 +64,10 @@ namespace Check_Up.Util {
             System.IO.StreamReader file = null;
 
             try {
-                // open the file with a reader
                 file = new System.IO.StreamReader(filename);
             }
             catch {
-                log.Error(string.Format("Couldn't open file {0}", Path.GetFileName(filename)));
+                Logger.Error(string.Format("Couldn't open file {0}", Path.GetFileName(filename)));
                 return false;
             }
 
@@ -102,12 +98,12 @@ namespace Check_Up.Util {
         public bool runScript(String scriptName) {
 
             if (!scripts.Contains(scriptName)) {
-                log.Error(string.Format("Couldn't find script {0} to start", Path.GetFileName(scriptName)));
+                Logger.Error(string.Format("Couldn't find script {0} to start", Path.GetFileName(scriptName)));
                 return false;
             }
 
             if (workers.Keys.Contains(scriptName)) {
-                log.Warn(string.Format("Script {0} is already running", Path.GetFileName(scriptName)));
+                Logger.Warn(string.Format("Script {0} is already running", Path.GetFileName(scriptName)));
                 return false;
             }
 
@@ -118,14 +114,14 @@ namespace Check_Up.Util {
             backgroundWorker.RunWorkerAsync(scriptName);
             workers.Add(scriptName, backgroundWorker);
 
-            log.Debug(string.Format("Started BackgroundWorker for script {0}", Path.GetFileName(scriptName)));
+            Logger.Info(string.Format("Started BackgroundWorker for script {0}", Path.GetFileName(scriptName)));
 
             return true;
         }
 
         public bool stopScript(String scriptName) {
             if (!runningScripts.Keys.Contains(scriptName)) {
-                log.Error(string.Format("Couldn't find script {0} to close", scriptName));
+                Logger.Error(string.Format("Couldn't find script {0} to close", scriptName));
                 return false;
             }
 
@@ -136,7 +132,7 @@ namespace Check_Up.Util {
                         pair.Value.close();
                     }
                     catch {
-                        log.Error(string.Format("Couldn't find close method in {0} script", scriptName));
+                        Logger.Error(string.Format("Couldn't find close method in {0} script", scriptName));
                     }
                 }
             }
@@ -151,13 +147,13 @@ namespace Check_Up.Util {
             }
 
             if (toRemove != "") {
-                log.Debug(string.Format("Removing worker for script {0}", Path.GetFileName(scriptName)));
+                Logger.Debug(string.Format("Removing worker for script {0}", Path.GetFileName(scriptName)));
                 if (workers.Keys.Contains(toRemove)) {
                     // remove the worker from the list of workers
                     workers.Remove(toRemove);
                 }
                 else {
-                    log.Error(string.Format("Workers does not contain {0}", toRemove));
+                    Logger.Error(string.Format("Workers does not contain {0}", toRemove));
                 }
 
                 if (runningScripts.Keys.Contains(toRemove)) {
@@ -165,12 +161,12 @@ namespace Check_Up.Util {
                     runningScripts.Remove(toRemove);
                 }
                 else {
-                    log.Error(string.Format("Running Scripts does not contain {0}", toRemove));
+                    Logger.Error(string.Format("Running Scripts does not contain {0}", toRemove));
                 }
 
             }
             else {
-                log.Error("Couldn't find worker to remove");
+                Logger.Error("Couldn't find worker to remove");
             }
 
             return true;
@@ -180,7 +176,7 @@ namespace Check_Up.Util {
             string filename = (string)e.Argument;
 
             dynamic script = ipy.UseFile(filename);
-            log.Debug(string.Format("BackgroundWorker starting script {0}", Path.GetFileName(filename)));
+            Logger.Info(string.Format("BackgroundWorker starting script {0}", Path.GetFileName(filename)));
             runningScripts.Add(filename, script);
 
             // call the scripts main method

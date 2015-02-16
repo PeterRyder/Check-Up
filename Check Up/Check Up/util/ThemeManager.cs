@@ -10,7 +10,7 @@ using System.Windows;
 namespace Check_Up.Util {
     class ThemeManager {
 
-        public string themeDir = RandomInfo.roamingDir + "\\" + RandomInfo.themeDir;
+        private static string themeDir = RandomInfo.roamingDir + "\\" + RandomInfo.themeDir;
 
         public ObservableCollection<string> themes = new ObservableCollection<string>();
 
@@ -29,16 +29,16 @@ namespace Check_Up.Util {
         }
 
         public void LoadThemes(string directory) {
-            Console.WriteLine("Loading Themes...");
+            Logger.Info("Loading Themes...");
             string[] files = Directory.GetFiles(directory);
             foreach (string file in files) {
                 string parsedFile = ParseTheme(file);
-                Console.WriteLine("Found Theme " + parsedFile);
+                Logger.Debug("Found Theme " + parsedFile);
                 themes.Add(parsedFile);
             }
         }
 
-        public string ParseTheme(string file) {
+        private string ParseTheme(string file) {
             return Path.GetFileName(file);
         }
 
@@ -52,7 +52,7 @@ namespace Check_Up.Util {
                 });
             }
             catch {
-                Console.WriteLine("Couldn't change theme to " + theme);
+                Logger.Error("Couldn't change theme to " + theme);
             }
             
         }
