@@ -18,6 +18,7 @@ namespace Check_Up.Util {
             CheckDirectory();
         }
 
+
         private void CheckDirectory() {
             if (!Directory.Exists(themeDir)) {
                 Directory.CreateDirectory(themeDir);
