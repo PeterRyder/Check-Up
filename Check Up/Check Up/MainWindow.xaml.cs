@@ -184,7 +184,31 @@ namespace Check_Up {
             catch {
                 Console.WriteLine("Couldn't set icon");
             }
-            
+            System.Windows.Forms.ContextMenu contextMenu1;
+            contextMenu1 = new System.Windows.Forms.ContextMenu();
+            System.Windows.Forms.MenuItem menuItem1 = new System.Windows.Forms.MenuItem();
+            contextMenu1.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { menuItem1 });
+            System.Windows.Forms.MenuItem menuItem2 = new System.Windows.Forms.MenuItem();
+            contextMenu1.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { menuItem2 });
+            System.Windows.Forms.MenuItem menuItem3 = new System.Windows.Forms.MenuItem();
+            contextMenu1.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { menuItem3 });
+
+            menuItem1.Index = 0;
+            menuItem1.Text = "Gather Data";
+            //menuItem1.Click += new System.EventHandler(backgroundWorkerChart_DoWork);
+
+            menuItem2.Index = 1;
+            menuItem2.Text = "Stop Monitoring";
+            //menuItem2.Click += new System.EventHandler(this.menuItem1_Click);
+
+            menuItem3.Index = 2;
+            menuItem3.Text = "Exit";
+            menuItem3.Click += new System.EventHandler(MainWindow_Closed);
+
+            ni.ContextMenu = contextMenu1;
 
             backgroundWorkerChart.ProgressChanged += backgroundWorkerChart_ProgressChanged;
             backgroundWorkerChart.RunWorkerCompleted += backgroundWorkerChart_RunWorkerCompleted;
