@@ -186,25 +186,34 @@ namespace Check_Up {
             }
             System.Windows.Forms.ContextMenu contextMenu1;
             contextMenu1 = new System.Windows.Forms.ContextMenu();
+            System.Windows.Forms.MenuItem foreground = new System.Windows.Forms.MenuItem();
+            contextMenu1.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { foreground });
+
             System.Windows.Forms.MenuItem menuItem1 = new System.Windows.Forms.MenuItem();
-            contextMenu1.MenuItems.AddRange(
-                    new System.Windows.Forms.MenuItem[] { menuItem1 });
+            /*contextMenu1.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { menuItem1 });*/
             System.Windows.Forms.MenuItem menuItem2 = new System.Windows.Forms.MenuItem();
-            contextMenu1.MenuItems.AddRange(
-                    new System.Windows.Forms.MenuItem[] { menuItem2 });
+            /*contextMenu1.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { menuItem2 });*/
             System.Windows.Forms.MenuItem menuItem3 = new System.Windows.Forms.MenuItem();
             contextMenu1.MenuItems.AddRange(
                     new System.Windows.Forms.MenuItem[] { menuItem3 });
 
-            menuItem1.Index = 0;
+            foreground.MenuItems.Add(menuItem1);
+            foreground.MenuItems.Add(menuItem2);
+            //foreground.Index = 0;
+            foreground.Text = "Foreground";
+
+            //menuItem1.Index = 0;
             menuItem1.Text = "Gather Data";
             menuItem1.Click += new System.EventHandler(menuItem_GatherForegroundData);
 
-            menuItem2.Index = 1;
+            //menuItem2.Index = 1;
             menuItem2.Text = "Stop Monitoring";
             menuItem2.Click += new System.EventHandler(this.menuItem_StopForegroundData);
 
-            menuItem3.Index = 2;
+            //menuItem3.Index = 2;
             menuItem3.Text = "Exit";
             menuItem3.Click += new System.EventHandler(MainWindow_Closed);
 
