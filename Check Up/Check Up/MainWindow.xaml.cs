@@ -198,11 +198,11 @@ namespace Check_Up {
 
             menuItem1.Index = 0;
             menuItem1.Text = "Gather Data";
-            //menuItem1.Click += new System.EventHandler(backgroundWorkerChart_DoWork);
+            menuItem1.Click += new System.EventHandler(menuItem1_Click);
 
             menuItem2.Index = 1;
             menuItem2.Text = "Stop Monitoring";
-            //menuItem2.Click += new System.EventHandler(this.menuItem1_Click);
+            menuItem2.Click += new System.EventHandler(this.menuItem2_Click);
 
             menuItem3.Index = 2;
             menuItem3.Text = "Exit";
@@ -253,6 +253,18 @@ namespace Check_Up {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void button_gatherData_Click(object sender, RoutedEventArgs e) {
+            BeginForegroundMonitoring();
+        }
+
+        private void menuItem1_Click(object sender, System.EventArgs e) {
+            BeginForegroundMonitoring();
+        }
+
+        private void menuItem2_Click(object sender, System.EventArgs e) {
+            StopForegroundMonitoring();
+        }
+
+        private void BeginForegroundMonitoring() {
             this.button_gatherData.IsEnabled = false;
             this.button_resetChart.IsEnabled = false;
             button_stopMonitoring.IsEnabled = true;
@@ -287,7 +299,7 @@ namespace Check_Up {
                     string name = disk.TrimEnd('\\');
                     osDataCollector.AddDiskCounter(name);
                     createSeries(name);
-                    
+
                 }
             }
             #endregion
@@ -338,6 +350,10 @@ namespace Check_Up {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void button_stopMonitoring_Click(object sender, RoutedEventArgs e) {
+            StopForegroundMonitoring();
+        }
+
+        private void StopForegroundMonitoring() {
             // When the monitorStop button is clicked stop the backgroundWorker
             backgroundWorkerChart.CancelAsync();
 
