@@ -295,11 +295,11 @@ namespace Check_Up {
             BeginForegroundMonitoring();
         }
 
-        private void menuItem1_Click(object sender, System.EventArgs e) {
+        private void menuItem_GatherForegroundData(object sender, System.EventArgs e) {
             BeginForegroundMonitoring();
         }
 
-        private void menuItem2_Click(object sender, System.EventArgs e) {
+        private void menuItem_StopForegroundData(object sender, System.EventArgs e) {
             StopForegroundMonitoring();
         }
 
