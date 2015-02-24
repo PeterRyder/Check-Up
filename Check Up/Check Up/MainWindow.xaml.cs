@@ -198,11 +198,11 @@ namespace Check_Up {
 
             menuItem1.Index = 0;
             menuItem1.Text = "Gather Data";
-            menuItem1.Click += new System.EventHandler(menuItem1_Click);
+            menuItem1.Click += new System.EventHandler(menuItem_GatherForegroundData);
 
             menuItem2.Index = 1;
             menuItem2.Text = "Stop Monitoring";
-            menuItem2.Click += new System.EventHandler(this.menuItem2_Click);
+            menuItem2.Click += new System.EventHandler(this.menuItem_StopForegroundData);
 
             menuItem3.Index = 2;
             menuItem3.Text = "Exit";
@@ -256,11 +256,11 @@ namespace Check_Up {
             BeginForegroundMonitoring();
         }
 
-        private void menuItem1_Click(object sender, System.EventArgs e) {
+        private void menuItem_GatherForegroundData(object sender, System.EventArgs e) {
             BeginForegroundMonitoring();
         }
 
-        private void menuItem2_Click(object sender, System.EventArgs e) {
+        private void menuItem_StopForegroundData(object sender, System.EventArgs e) {
             StopForegroundMonitoring();
         }
 
