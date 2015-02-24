@@ -97,7 +97,7 @@ namespace Check_Up {
             stopwatch.Stop();
             Logger.Debug("[time] InitializeEventHandlers: " + stopwatch.ElapsedMilliseconds + "ms");
 #endif
-           
+            Console.WriteLine("Showing Notification Icon");
             ni.Visible = true;
 
             CreateOutputDirectory();
@@ -177,6 +177,14 @@ namespace Check_Up {
                 this.Show();
                 this.WindowState = WindowState.Normal;
             };
+
+            try {
+                ni.Icon = new System.Drawing.Icon(System.Windows.Application.GetResourceStream(new Uri("/Check Up.ico", UriKind.Relative)).Stream);
+            }
+            catch {
+                Console.WriteLine("Couldn't set icon");
+            }
+            
 
             backgroundWorkerChart.ProgressChanged += backgroundWorkerChart_ProgressChanged;
             backgroundWorkerChart.RunWorkerCompleted += backgroundWorkerChart_RunWorkerCompleted;

@@ -59,7 +59,8 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Check Up.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Hammer.SpinningWheel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -253,7 +254,10 @@
     <Resource Include="Resources\Entypo-license.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Check Up.ico" />
+    <None Include="Resources\NotificationIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Check Up.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
