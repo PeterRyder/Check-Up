@@ -175,55 +175,6 @@ namespace Check_Up {
             backgroundWorkerChart = new BackgroundWorker();
         }
 
-        public void InitializeContextMenu(){
-            System.Windows.Forms.ContextMenu contextMenu1;
-            contextMenu1 = new System.Windows.Forms.ContextMenu();
-
-            System.Windows.Forms.MenuItem foreground = new System.Windows.Forms.MenuItem();
-            contextMenu1.MenuItems.AddRange(
-                    new System.Windows.Forms.MenuItem[] { foreground });
-            foreground.Text = "Foreground";
-
-            System.Windows.Forms.MenuItem foreground_start = new System.Windows.Forms.MenuItem();
-            foreground.MenuItems.Add(foreground_start);
-            foreground_start.Text = "Gather Data";
-            foreground_start.Click += new System.EventHandler(menuItem_GatherForegroundData);
-
-            System.Windows.Forms.MenuItem foreground_stop = new System.Windows.Forms.MenuItem();
-            foreground.MenuItems.Add(foreground_stop);
-            foreground_stop.Text = "Stop Monitoring";
-            foreground_stop.Click += new System.EventHandler(this.menuItem_StopForegroundData);
-
-            System.Windows.Forms.MenuItem background = new System.Windows.Forms.MenuItem();
-            contextMenu1.MenuItems.AddRange(
-                    new System.Windows.Forms.MenuItem[] { background });
-            background.Text = "Background";
-
-            System.Windows.Forms.MenuItem background1 = new System.Windows.Forms.MenuItem();
-            background.MenuItems.Add(background1);
-            background1.Text = "Log Data";
-            background1.Click += new System.EventHandler(contextMenu_startBackgroundData);
-
-            System.Windows.Forms.MenuItem background2 = new System.Windows.Forms.MenuItem();
-            background.MenuItems.Add(background2);
-            background2.Text = "Stop Logging Data";
-            background2.Click += new System.EventHandler(contextMenu_stopLoggingData);
-
-            System.Windows.Forms.MenuItem properties = new System.Windows.Forms.MenuItem();
-            contextMenu1.MenuItems.AddRange(
-                    new System.Windows.Forms.MenuItem[] { properties });
-            properties.Text = "Properties";
-            properties.Click += new System.EventHandler(ContextMenuProperties_Click);
-
-            System.Windows.Forms.MenuItem exit = new System.Windows.Forms.MenuItem();
-            contextMenu1.MenuItems.AddRange(
-                    new System.Windows.Forms.MenuItem[] { exit });
-            exit.Text = "Exit";
-            exit.Click += new System.EventHandler(MainWindow_Closed);
-
-            ni.ContextMenu = contextMenu1;
-        }
-
         private void InitializeEventHandlers() {
             this.Closed += new EventHandler(MainWindow_Closed);
             
@@ -238,8 +189,40 @@ namespace Check_Up {
             catch {
                 Console.WriteLine("Couldn't set icon");
             }
+            System.Windows.Forms.ContextMenu contextMenu1;
+            contextMenu1 = new System.Windows.Forms.ContextMenu();
+            System.Windows.Forms.MenuItem foreground = new System.Windows.Forms.MenuItem();
+            contextMenu1.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { foreground });
 
-            InitializeContextMenu();
+            System.Windows.Forms.MenuItem menuItem1 = new System.Windows.Forms.MenuItem();
+            /*contextMenu1.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { menuItem1 });*/
+            System.Windows.Forms.MenuItem menuItem2 = new System.Windows.Forms.MenuItem();
+            /*contextMenu1.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { menuItem2 });*/
+            System.Windows.Forms.MenuItem menuItem3 = new System.Windows.Forms.MenuItem();
+            contextMenu1.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { menuItem3 });
+
+            foreground.MenuItems.Add(menuItem1);
+            foreground.MenuItems.Add(menuItem2);
+            //foreground.Index = 0;
+            foreground.Text = "Foreground";
+
+            //menuItem1.Index = 0;
+            menuItem1.Text = "Gather Data";
+            menuItem1.Click += new System.EventHandler(menuItem_GatherForegroundData);
+
+            //menuItem2.Index = 1;
+            menuItem2.Text = "Stop Monitoring";
+            menuItem2.Click += new System.EventHandler(this.menuItem_StopForegroundData);
+
+            //menuItem3.Index = 2;
+            menuItem3.Text = "Exit";
+            menuItem3.Click += new System.EventHandler(MainWindow_Closed);
+
+            ni.ContextMenu = contextMenu1;
 
             backgroundWorkerChart.ProgressChanged += backgroundWorkerChart_ProgressChanged;
             backgroundWorkerChart.RunWorkerCompleted += backgroundWorkerChart_RunWorkerCompleted;
@@ -263,14 +246,6 @@ namespace Check_Up {
             PropertiesWindow subWindow = new PropertiesWindow();
             subWindows.Add(subWindow);
             subWindow.Show();
-        }
-
-        private void ContextMenuProperties_Click(object sender, EventArgs e){
-            PropertiesHelper();
-        }
-
-        private void MenuItemProperties_Click(object sender, RoutedEventArgs e) {
-            PropertiesHelper();
         }
 
         /// <summary>
@@ -606,96 +581,10 @@ namespace Check_Up {
             System.Windows.Application.Current.Shutdown();
         }
 
-        private void menuItem_LogData(object sender, EventArgs e)
-        {
+        private void button_logData_Click(object sender, RoutedEventArgs e) {
 
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            osDataCollector.InitializeCounters();
-            List<string> CountersRemoved = osDataCollector.RemoveCounters();
-            if (CountersRemoved.Count != 0)
-            {
-                for (int i = 0; i < CountersRemoved.Count; i++)
-                {
-                    GraphDataDict.Remove(CountersRemoved[i]);
-                }
-            }
-
-            if (Properties.Settings.Default.CPU)
-            {
-                AddToGraphData(CounterNames.CPUName);
-            }
-
-            if (Properties.Settings.Default.Memory)
-            {
-                AddToGraphData(CounterNames.MemName);
-            }
-
-            if (Properties.Settings.Default.Network)
-            {
-                AddToGraphData(CounterNames.NetName);
-            }
-
-            if (Properties.Settings.Default.DiskIO)
-            {
-                List<string> disks = Properties.Settings.Default.Disks;
-                foreach (string disk in disks)
-                {
-                    string name = disk.TrimEnd('\\');
-                    name = name.TrimEnd(':');
-                    AddToGraphData(name);
-                    osDataCollector.AddDiskCounter(disk);
-                }
-            }
-
-            // Start the processes monitoring thread
-            try
-            {
-                new Thread(GatherDataProcesses).Start();
-            }
-            catch
-            {
-                Logger.Error("Could not start Process Thread");
-            }
-
-            // Start the OS monitoring thread
-            /*
-            try {
-                backgroundWorkerChart.RunWorkerAsync();
-            }
-            catch {
-                log.Error("Could not start backgroundWorker");
-            }
-             */
-
-            button_stopLoggingData.IsEnabled = true;
-            button_logData.IsEnabled = false;
-
-            stopwatch.Stop();
-            Console.WriteLine("[time] Log Data Button completed in: " + stopwatch.ElapsedMilliseconds + "ms");
-        }
-
-        private void start_background_data()
-        {
-            try
-            {
-                new Thread(GatherDataProcesses).Start();
-            }
-            catch
-            {
-                Logger.Error("Could not start Process Thread");
-            }
-            button_stopLoggingData.IsEnabled = true;
-            button_logData.IsEnabled = false;
-        }
-
-        private void contextMenu_startBackgroundData(object sender, EventArgs e)
-        {
-            start_background_data();
-        }
-            
-        private void button_logData_Click(object sender, RoutedEventArgs e) {
-            /*
             osDataCollector.InitializeCounters();
             List<string> CountersRemoved = osDataCollector.RemoveCounters();
             if (CountersRemoved.Count != 0) {
@@ -725,9 +614,14 @@ namespace Check_Up {
                     osDataCollector.AddDiskCounter(disk);
                 }
             }
-            */
+
             // Start the processes monitoring thread
-            start_background_data();
+            try {
+                new Thread(GatherDataProcesses).Start();
+            }
+            catch {
+                Logger.Error("Could not start Process Thread");
+            }
 
             // Start the OS monitoring thread
             /*
@@ -739,30 +633,17 @@ namespace Check_Up {
             }
              */
 
-            
-        }
-        /*
-        private void menuItem_stopLoggingData(object sender, EventArgs e)
-        {
-            handle.Set();
-            button_logData.IsEnabled = true;
-            button_stopLoggingData.IsEnabled = false;
-        }
-        */
-        private void stopBackgroundLogging(){
-            handle.Set();
-            button_logData.IsEnabled = true;
-            button_stopLoggingData.IsEnabled = false;
-        }
+            button_stopLoggingData.IsEnabled = true;
+            button_logData.IsEnabled = false;
 
-        private void contextMenu_stopLoggingData(object sender, EventArgs e)
-        {
-            Console.WriteLine("Context menu stopping background logging");
-            stopBackgroundLogging();
+            stopwatch.Stop();
+            Console.WriteLine("[time] Log Data Button completed in: " + stopwatch.ElapsedMilliseconds + "ms");
         }
 
         private void button_stopLoggingData_Click(object sender, RoutedEventArgs e) {
-            stopBackgroundLogging();
+            handle.Set();
+            button_logData.IsEnabled = true;
+            button_stopLoggingData.IsEnabled = false;
         }
 
         private void AddToGraphData(string type) {
