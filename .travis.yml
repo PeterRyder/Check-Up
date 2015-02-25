@@ -3,8 +3,6 @@ solution: Check\ Up.sln
 before_install:
   - sudo apt-get install nunit-console
 script:
-  - xbuild /p:Configuration=Release Check\ Up.sln
+  - - xbuild CI.proj
 install:
   - nuget restore Check\ Up.sln
-after_script:
-  - nunit-console CheckUpUnitTests/bin/Release/CheckUpUnitTests.dll
