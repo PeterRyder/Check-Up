@@ -1,5 +1,5 @@
 language: csharp
-solution: Check Up.sln
+solution: Check\ Up.sln
 before_install:
   - sudo apt-get install nunit-console
 script:
