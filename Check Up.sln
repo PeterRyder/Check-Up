@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Check Up", "Check Up\Check Up.csproj", "{39141F11-D978-4231-A81F-D58B65AEF612}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Check Up", "Check Up\Check Up\Check Up.csproj", "{39141F11-D978-4231-A81F-D58B65AEF612}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckUpUnitTests", "CheckUpUnitTests\CheckUpUnitTests.csproj", "{F219EA57-BD93-4EC0-BD46-8EF1042C5631}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckUpUnitTests", "Check Up\CheckUpUnitTests\CheckUpUnitTests.csproj", "{F219EA57-BD93-4EC0-BD46-8EF1042C5631}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
