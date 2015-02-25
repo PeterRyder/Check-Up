@@ -3,6 +3,6 @@ solution: Check Up.sln
 before_install:
   - sudo apt-get install nunit-console
 before_script:
-  - nuget restore Check Up.sln
+  - nuget restore Check\ Up.sln
 after_script:
   - nunit-console CheckUpUnitTests/bin/Release/CheckUpUnitTests.dll
