@@ -156,15 +156,15 @@
     <Compile Include="ScriptWindow.xaml.cs">
       <DependentUpon>ScriptWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="util\CounterNames.cs" />
-    <Compile Include="util\Disk.cs" />
-    <Compile Include="util\Logger.cs" />
-    <Compile Include="util\OSDataCollection.cs" />
-    <Compile Include="util\ProcessesDataCollection.cs" />
-    <Compile Include="util\ProcessMonitor.cs" />
-    <Compile Include="util\RandomInfo.cs" />
-    <Compile Include="util\ScriptControl.cs" />
-    <Compile Include="util\ThemeManager.cs" />
+    <Compile Include="Util\CounterNames.cs" />
+    <Compile Include="Util\Disk.cs" />
+    <Compile Include="Util\Logger.cs" />
+    <Compile Include="Util\OSDataCollection.cs" />
+    <Compile Include="Util\ProcessesDataCollection.cs" />
+    <Compile Include="Util\ProcessMonitor.cs" />
+    <Compile Include="Util\RandomInfo.cs" />
+    <Compile Include="Util\ScriptControl.cs" />
+    <Compile Include="Util\ThemeManager.cs" />
     <Page Include="LoadingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -225,7 +225,9 @@
     <Resource Include="Resources\Entypo.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

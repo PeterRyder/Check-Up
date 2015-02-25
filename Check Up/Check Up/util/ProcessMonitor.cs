@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.IO;
 
 namespace Check_Up.Util {
-    static class ProcessMonitor {
+    public static class ProcessMonitor {
 
         public static PerformanceCounter GetPerfCounterForProcessId(int processId, string processCounterName) {
             string instance = GetInstanceNameForProcessId(processId);

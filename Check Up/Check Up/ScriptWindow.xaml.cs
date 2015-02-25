@@ -61,7 +61,7 @@ namespace Check_Up {
             Button b = sender as Button;
             ScriptData scriptData = b.CommandParameter as ScriptData;
 
-            if (scripts.runScript(scriptData.FullPath)) {
+            if (scripts.RunScript(scriptData.FullPath)) {
                 //b.IsEnabled = false;
             }
 
@@ -71,18 +71,18 @@ namespace Check_Up {
             Button b = sender as Button;
             ScriptData scriptData = b.CommandParameter as ScriptData;
 
-            if (scripts.stopScript(scriptData.FullPath)) {
+            if (scripts.StopScript(scriptData.FullPath)) {
                 //b.IsEnabled = false;
             }
         }
 
         private void worker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
-            string[] files = Directory.GetFiles(scripts.fullScriptPath);
+            string[] files = Directory.GetFiles(ScriptControl.fullScriptPath);
             BackgroundWorker w = sender as BackgroundWorker;
 
             int i = 1;
             foreach (string filename in files) {
-                scripts.checkNewScript(filename);
+                scripts.CheckNewScript(filename);
                 float progress = ((float)i / files.Length) * 100;
                 w.ReportProgress((int)progress);
                 i++;
@@ -95,7 +95,7 @@ namespace Check_Up {
 
         private void worker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
             Logger.Info("Script Window Worker completed");
-            List<string> scriptList = scripts.getScripts();
+            List<string> scriptList = scripts.GetScripts();
 
             foreach (string script in scriptList) {
                 _ScriptCollection.Add(new ScriptData {
