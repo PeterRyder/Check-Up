@@ -48,11 +48,12 @@ namespace Check_Up.Util {
             else {
                 if (CheckFunctions(filename)) {
                     Logger.Info(string.Format("Script {0} has both a main and close method", Path.GetFileName(filename)));
+                    return true;
                 }
                 else {
                     Logger.Error(string.Format("Script {0} does not contain a close or main method", Path.GetFileName(filename)));
+                    return false;
                 }
-                return true;
             }
         }
 
