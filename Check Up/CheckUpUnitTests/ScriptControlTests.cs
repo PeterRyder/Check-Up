@@ -82,5 +82,10 @@ namespace CheckUpUnitTests {
             Assert.AreEqual(expected, returned);
         }
 
+        [Test]
+        public void TestTravisCI() {
+            
+        }
+
     }
 }
