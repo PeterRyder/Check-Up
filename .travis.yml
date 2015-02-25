@@ -3,6 +3,6 @@ solution: Check\ Up.sln
 before_install:
   - sudo apt-get install nunit-console mono-devel mono-gmcs
 script:
-  - - xbuild CI.proj
+  - xbuild CI.proj
 install:
   - nuget restore Check\ Up.sln
