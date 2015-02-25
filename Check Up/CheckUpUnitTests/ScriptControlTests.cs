@@ -84,7 +84,7 @@ namespace CheckUpUnitTests {
 
         [Test]
         public void TestTravisCI() {
-            
+            Console.WriteLine("Test for Jenkins");
         }
 
     }
