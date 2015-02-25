@@ -1,0 +1,7 @@
+language: csharp
+solution: Check Up.sln
+install:
+  - nuget restore Check Up.sln
+script:
+  - xbuild /p:Configuration=Release Check Up.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./CheckUpUnitTests/bin/Release/CheckUpUnitTests.dll
