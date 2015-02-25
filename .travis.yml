@@ -1,0 +1,6 @@
+language: csharp
+solution: Check\ Up.sln
+before_install:
+  - sudo apt-get install nunit-console mono-devel mono-gmcs
+install:
+  - nuget restore Check\ Up.sln
