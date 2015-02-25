@@ -4,5 +4,3 @@ install:
   - sudo apt-get install nuget
   - sudo apt-get install nunit-console
   - nuget restore Check Up.sln
-script:
-  - xbuild /p:Configuration=Release ./Check Up/Check Up.sln
