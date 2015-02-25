@@ -15,40 +15,6 @@ namespace Check_Up.Util {
         List<PerformanceCounter> ProcessPerfCounters = new List<PerformanceCounter>();
 
         public ProcessesDataCollection() {
-
-            /*
-            int total_time = 0;
-            int processes = 0;
-            
-            foreach (Process p in Process.GetProcesses()) {
-
-                Stopwatch stopwatch = Stopwatch.StartNew();
-
-                var cpuCounter = ProcessMonitor.GetPerfCounterForProcessId(p.Id, "% Processor Time");
-                var memCounter = ProcessMonitor.GetPerfCounterForProcessId(p.Id, "Working Set - Private");
-                
-                if (cpuCounter != null) {
-                    cpuCounter.NextValue();
-                    ProcessPerfCounters.Add(cpuCounter);
-                }
-
-                if (memCounter != null) {
-                    memCounter.NextValue();
-                    ProcessPerfCounters.Add(memCounter);
-                }
-
-                stopwatch.Stop();
-                Console.WriteLine("[time] Per Process: " + stopwatch.ElapsedMilliseconds + "ms");
-
-                total_time += (int)stopwatch.ElapsedMilliseconds;
-                processes++;
-            }
-
-            Console.WriteLine("Total Time: " + total_time);
-            Console.WriteLine("Total Counters: " + ProcessPerfCounters.Count);
-            Console.WriteLine("Total Processes: " + processes);
-            */
-
             ProcessPerfCounters = ProcessMonitor.GetPerfCountersOfProcesses("% Processor Time");
             List<PerformanceCounter> temp = ProcessMonitor.GetPerfCountersOfProcesses("Working Set - Private");
 
