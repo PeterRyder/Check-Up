@@ -1,6 +1,7 @@
 language: csharp
 solution: Check Up.sln
 install:
+  - sudo apt-get install nuget
   - sudo apt-get install nunit-console
   - nuget restore Check Up.sln
 script:
