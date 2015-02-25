@@ -1,7 +1,7 @@
 language: csharp
 solution: Check\ Up.sln
 before_install:
-  - sudo apt-get install nunit-console
+  - sudo apt-get install nunit-console mono-devel mono-gmcs
 script:
   - - xbuild CI.proj
 install:
