@@ -10,30 +10,28 @@ using System.Diagnostics;
 using System.ComponentModel;
 
 namespace Check_Up.Util {
-    class ScriptControl {
+    public class ScriptControl {
 
         private List<string> scripts = new List<string>();
         private Dictionary<String, dynamic> runningScripts = new Dictionary<String, dynamic>();
 
         private Dictionary<String, BackgroundWorker> workers = new Dictionary<String, BackgroundWorker>();
 
-        public string fullScriptPath;
+        public static string fullScriptPath = RandomInfo.roamingDir + "\\" + RandomInfo.scriptDir;
         ScriptRuntime ipy = Python.CreateRuntime();
 
-
         public ScriptControl() {
-            string path = RandomInfo.roamingDir + "\\" + RandomInfo.scriptDir;
-            fullScriptPath = Path.GetFullPath(path);
-            checkDirectory();
+            fullScriptPath = Path.GetFullPath(fullScriptPath);
+            CheckDirectory();
         }
 
-        public void checkDirectory() {
+        public void CheckDirectory() {
             if (!Directory.Exists(fullScriptPath)) {
                 Directory.CreateDirectory(fullScriptPath);
             }
         }
 
-        public void checkNewScript(string filename) {
+        public void CheckNewScript(string filename) {
             if (!scripts.Contains(filename)) {
                 Logger.Debug(String.Format("Found new script {0}", Path.GetFileName(filename)));
                 if (SanityCheckScript(filename)) {
@@ -42,10 +40,9 @@ namespace Check_Up.Util {
             }
         }
 
-        private bool SanityCheckScript(String filename) {
+        internal bool SanityCheckScript(String filename) {
             if (Path.GetExtension(Path.GetFileName(filename)) != ".py") {
                 Logger.Error(String.Format("Script must be a Python file. Not executing file {0}", filename));
-
                 return false;
             }
             else {
@@ -59,7 +56,7 @@ namespace Check_Up.Util {
             }
         }
 
-        private bool CheckFunctions(String filename) {
+        internal bool CheckFunctions(String filename) {
             string line;
             System.IO.StreamReader file = null;
 
@@ -95,7 +92,7 @@ namespace Check_Up.Util {
             }
         }
 
-        public bool runScript(String scriptName) {
+        public bool RunScript(String scriptName) {
 
             if (!scripts.Contains(scriptName)) {
                 Logger.Error(string.Format("Couldn't find script {0} to start", Path.GetFileName(scriptName)));
@@ -108,7 +105,7 @@ namespace Check_Up.Util {
             }
 
             BackgroundWorker backgroundWorker = new BackgroundWorker();
-            backgroundWorker.DoWork += new DoWorkEventHandler(backgroundWorker_DoWork);
+            backgroundWorker.DoWork += new DoWorkEventHandler(BackgroundWorker_DoWork);
             backgroundWorker.WorkerSupportsCancellation = true;
 
             backgroundWorker.RunWorkerAsync(scriptName);
@@ -119,7 +116,7 @@ namespace Check_Up.Util {
             return true;
         }
 
-        public bool stopScript(String scriptName) {
+        public bool StopScript(String scriptName) {
             if (!runningScripts.Keys.Contains(scriptName)) {
                 Logger.Error(string.Format("Couldn't find script {0} to close", scriptName));
                 return false;
@@ -172,7 +169,7 @@ namespace Check_Up.Util {
             return true;
         }
 
-        private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
+        private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
             string filename = (string)e.Argument;
 
             dynamic script = ipy.UseFile(filename);
@@ -185,11 +182,11 @@ namespace Check_Up.Util {
             return;
         }
 
-        public List<string> getScripts() {
+        public List<string> GetScripts() {
             return scripts;
         }
 
-        public Dictionary<String, dynamic> getRunningScripts() {
+        public Dictionary<String, dynamic> GetRunningScripts() {
             return runningScripts;
         }
     }

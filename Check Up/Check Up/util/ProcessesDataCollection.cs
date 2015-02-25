@@ -6,7 +6,7 @@ using System.Threading;
 using System.Diagnostics;
 
 namespace Check_Up.Util {
-    class ProcessesDataCollection {
+    public class ProcessesDataCollection {
 
         // Maximum Values
         public Dictionary<string, float> HighestCpuUsage = new Dictionary<string, float>();

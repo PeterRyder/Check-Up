@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Check_Up.Util {
-    class Disk {
+    public class Disk {
         public string DiskType { get; set; }
         public string DiskLetter { get; set; }
         public bool IsChecked { get; set; }

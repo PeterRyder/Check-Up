@@ -7,7 +7,7 @@ using log4net;
 
 namespace Check_Up.Util
 {
-    static class Logger {
+    public static class Logger {
 
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

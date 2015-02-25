@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleToAttribute("CheckUpUnitTests")]
 
 namespace Check_Up.Util {
-    class ThemeManager {
+    public class ThemeManager {
 
         private static string themeDir = RandomInfo.roamingDir + "\\" + RandomInfo.themeDir;
 
@@ -18,8 +21,7 @@ namespace Check_Up.Util {
             CheckDirectory();
         }
 
-
-        private void CheckDirectory() {
+        internal void CheckDirectory() {
             if (!Directory.Exists(themeDir)) {
                 Directory.CreateDirectory(themeDir);
             }
@@ -30,16 +32,28 @@ namespace Check_Up.Util {
         }
 
         public void LoadThemes(string directory) {
+            if (directory == null) {
+                Logger.Error("Cannot load themes from null directory");
+                return;
+            }
             Logger.Info("Loading Themes...");
-            string[] files = Directory.GetFiles(directory);
-            foreach (string file in files) {
-                string parsedFile = ParseTheme(file);
-                Logger.Debug("Found Theme " + parsedFile);
-                themes.Add(parsedFile);
+            if (Directory.Exists(directory)) {
+                string[] files = Directory.GetFiles(directory);
+                foreach (string file in files) {
+                    string parsedFile = ParseTheme(file);
+                    Logger.Debug("Found Theme " + parsedFile);
+                    themes.Add(parsedFile);
+                }
+                if (files.Length == 0) {
+                    Logger.Warn("Couldn't find any themes to load");
+                }
+            }
+            else {
+                Logger.Error(string.Format("Couldn't find theme directory {0}", directory));
             }
         }
 
-        private string ParseTheme(string file) {
+        internal string ParseTheme(string file) {
             return Path.GetFileName(file);
         }
 

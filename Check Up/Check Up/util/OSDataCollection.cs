@@ -10,7 +10,7 @@ using System.Net.NetworkInformation;
 using Check_Up.Util;
 
 namespace Check_Up.Util {
-    class OSDataCollection : IDisposable {
+    public class OSDataCollection : IDisposable {
 
         private Dictionary<string, PerformanceCounter> PerfCounters = new Dictionary<string,PerformanceCounter>();
 

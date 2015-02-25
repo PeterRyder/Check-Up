@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 
 namespace Check_Up.Util {
-    static class RandomInfo {
+    public static class RandomInfo {
 
         public static int logicalCpuCount = Environment.ProcessorCount;
         public static DriveInfo[] drives = DriveInfo.GetDrives();
