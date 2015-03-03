@@ -56,7 +56,6 @@ namespace Check_Up {
 
         List<Window> subWindows;
 
-
         static EventWaitHandle handle = new AutoResetEvent(false);
 
         private BackgroundWorker backgroundWorkerChart;
