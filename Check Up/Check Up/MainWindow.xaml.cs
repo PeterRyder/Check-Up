@@ -190,12 +190,26 @@ namespace Check_Up {
             contextMenu1.MenuItems.AddRange(
                     new System.Windows.Forms.MenuItem[] { foreground });
 
+            System.Windows.Forms.MenuItem background = new System.Windows.Forms.MenuItem();
+            contextMenu1.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { background });
+
+            System.Windows.Forms.MenuItem properties = new System.Windows.Forms.MenuItem();
+            contextMenu1.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { properties });
+
             System.Windows.Forms.MenuItem menuItem1 = new System.Windows.Forms.MenuItem();
-            /*contextMenu1.MenuItems.AddRange(
-                    new System.Windows.Forms.MenuItem[] { menuItem1 });*/
             System.Windows.Forms.MenuItem menuItem2 = new System.Windows.Forms.MenuItem();
-            /*contextMenu1.MenuItems.AddRange(
-                    new System.Windows.Forms.MenuItem[] { menuItem2 });*/
+           
+
+            System.Windows.Forms.MenuItem background1 = new System.Windows.Forms.MenuItem();
+            System.Windows.Forms.MenuItem background2 = new System.Windows.Forms.MenuItem();
+
+            System.Windows.Forms.MenuItem background_properties = new System.Windows.Forms.MenuItem();
+
+            System.Windows.Forms.MenuItem monitor_processes = new System.Windows.Forms.MenuItem();
+            System.Windows.Forms.MenuItem monitor_os = new System.Windows.Forms.MenuItem();
+
             System.Windows.Forms.MenuItem menuItem3 = new System.Windows.Forms.MenuItem();
             contextMenu1.MenuItems.AddRange(
                     new System.Windows.Forms.MenuItem[] { menuItem3 });
@@ -212,6 +226,28 @@ namespace Check_Up {
             //menuItem2.Index = 1;
             menuItem2.Text = "Stop Monitoring";
             menuItem2.Click += new System.EventHandler(this.menuItem_StopForegroundData);
+
+            background.MenuItems.Add(background1);
+            background.MenuItems.Add(background2);
+            background.Text = "Background";
+
+            background1.Text = "Log Data";
+            background1.Click += new System.EventHandler(menuItem_LogData);
+
+            background2.Text = "Stop Logging Data";
+            //background1.Click += new System.EventHandler(menuItem_stopLoggingData);
+
+            properties.MenuItems.Add(background_properties);
+            background_properties.MenuItems.Add(monitor_processes);
+            background_properties.MenuItems.Add(monitor_os);
+            properties.Text = "Properties";
+            background_properties.Text = "Background";
+
+            monitor_processes.Text = "Monitor Processes";
+            monitor_processes.Checked = true;
+
+            monitor_os.Text = "Monitor Operating System";
+            monitor_os.Checked = false;
 
             //menuItem3.Index = 2;
             menuItem3.Text = "Exit";
@@ -575,6 +611,69 @@ namespace Check_Up {
             ni.Visible = false;
             System.Windows.Application.Current.Shutdown();
         }
+        private void menuItem_LogData(object sender, EventArgs e)
+        {
+
+            osDataCollector.InitializeCounters();
+            List<string> CountersRemoved = osDataCollector.RemoveCounters();
+            if (CountersRemoved.Count != 0)
+            {
+                for (int i = 0; i < CountersRemoved.Count; i++)
+                {
+                    GraphDataDict.Remove(CountersRemoved[i]);
+                }
+            }
+
+            if (Properties.Settings.Default.CPU)
+            {
+                AddToGraphData(CounterNames.CPUName);
+            }
+
+            if (Properties.Settings.Default.Memory)
+            {
+                AddToGraphData(CounterNames.MemName);
+            }
+
+            if (Properties.Settings.Default.Network)
+            {
+                AddToGraphData(CounterNames.NetName);
+            }
+
+            if (Properties.Settings.Default.DiskIO)
+            {
+                List<string> disks = Properties.Settings.Default.Disks;
+                foreach (string disk in disks)
+                {
+                    string name = disk.TrimEnd('\\');
+                    name = name.TrimEnd(':');
+                    AddToGraphData(name);
+                    osDataCollector.AddDiskCounter(disk);
+                }
+            }
+
+            // Start the processes monitoring thread
+            try
+            {
+                new Thread(GatherDataProcesses).Start();
+            }
+            catch
+            {
+                Logger.Error("Could not start Process Thread");
+            }
+
+            // Start the OS monitoring thread
+            /*
+            try {
+                backgroundWorkerChart.RunWorkerAsync();
+            }
+            catch {
+                log.Error("Could not start backgroundWorker");
+            }
+             */
+
+            button_stopLoggingData.IsEnabled = true;
+            button_logData.IsEnabled = false;
+        }
 
         private void button_logData_Click(object sender, RoutedEventArgs e) {
 
@@ -629,7 +728,14 @@ namespace Check_Up {
             button_stopLoggingData.IsEnabled = true;
             button_logData.IsEnabled = false;
         }
-
+        /*
+        private void menuItem_stopLoggingData(object sender, EventArgs e)
+        {
+            handle.Set();
+            button_logData.IsEnabled = true;
+            button_stopLoggingData.IsEnabled = false;
+        }
+        */
         private void button_stopLoggingData_Click(object sender, RoutedEventArgs e) {
             handle.Set();
             button_logData.IsEnabled = true;
