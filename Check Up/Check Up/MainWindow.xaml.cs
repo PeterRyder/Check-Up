@@ -161,6 +161,7 @@ namespace Check_Up {
             stopwatch.Reset();
             stopwatch.Start();
             processDataCollector = new ProcessesDataCollection();
+            processDataCollector.LoadProcessCounters();
             stopwatch.Stop();
             Console.WriteLine("[time] ProcessDataCollection constructor: " + stopwatch.ElapsedMilliseconds + "ms");
 
