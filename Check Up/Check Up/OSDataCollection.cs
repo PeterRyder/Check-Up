@@ -214,7 +214,7 @@ namespace Check_Up.Util {
         /// </summary>
         /// <param name="category"></param>
         /// <param name="instanceName"></param>
-        private static void ListInstances(PerformanceCounterCategory category, string instanceName) {
+        internal static void ListInstances(PerformanceCounterCategory category, string instanceName) {
             Console.WriteLine("    {0}", instanceName);
             PerformanceCounter[] counters = category.GetCounters(instanceName);
 

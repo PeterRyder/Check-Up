@@ -10,4 +10,6 @@ before_build:
 build_script:
   - cmd: msbuild "Build/CoreOnly.proj" /t:%CONFIGURATION% /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
+configuration: Release
+
 deploy: off

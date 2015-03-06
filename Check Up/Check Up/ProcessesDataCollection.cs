@@ -15,10 +15,14 @@ namespace Check_Up.Util {
         List<PerformanceCounter> ProcessPerfCounters = new List<PerformanceCounter>();
 
         public ProcessesDataCollection() {
+         
+        }
+
+        public void LoadProcessCounters() {
             ProcessPerfCounters = ProcessMonitor.GetPerfCountersOfProcesses("% Processor Time");
             List<PerformanceCounter> temp = ProcessMonitor.GetPerfCountersOfProcesses("Working Set - Private");
 
-            ProcessPerfCounters.AddRange(temp);            
+            ProcessPerfCounters.AddRange(temp);   
         }
 
         public void GatherData(bool FirstRun) {
@@ -57,8 +61,8 @@ namespace Check_Up.Util {
             Logger.Debug("Finished gathering process data");
         }
 
-
-        private void CheckData(string type, PerformanceCounter counter, float data, ref Dictionary<string, float> DataUsage) {
+        // TODO: This function never used?
+        internal void CheckData(string type, PerformanceCounter counter, float data, ref Dictionary<string, float> DataUsage) {
             List<string> keys = new List<string>(DataUsage.Keys);
 
             string lowest_key = keys[0];
@@ -78,10 +82,16 @@ namespace Check_Up.Util {
             }
         }
 
-        private Dictionary<string, float> AggregateData(Dictionary<string, float> DataUsage) {
-            List<string> keys = new List<string>(DataUsage.Keys);
+        internal Dictionary<string, float> AggregateData(Dictionary<string, float> DataUsage) {
             Dictionary<string, float> NewData = new Dictionary<string,float>();
+            
+            if (DataUsage == null) {
+                Logger.Warn("DataUsage dictionary in AggregateData function is null");
+                return NewData;
+            }
 
+            List<string> keys = new List<string>(DataUsage.Keys);
+            
             foreach (string key in keys) {
                 int PoundIndex = key.IndexOf('#');
                 if (PoundIndex != -1) {
