@@ -70,6 +70,7 @@
     <Compile Include="LoggerTests.cs" />
     <Compile Include="OSDataCollectionTests.cs" />
     <Compile Include="ProcessDataCollectionTests.cs" />
+    <Compile Include="ProcessMonitorTests.cs" />
     <Compile Include="ScriptControlTests.cs" />
     <Compile Include="ThemeManagerTests.cs" />
   </ItemGroup>

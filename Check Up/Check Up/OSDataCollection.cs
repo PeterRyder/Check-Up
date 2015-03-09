@@ -8,11 +8,12 @@ using System.Diagnostics;
 using System.Threading;
 using System.Net.NetworkInformation;
 using Check_Up.Util;
+using System.IO;
 
 namespace Check_Up.Util {
     public class OSDataCollection : IDisposable {
 
-        private Dictionary<string, PerformanceCounter> PerfCounters = new Dictionary<string,PerformanceCounter>();
+        internal Dictionary<string, PerformanceCounter> PerfCounters = new Dictionary<string,PerformanceCounter>();
 
         public Dictionary<string, int> DataValues = new Dictionary<string, int>();
 
@@ -135,32 +136,52 @@ namespace Check_Up.Util {
             return CountersToRemove;
         }
 
-        public void RemoveCounter(string CounterType) {
+        public bool RemoveCounter(string CounterType) {
             Logger.Info(string.Format("Attempting to remove counter {0}", CounterType));
-            try {
-                DataValues.Remove(CounterType);
+
+            if (CounterType == null) {
+                return false;
             }
-            catch {
+
+            bool removedDataValue = false;
+            bool removedPerfCounter = false;
+
+            if (DataValues.Keys.Contains(CounterType)) {
+                DataValues.Remove(CounterType);
+                removedDataValue = true;
+            }
+            else {
                 Logger.Error(String.Format("Could not remove data {0} from list", CounterType));
             }
-            try {
+                
+            if (PerfCounters.Keys.Contains(CounterType)) {
                 PerfCounters.Remove(CounterType);
+                removedPerfCounter = true;
             }
-            catch {
+            else {
                 Logger.Error(String.Format("Could not remove counter {0} from list", CounterType));
+            }
+
+            if (removedDataValue && removedPerfCounter) {
+                return true;
+            }
+            else {
+                return false;
             }
         }
 
-        public void AddDiskCounter(string disk) {
-            try {
-                Logger.Info("Created disk counter with name " + disk);
-                PerformanceCounter perfDisk = new PerformanceCounter("LogicalDisk", "% Disk Time", disk);
-                PerfCounters.Add(disk, perfDisk);
-                DataValues.Add(disk, 0);
-            }
-            catch {
+        public bool AddDiskCounter(string disk) {
+            Logger.Info("Attempting to create disk counter with name " + disk);
+
+            if (!Directory.Exists(Path.GetPathRoot(disk))) {
                 Logger.Error(String.Format("Could not create performance counter for disk {0}", disk));
+                return false;
             }
+
+            PerformanceCounter perfDisk = new PerformanceCounter("LogicalDisk", "% Disk Time", disk);
+            PerfCounters.Add(disk, perfDisk);
+            DataValues.Add(disk, 0);
+            return true; 
         }
 
         public bool GatherData(string type) {
