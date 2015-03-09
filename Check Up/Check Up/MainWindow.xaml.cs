@@ -555,6 +555,8 @@ namespace Check_Up {
 
         private void button_logData_Click(object sender, RoutedEventArgs e) {
 
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             osDataCollector.InitializeCounters();
             List<string> CountersRemoved = osDataCollector.RemoveCounters();
             if (CountersRemoved.Count != 0) {
@@ -605,6 +607,9 @@ namespace Check_Up {
 
             button_stopLoggingData.IsEnabled = true;
             button_logData.IsEnabled = false;
+
+            stopwatch.Stop();
+            Console.WriteLine("[time] Log Data Button completed in: " + stopwatch.ElapsedMilliseconds + "ms");
         }
 
         private void button_stopLoggingData_Click(object sender, RoutedEventArgs e) {
@@ -624,6 +629,9 @@ namespace Check_Up {
         /// Will Gather Data on All Processes
         /// </summary>
         void GatherDataProcesses() {
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             if (Properties.Settings.Default.MonitorProcesses) {
                 // Fire the NextValue function for all processes
                 processDataCollector.GatherData(true);
@@ -640,12 +648,17 @@ namespace Check_Up {
 
             // Log output to CSV file
             OutputProcessResults();
+
+            stopwatch.Stop();
+            Console.WriteLine("[time] GatherDataProcesses function completed in: " + stopwatch.ElapsedMilliseconds + "ms");
         }
 
         /// <summary>
         /// Debug Function to Output Results of Process Monitoring
         /// </summary>
         private void OutputProcessResults() {
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
 
             var CPUItems = from pair in processDataCollector.HighestCpuUsage
                         orderby pair.Value descending
@@ -690,6 +703,9 @@ namespace Check_Up {
 
             }
             Logger.Info("Finished writing data to CSV");
+
+            stopwatch.Stop();
+            Console.WriteLine("[time] OutputProcessResults function completed in: " + stopwatch.ElapsedMilliseconds + "ms");
         }
     }
 }
