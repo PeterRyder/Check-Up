@@ -26,13 +26,23 @@ namespace Check_Up.Util {
         }
 
         public void GatherData(bool FirstRun) {
+            
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            Logger.Info(String.Format("ProcessPerfCounters Count: {0}", ProcessPerfCounters.Count));
 
             for (int i = 0; i < ProcessPerfCounters.Count; i++ ) {
+
                 float data;
                 PerformanceCounter counter = ProcessPerfCounters[i];
 
                 try {
+                    Stopwatch stopwatch1 = Stopwatch.StartNew();
+
                     data = counter.NextValue();
+
+                    stopwatch1.Stop();
+                    Console.WriteLine("[time] NextValue completed in: " + stopwatch1.ElapsedMilliseconds + "ms");
                 }
                 catch {
                     Logger.Warn(string.Format("Could not get information on process {0}", counter.InstanceName));
@@ -41,6 +51,8 @@ namespace Check_Up.Util {
                     ProcessPerfCounters.Remove(counter);
                     continue;
                 }
+
+                
 
                 if (!FirstRun) {
                     if (counter.CounterName == "% Processor Time") {
@@ -59,6 +71,9 @@ namespace Check_Up.Util {
                 HighestMemUsage = AggregateData(HighestMemUsage);
             }
             Logger.Debug("Finished gathering process data");
+
+            stopwatch.Stop();
+            Console.WriteLine("[time] GatherData (ProcessDataCollection) function completed in: " + stopwatch.ElapsedMilliseconds + "ms");
         }
 
         // TODO: This function never used?
@@ -82,7 +97,11 @@ namespace Check_Up.Util {
             }
         }
 
+
+        // 0-1ms
         internal Dictionary<string, float> AggregateData(Dictionary<string, float> DataUsage) {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            
             Dictionary<string, float> NewData = new Dictionary<string,float>();
             
             if (DataUsage == null) {
@@ -112,6 +131,10 @@ namespace Check_Up.Util {
                     }       
                 }
             }
+
+            stopwatch.Stop();
+            Console.WriteLine("[time] AggregateData (ProcessDataCollection) function completed in: " + stopwatch.ElapsedMilliseconds + "ms");
+
             return NewData;
         }
 
