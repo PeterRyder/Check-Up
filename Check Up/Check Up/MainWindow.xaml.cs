@@ -232,10 +232,10 @@ namespace Check_Up {
             background.Text = "Background";
 
             background1.Text = "Log Data";
-            background1.Click += new System.EventHandler(menuItem_LogData);
+            background1.Click += new System.EventHandler(contextMenu_startBackgroundData);
 
             background2.Text = "Stop Logging Data";
-            //background1.Click += new System.EventHandler(menuItem_stopLoggingData);
+            background2.Click += new System.EventHandler(contextMenu_stopLoggingData);
 
             properties.MenuItems.Add(background_properties);
             background_properties.MenuItems.Add(monitor_processes);
@@ -611,6 +611,7 @@ namespace Check_Up {
             ni.Visible = false;
             System.Windows.Application.Current.Shutdown();
         }
+
         private void menuItem_LogData(object sender, EventArgs e)
         {
 
@@ -675,8 +676,27 @@ namespace Check_Up {
             button_logData.IsEnabled = false;
         }
 
-        private void button_logData_Click(object sender, RoutedEventArgs e) {
+        private void start_background_data()
+        {
+            try
+            {
+                new Thread(GatherDataProcesses).Start();
+            }
+            catch
+            {
+                Logger.Error("Could not start Process Thread");
+            }
+            button_stopLoggingData.IsEnabled = true;
+            button_logData.IsEnabled = false;
+        }
 
+        private void contextMenu_startBackgroundData(object sender, EventArgs e)
+        {
+            start_background_data();
+        }
+            
+        private void button_logData_Click(object sender, RoutedEventArgs e) {
+            /*
             osDataCollector.InitializeCounters();
             List<string> CountersRemoved = osDataCollector.RemoveCounters();
             if (CountersRemoved.Count != 0) {
@@ -706,14 +726,9 @@ namespace Check_Up {
                     osDataCollector.AddDiskCounter(disk);
                 }
             }
-
+            */
             // Start the processes monitoring thread
-            try {
-                new Thread(GatherDataProcesses).Start();
-            }
-            catch {
-                Logger.Error("Could not start Process Thread");
-            }
+            start_background_data();
 
             // Start the OS monitoring thread
             /*
@@ -725,8 +740,7 @@ namespace Check_Up {
             }
              */
 
-            button_stopLoggingData.IsEnabled = true;
-            button_logData.IsEnabled = false;
+            
         }
         /*
         private void menuItem_stopLoggingData(object sender, EventArgs e)
@@ -736,10 +750,20 @@ namespace Check_Up {
             button_stopLoggingData.IsEnabled = false;
         }
         */
-        private void button_stopLoggingData_Click(object sender, RoutedEventArgs e) {
+        private void stopBackgroundLogging(){
             handle.Set();
             button_logData.IsEnabled = true;
             button_stopLoggingData.IsEnabled = false;
+        }
+
+        private void contextMenu_stopLoggingData(object sender, EventArgs e)
+        {
+            Console.WriteLine("Context menu stopping background logging");
+            stopBackgroundLogging();
+        }
+
+        private void button_stopLoggingData_Click(object sender, RoutedEventArgs e) {
+            stopBackgroundLogging();
         }
 
         private void AddToGraphData(string type) {
