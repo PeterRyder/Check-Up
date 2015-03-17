@@ -56,7 +56,6 @@ namespace Check_Up {
 
         List<Window> subWindows;
 
-
         static EventWaitHandle handle = new AutoResetEvent(false);
 
         private BackgroundWorker backgroundWorkerChart;
@@ -151,19 +150,23 @@ namespace Check_Up {
         private void InitializeObjects() {
             ni = new System.Windows.Forms.NotifyIcon();
             subWindows = new List<Window>();
-
+#if DEBUG
             Stopwatch stopwatch = Stopwatch.StartNew();
+#endif
             osDataCollector = new OSDataCollection();
+#if DEBUG
             stopwatch.Stop();
             Console.WriteLine("[time] OSDataCollection Constructor: " + stopwatch.ElapsedMilliseconds + "ms");
-
             stopwatch.Reset();
             stopwatch.Start();
+#endif
             processDataCollector = new ProcessesDataCollection();
             processDataCollector.LoadProcessCounters();
+#if DEBUG
             stopwatch.Stop();
-            Console.WriteLine("[time] ProcessDataCollection constructor: " + stopwatch.ElapsedMilliseconds + "ms");
 
+            Console.WriteLine("[time] ProcessDataCollection constructor: " + stopwatch.ElapsedMilliseconds + "ms");
+#endif
             themeManager = new ThemeManager();
             themeManager.LoadThemes();
             themeManager.ChangeTheme("ExpressionDark.xaml");

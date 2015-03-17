@@ -15,7 +15,7 @@ namespace Check_Up.Util {
         List<PerformanceCounter> ProcessPerfCounters = new List<PerformanceCounter>();
 
         public ProcessesDataCollection() {
-         
+            
         }
 
         public void LoadProcessCounters() {
@@ -37,12 +37,14 @@ namespace Check_Up.Util {
                 PerformanceCounter counter = ProcessPerfCounters[i];
 
                 try {
+#if DEBUG
                     Stopwatch stopwatch1 = Stopwatch.StartNew();
-
+#endif
                     data = counter.NextValue();
-
+#if DEBUG
                     stopwatch1.Stop();
                     Console.WriteLine("[time] NextValue completed in: " + stopwatch1.ElapsedMilliseconds + "ms");
+#endif
                 }
                 catch {
                     Logger.Warn(string.Format("Could not get information on process {0}", counter.InstanceName));
@@ -100,8 +102,9 @@ namespace Check_Up.Util {
 
         // 0-1ms
         internal Dictionary<string, float> AggregateData(Dictionary<string, float> DataUsage) {
+#if DEBUG
             Stopwatch stopwatch = Stopwatch.StartNew();
-            
+#endif   
             Dictionary<string, float> NewData = new Dictionary<string,float>();
             
             if (DataUsage == null) {
@@ -131,10 +134,10 @@ namespace Check_Up.Util {
                     }       
                 }
             }
-
+#if DEBUG
             stopwatch.Stop();
             Console.WriteLine("[time] AggregateData (ProcessDataCollection) function completed in: " + stopwatch.ElapsedMilliseconds + "ms");
-
+#endif
             return NewData;
         }
 
