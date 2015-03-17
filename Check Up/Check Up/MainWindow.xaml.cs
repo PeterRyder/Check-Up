@@ -852,6 +852,10 @@ namespace Check_Up {
             stopwatch.Stop();
             Console.WriteLine("[time] OutputProcessResults function completed in: " + stopwatch.ElapsedMilliseconds + "ms");
         }
+
+        private void button_Results_Click(object sender, RoutedEventArgs e) {
+
+        }
     }
 }
 
