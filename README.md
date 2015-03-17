@@ -1,5 +1,6 @@
 Check-Up
 ========
+[![Build status](https://ci.appveyor.com/api/projects/status/w5pdra6uagyhc4hm?svg=true)](https://ci.appveyor.com/project/PeterRyder/check-up)
 Currently done:
 - CPU, RAM, network, and disk monitoring
 - Python scripts for custom monitoring
