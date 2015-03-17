@@ -22,6 +22,5 @@ namespace Check_Up {
             InitializeComponent();
         }
 
-
     }
 }
