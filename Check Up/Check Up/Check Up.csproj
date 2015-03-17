@@ -110,13 +110,13 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Controls.DataVisualization.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\WPFToolkit.DataVisualization.3.5.50211.1\lib\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
+      <HintPath>..\..\packages\WPFToolkit.DataVisualization.3.5.50211.1\lib\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Controls.Input.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\WPFToolkit.3.5.50211.1\lib\System.Windows.Controls.Input.Toolkit.dll</HintPath>
+      <HintPath>..\..\packages\WPFToolkit.3.5.50211.1\lib\System.Windows.Controls.Input.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Controls.Layout.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\WPFToolkit.3.5.50211.1\lib\System.Windows.Controls.Layout.Toolkit.dll</HintPath>
+      <HintPath>..\..\packages\WPFToolkit.3.5.50211.1\lib\System.Windows.Controls.Layout.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -136,6 +136,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WPFToolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WPFToolkit.3.5.50211.1\lib\WPFToolkit.dll</HintPath>
+    </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock">
       <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.4\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
       <Private>True</Private>
@@ -166,6 +169,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BackgroundData.cs" />
+    <Compile Include="BackgroundDataResults.xaml.cs">
+      <DependentUpon>BackgroundDataResults.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LoadingWindow.xaml.cs">
       <DependentUpon>LoadingWindow.xaml</DependentUpon>
     </Compile>
@@ -181,6 +188,10 @@
     <Compile Include="RandomInfo.cs" />
     <Compile Include="ScriptControl.cs" />
     <Compile Include="ThemeManager.cs" />
+    <Page Include="BackgroundDataResults.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="LoadingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
