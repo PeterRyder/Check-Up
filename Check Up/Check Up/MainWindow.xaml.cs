@@ -68,7 +68,6 @@ namespace Check_Up {
         private Dictionary<string, GraphData> GraphDataDict = new Dictionary<string, GraphData>();
 
         public MainWindow() {
-
             // create the loading window in a seperate thread before initialzing anything
             Thread LoadingWindow = new Thread(ShowLoadingWindow);
             LoadingWindow.SetApartmentState(ApartmentState.STA);
