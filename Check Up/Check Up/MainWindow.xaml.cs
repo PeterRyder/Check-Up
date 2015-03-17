@@ -170,6 +170,55 @@ namespace Check_Up {
             backgroundWorkerChart = new BackgroundWorker();
         }
 
+        public void InitializeContextMenu(){
+            System.Windows.Forms.ContextMenu contextMenu1;
+            contextMenu1 = new System.Windows.Forms.ContextMenu();
+
+            System.Windows.Forms.MenuItem foreground = new System.Windows.Forms.MenuItem();
+            contextMenu1.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { foreground });
+            foreground.Text = "Foreground";
+
+            System.Windows.Forms.MenuItem foreground_start = new System.Windows.Forms.MenuItem();
+            foreground.MenuItems.Add(foreground_start);
+            foreground_start.Text = "Gather Data";
+            foreground_start.Click += new System.EventHandler(menuItem_GatherForegroundData);
+
+            System.Windows.Forms.MenuItem foreground_stop = new System.Windows.Forms.MenuItem();
+            foreground.MenuItems.Add(foreground_stop);
+            foreground_stop.Text = "Stop Monitoring";
+            foreground_stop.Click += new System.EventHandler(this.menuItem_StopForegroundData);
+
+            System.Windows.Forms.MenuItem background = new System.Windows.Forms.MenuItem();
+            contextMenu1.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { background });
+            background.Text = "Background";
+
+            System.Windows.Forms.MenuItem background1 = new System.Windows.Forms.MenuItem();
+            background.MenuItems.Add(background1);
+            background1.Text = "Log Data";
+            background1.Click += new System.EventHandler(contextMenu_startBackgroundData);
+
+            System.Windows.Forms.MenuItem background2 = new System.Windows.Forms.MenuItem();
+            background.MenuItems.Add(background2);
+            background2.Text = "Stop Logging Data";
+            background2.Click += new System.EventHandler(contextMenu_stopLoggingData);
+
+            System.Windows.Forms.MenuItem properties = new System.Windows.Forms.MenuItem();
+            contextMenu1.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { properties });
+            properties.Text = "Properties";
+            properties.Click += new System.EventHandler(ContextMenuProperties_Click);
+
+            System.Windows.Forms.MenuItem exit = new System.Windows.Forms.MenuItem();
+            contextMenu1.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { exit });
+            exit.Text = "Exit";
+            exit.Click += new System.EventHandler(MainWindow_Closed);
+
+            ni.ContextMenu = contextMenu1;
+        }
+
         private void InitializeEventHandlers() {
             this.Closed += new EventHandler(MainWindow_Closed);
             
@@ -184,76 +233,8 @@ namespace Check_Up {
             catch {
                 Console.WriteLine("Couldn't set icon");
             }
-            System.Windows.Forms.ContextMenu contextMenu1;
-            contextMenu1 = new System.Windows.Forms.ContextMenu();
-            System.Windows.Forms.MenuItem foreground = new System.Windows.Forms.MenuItem();
-            contextMenu1.MenuItems.AddRange(
-                    new System.Windows.Forms.MenuItem[] { foreground });
 
-            System.Windows.Forms.MenuItem background = new System.Windows.Forms.MenuItem();
-            contextMenu1.MenuItems.AddRange(
-                    new System.Windows.Forms.MenuItem[] { background });
-
-            System.Windows.Forms.MenuItem properties = new System.Windows.Forms.MenuItem();
-            contextMenu1.MenuItems.AddRange(
-                    new System.Windows.Forms.MenuItem[] { properties });
-
-            System.Windows.Forms.MenuItem menuItem1 = new System.Windows.Forms.MenuItem();
-            System.Windows.Forms.MenuItem menuItem2 = new System.Windows.Forms.MenuItem();
-           
-
-            System.Windows.Forms.MenuItem background1 = new System.Windows.Forms.MenuItem();
-            System.Windows.Forms.MenuItem background2 = new System.Windows.Forms.MenuItem();
-
-            System.Windows.Forms.MenuItem background_properties = new System.Windows.Forms.MenuItem();
-
-            System.Windows.Forms.MenuItem monitor_processes = new System.Windows.Forms.MenuItem();
-            System.Windows.Forms.MenuItem monitor_os = new System.Windows.Forms.MenuItem();
-
-            System.Windows.Forms.MenuItem menuItem3 = new System.Windows.Forms.MenuItem();
-            contextMenu1.MenuItems.AddRange(
-                    new System.Windows.Forms.MenuItem[] { menuItem3 });
-
-            foreground.MenuItems.Add(menuItem1);
-            foreground.MenuItems.Add(menuItem2);
-            //foreground.Index = 0;
-            foreground.Text = "Foreground";
-
-            //menuItem1.Index = 0;
-            menuItem1.Text = "Gather Data";
-            menuItem1.Click += new System.EventHandler(menuItem_GatherForegroundData);
-
-            //menuItem2.Index = 1;
-            menuItem2.Text = "Stop Monitoring";
-            menuItem2.Click += new System.EventHandler(this.menuItem_StopForegroundData);
-
-            background.MenuItems.Add(background1);
-            background.MenuItems.Add(background2);
-            background.Text = "Background";
-
-            background1.Text = "Log Data";
-            background1.Click += new System.EventHandler(contextMenu_startBackgroundData);
-
-            background2.Text = "Stop Logging Data";
-            background2.Click += new System.EventHandler(contextMenu_stopLoggingData);
-
-            properties.MenuItems.Add(background_properties);
-            background_properties.MenuItems.Add(monitor_processes);
-            background_properties.MenuItems.Add(monitor_os);
-            properties.Text = "Properties";
-            background_properties.Text = "Background";
-
-            monitor_processes.Text = "Monitor Processes";
-            monitor_processes.Checked = true;
-
-            monitor_os.Text = "Monitor Operating System";
-            monitor_os.Checked = false;
-
-            //menuItem3.Index = 2;
-            menuItem3.Text = "Exit";
-            menuItem3.Click += new System.EventHandler(MainWindow_Closed);
-
-            ni.ContextMenu = contextMenu1;
+            InitializeContextMenu();
 
             backgroundWorkerChart.ProgressChanged += backgroundWorkerChart_ProgressChanged;
             backgroundWorkerChart.RunWorkerCompleted += backgroundWorkerChart_RunWorkerCompleted;
@@ -273,10 +254,19 @@ namespace Check_Up {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MenuItemProperties_Click(object sender, RoutedEventArgs e) {
+
+        public void PropertiesHelper(){
             PropertiesWindow subWindow = new PropertiesWindow();
             subWindows.Add(subWindow);
             subWindow.Show();
+        }
+
+        private void ContextMenuProperties_Click(object sender, EventArgs e){
+            PropertiesHelper();
+        }
+
+        private void MenuItemProperties_Click(object sender, RoutedEventArgs e) {
+            PropertiesHelper();
         }
 
         /// <summary>
