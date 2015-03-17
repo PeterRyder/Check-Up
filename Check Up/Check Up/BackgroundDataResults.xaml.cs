@@ -17,8 +17,10 @@ namespace Check_Up {
     /// Interaction logic for BackgroundDataResults.xaml
     /// </summary>
     public partial class BackgroundDataResults : Window {
+
         public BackgroundDataResults() {
             InitializeComponent();
         }
+
     }
 }

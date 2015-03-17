@@ -26,9 +26,9 @@ namespace Check_Up.Util {
         }
 
         public void GatherData(bool FirstRun) {
-            
+#if DEBUG
             Stopwatch stopwatch = Stopwatch.StartNew();
-
+#endif
             Logger.Info(String.Format("ProcessPerfCounters Count: {0}", ProcessPerfCounters.Count));
 
             for (int i = 0; i < ProcessPerfCounters.Count; i++ ) {
@@ -52,8 +52,6 @@ namespace Check_Up.Util {
                     continue;
                 }
 
-                
-
                 if (!FirstRun) {
                     if (counter.CounterName == "% Processor Time") {
                         data = data / (float)RandomInfo.logicalCpuCount;
@@ -72,8 +70,10 @@ namespace Check_Up.Util {
             }
             Logger.Debug("Finished gathering process data");
 
+#if DEBUG
             stopwatch.Stop();
             Console.WriteLine("[time] GatherData (ProcessDataCollection) function completed in: " + stopwatch.ElapsedMilliseconds + "ms");
+#endif
         }
 
         // TODO: This function never used?
