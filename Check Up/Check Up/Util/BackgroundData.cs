@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 
-namespace Check_Up {
+namespace Check_Up.Util {
     public class BackgroundDataList : ObservableCollection<BackgroundData> {
 
         public BackgroundDataList()

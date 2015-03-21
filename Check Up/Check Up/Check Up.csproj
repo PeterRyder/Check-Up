@@ -170,8 +170,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BackgroundData.cs" />
-    <Compile Include="BackgroundDataResults.xaml.cs">
+    <Compile Include="Util\BackgroundData.cs" />
+    <Compile Include="Properties\BackgroundDataResults.xaml.cs">
       <DependentUpon>BackgroundDataResults.xaml</DependentUpon>
     </Compile>
     <Compile Include="LoadingWindow.xaml.cs">
@@ -180,16 +180,16 @@
     <Compile Include="ScriptWindow.xaml.cs">
       <DependentUpon>ScriptWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CounterNames.cs" />
-    <Compile Include="Disk.cs" />
-    <Compile Include="Logger.cs" />
-    <Compile Include="OSDataCollection.cs" />
-    <Compile Include="ProcessesDataCollection.cs" />
-    <Compile Include="ProcessMonitor.cs" />
-    <Compile Include="RandomInfo.cs" />
-    <Compile Include="ScriptControl.cs" />
-    <Compile Include="ThemeManager.cs" />
-    <Page Include="BackgroundDataResults.xaml">
+    <Compile Include="Util\CounterNames.cs" />
+    <Compile Include="Util\Disk.cs" />
+    <Compile Include="Util\Logger.cs" />
+    <Compile Include="Util\OSDataCollection.cs" />
+    <Compile Include="Util\ProcessesDataCollection.cs" />
+    <Compile Include="Util\ProcessMonitor.cs" />
+    <Compile Include="Util\RandomInfo.cs" />
+    <Compile Include="Util\ScriptControl.cs" />
+    <Compile Include="Util\ThemeManager.cs" />
+    <Page Include="Properties\BackgroundDataResults.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

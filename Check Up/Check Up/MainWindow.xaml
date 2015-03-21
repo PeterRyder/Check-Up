@@ -5,7 +5,7 @@
     
         xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit" xmlns:Custom="http://schemas.microsoft.com/wpf/2008/toolkit" x:Name="mainWindow" x:Class="Check_Up.MainWindow"
     
-        Title="Check Up" WindowStartupLocation="CenterScreen" WindowStyle="ThreeDBorderWindow" Background="{x:Null}" Foreground="{x:Null}" OpacityMask="Red" VerticalAlignment="Top" Height="773" Width="1298" MinWidth="762" MinHeight="486">
+        Title="Check Up" WindowStartupLocation="CenterScreen" WindowStyle="ThreeDBorderWindow" Background="{x:Null}" Foreground="{x:Null}" OpacityMask="Red" VerticalAlignment="Top" Height="773" Width="1298" MinWidth="762" MinHeight="486" Icon="Check Up.ico">
 
     <Grid Margin="0" Background="#FF898989" UseLayoutRounding="False">
         <Grid.RowDefinitions>
