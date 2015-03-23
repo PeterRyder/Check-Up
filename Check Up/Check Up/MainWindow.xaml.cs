@@ -682,9 +682,9 @@ namespace Check_Up {
         /// Will Gather Data on All Processes
         /// </summary>
         void GatherDataProcesses() {
-
+#if DEBUG
             Stopwatch stopwatch = Stopwatch.StartNew();
-
+#endif
             if (Properties.Settings.Default.MonitorProcesses) {
                 // Fire the NextValue function for all processes
                 processDataCollector.GatherData(true);
@@ -701,23 +701,26 @@ namespace Check_Up {
 
             // Log output to CSV file
             OutputProcessResults();
-
+#if DEBUG
             stopwatch.Stop();
             Console.WriteLine("[time] GatherDataProcesses function completed in: " + stopwatch.ElapsedMilliseconds + "ms");
+#endif
         }
 
         /// <summary>
         /// Debug Function to Output Results of Process Monitoring
         /// </summary>
         private void OutputProcessResults() {
+#if DEBUG
             Stopwatch stopwatch = Stopwatch.StartNew();
-
+#endif
             backgroundDataManager.InsertData(processDataCollector.DataValues);
             
             Logger.Info("Finished writing data to SQLite");
-
+#if DEBUG
             stopwatch.Stop();
             Console.WriteLine("[time] OutputProcessResults function completed in: " + stopwatch.ElapsedMilliseconds + "ms");
+#endif
         }
 
     }
