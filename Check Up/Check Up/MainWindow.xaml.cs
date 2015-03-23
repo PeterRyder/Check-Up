@@ -426,6 +426,8 @@ namespace Check_Up {
             button_stopMonitoring.IsEnabled = true;
             this.menuitem_Properties.IsEnabled = false;
 
+            ni.Text = "Monitoring Foreground Data";
+
             osDataCollector.InitializeCounters();
             List<string> CountersRemoved = osDataCollector.RemoveCounters();
             if (CountersRemoved.Count != 0) {
@@ -508,6 +510,8 @@ namespace Check_Up {
             backgroundWorkerChart.ReportProgress(100);
 
             this.button_resetChart.IsEnabled = true;
+
+            ni.Text = "";
         }
 
         /// <summary>
@@ -663,6 +667,8 @@ namespace Check_Up {
             }
             button_stopLoggingData.IsEnabled = true;
             button_logData.IsEnabled = false;
+
+            ni.Text = "Gathering Background Data";
         }
 
         private void AddToGraphData(string type) {
@@ -676,6 +682,8 @@ namespace Check_Up {
             handle.Set();
             button_logData.IsEnabled = true;
             button_stopLoggingData.IsEnabled = false;
+
+            ni.Text = "";
         }
 
         /// <summary>
