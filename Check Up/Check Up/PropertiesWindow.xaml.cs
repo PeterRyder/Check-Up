@@ -13,7 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
 using Check_Up.Util;
-using log4net;
 
 namespace Check_Up {
     /// <summary>
@@ -21,13 +20,18 @@ namespace Check_Up {
     /// </summary>
     public partial class PropertiesWindow : Window {
 
-        private List<Disk> SelectedDisks;
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        List<Disk> items;
+        private ThemeManager themeManager;
 
         public PropertiesWindow() {
+            items = new List<Disk>();
             InitializeComponent();
-
-            SelectedDisks = new List<Disk>();
+            
+            themeManager = new ThemeManager();
+            themeManager.LoadThemes();
+            ComboBoxThemes.ItemsSource = themeManager.themes;
+            ComboBoxThemes.SelectedItem = "ExpressionDark.xaml";
+            
         }
 
         private void button_OK_Click(object sender, RoutedEventArgs e) {
@@ -35,8 +39,13 @@ namespace Check_Up {
             double pollingTime = Convert.ToDouble(textbox_pollingTime.Text);
             double pollingInterval = Convert.ToDouble(textbox_pollingInterval.Text);
 
+            // Prevent program from polling more frequently than .2 seconds
+            if (pollingInterval < .2) {
+                pollingInterval = .2;
+            }
+
             if (pollingTime < pollingInterval) {
-                log.Warn("Polling time greater than polling interval");
+                Logger.Warn("Polling time greater than polling interval");
                 error1.Visibility = System.Windows.Visibility.Visible;
                 return;
             }
@@ -58,11 +67,14 @@ namespace Check_Up {
             //Properties.Settings.Default.VisiblePoints = VisiblePoints;
 
             List<string> DiskNames = new List<string>();
-            for (int i = 0; i < SelectedDisks.Count; i++) {
-                Disk item = SelectedDisks[i];
-                string DriveLetter = item.DiskLetter.TrimEnd('\\');
-                DiskNames.Add(DriveLetter);
-            }
+
+                foreach (Disk item in items) {
+                    if (item.IsChecked) {
+                        Console.WriteLine("Saving disk as " + item.DiskLetter);
+                        DiskNames.Add(item.DiskLetter);
+                    }  
+                }
+
             Properties.Settings.Default.Disks = DiskNames;
 
             this.Close();
@@ -82,6 +94,7 @@ namespace Check_Up {
             checkbox_monitorProcesses.IsChecked = Properties.Settings.Default.MonitorProcesses;
 
             if (checkbox_DiskIO.IsChecked == true) {
+                Console.WriteLine("Populating Drive List");
                 PopulateDriveList();
             }
 
@@ -89,6 +102,20 @@ namespace Check_Up {
             textbox_pollingInterval.Text = Properties.Settings.Default.PollingInterval.ToString();
             textbox_visiblePoints.Text = Properties.Settings.Default.VisiblePoints.ToString();
 
+            // load selected disks from properties here
+            List<string> selectedDisks = Properties.Settings.Default.Disks;
+
+            if (selectedDisks == null) {
+                //Console.WriteLine("No selected disks");
+            }
+            else {
+                foreach (Disk disk in items) {
+                    //Console.WriteLine("Disk: " + disk);
+                    if (selectedDisks.Contains(disk.DiskLetter)) {
+                        disk.IsChecked = true;
+                    }
+                }
+            }
         }
 
         private void checkbox_DiskIO_Click(object sender, RoutedEventArgs e) {
@@ -101,21 +128,26 @@ namespace Check_Up {
         }
 
         private void PopulateDriveList() {
-            List<Disk> items = new List<Disk>();
             foreach (DriveInfo drive in RandomInfo.drives) {
-                items.Add(new Disk() { DiskType = drive.DriveType.ToString(), DiskLetter = drive.Name });
+                items.Add(new Disk() { DiskType = drive.DriveType.ToString(), DiskLetter = drive.Name, IsChecked = false});
             }
             listview_disks.ItemsSource = items;
         }
 
         private void listview_disks_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             foreach (Disk item in e.RemovedItems) {
-                SelectedDisks.Remove(item);
+                item.IsChecked = false;
             }
 
             foreach (Disk item in e.AddedItems) {
-                SelectedDisks.Add(item);
+                item.IsChecked = true;
             }
         }
+
+        private void ComboBoxThemes_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            ComboBox cmb = (ComboBox)sender;
+            themeManager.ChangeTheme(cmb.SelectedItem.ToString());
+        }
+   
     }
 }

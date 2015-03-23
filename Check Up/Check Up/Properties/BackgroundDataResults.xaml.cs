@@ -14,17 +14,13 @@ using System.Windows.Shapes;
 
 namespace Check_Up {
     /// <summary>
-    /// Interaction logic for AboutWindow.xaml
+    /// Interaction logic for BackgroundDataResults.xaml
     /// </summary>
+    public partial class BackgroundDataResults : Window {
 
-    public partial class AboutWindow : Window {
-
-        public AboutWindow() {
+        public BackgroundDataResults() {
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e) {
-            this.Close();
-        }
     }
 }

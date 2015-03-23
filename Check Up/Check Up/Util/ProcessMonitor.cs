@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using log4net;
 using System.IO;
 
 namespace Check_Up.Util {
-    static class ProcessMonitor {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+    public static class ProcessMonitor {
 
         public static PerformanceCounter GetPerfCounterForProcessId(int processId, string processCounterName) {
             string instance = GetInstanceNameForProcessId(processId);
@@ -25,7 +23,7 @@ namespace Check_Up.Util {
                 process = Process.GetProcessById(processId);
             }
             catch {
-                Console.WriteLine("Could not get process {0} by ID", processId);
+                Logger.Error(string.Format("Could not get process {0} by ID", processId));
                 return null;
             }
             string processName = Path.GetFileNameWithoutExtension(process.ProcessName);
@@ -45,6 +43,21 @@ namespace Check_Up.Util {
                 }
             }
             return null;
+        }
+
+        public static List<PerformanceCounter> GetPerfCountersOfProcesses(string processCounterName) {
+            PerformanceCounterCategory cat = new PerformanceCounterCategory("Process");
+            string[] instances = cat.GetInstanceNames().ToArray();
+            List<PerformanceCounter> counters = new List<PerformanceCounter>();
+
+            foreach (string instance in instances) {
+                PerformanceCounter cnt = new PerformanceCounter("Process", processCounterName, instance, true);
+                if (!counters.Contains(cnt)) {
+                    counters.Add(cnt);
+                }
+            }
+
+            return counters;
         }
 
     }

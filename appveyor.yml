@@ -1,0 +1,15 @@
+version: 1.0.0-alpha.1+check-up.{build}
+
+branches:
+  only:
+    - master
+
+before_build:
+  - nuget restore "Check Up.sln"
+
+build_script:
+  - cmd: msbuild "Build/CoreOnly.proj" /t:%CONFIGURATION% /verbosity:normal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+
+configuration: Release
+
+deploy: off

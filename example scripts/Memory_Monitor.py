@@ -1,7 +1,7 @@
 
 import time
 
-# import this C# library to monitor the CPU
+# import this C# library to monitor the Memory
 import System.Diagnostics
 
 should_run = True
@@ -14,9 +14,8 @@ def main():
     should_run = True
 
     # create a PerformanceMonitor object
-    perf = System.Diagnostics.PerformanceCounter("Processor Information",
-                                                 "% Processor Time",
-                                                 "_Total")
+    perf = System.Diagnostics.PerformanceCounter("Memory",
+                                                 "Available MBytes")
 
     # call NextValue() once to initialize the counter
     perf.NextValue()
@@ -27,7 +26,7 @@ def main():
         cpuUsage = int(perf.NextValue())
 
         # do something with the data
-        print("[python] Cpu Usage " + str(cpuUsage) + "%")
+        print("[python] Memory Usage " + str(cpuUsage) + "MB")
 
         # sleep for at least .05 seconds
         time.sleep(1)

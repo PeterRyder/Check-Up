@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Diagnostics;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -18,7 +19,6 @@ using Check_Up.Util;
 using System.Threading;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
-using log4net;
 using System.IO;
 
 namespace Check_Up {
@@ -35,16 +35,14 @@ namespace Check_Up {
         }
     }
 
-
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     ///
     public partial class MainWindow : Window {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private Random rand = new Random();
 
-        private string OutputDirectory = "Data";
+        private string OutputDirectory = RandomInfo.roamingDir + "\\" + RandomInfo.dataDir;
         private string FullOutputDirectory = "";
 
         private string OutputDataFileName;
@@ -54,7 +52,8 @@ namespace Check_Up {
 
         OSDataCollection osDataCollector;
         ProcessesDataCollection processDataCollector;
-        Scripts scripts;
+        ThemeManager themeManager;
+        BackgroundDataManager backgroundDataManager;
 
         List<Window> subWindows;
 
@@ -75,12 +74,31 @@ namespace Check_Up {
             LoadingWindow.SetApartmentState(ApartmentState.STA);
             LoadingWindow.Start();
 
+#if DEBUG
+            Stopwatch stopwatch = Stopwatch.StartNew(); //creates and start the instance of Stopwatch
+#endif
             InitializeComponent();
+#if DEBUG
+            stopwatch.Stop();
+            Logger.Debug("[time] InitializeComponent: " + stopwatch.ElapsedMilliseconds + "ms");
 
+            stopwatch.Reset();
+            stopwatch.Start();
+#endif
             InitializeObjects();
+#if DEBUG
+            stopwatch.Stop();
+            Logger.Debug("[time] InitializeObjects: " + stopwatch.ElapsedMilliseconds + "ms");
 
+            stopwatch.Reset();
+            stopwatch.Start();
+#endif
             InitializeEventHandlers();
-
+#if DEBUG
+            stopwatch.Stop();
+            Logger.Debug("[time] InitializeEventHandlers: " + stopwatch.ElapsedMilliseconds + "ms");
+#endif
+            Console.WriteLine("Showing Notification Icon");
             ni.Visible = true;
 
             CreateOutputDirectory();
@@ -89,11 +107,7 @@ namespace Check_Up {
 
             FullOutputDataFileName = System.IO.Path.GetFullPath(OutputDataFileName);
 
-            scripts.checkDirectory();
-            scripts.runScripts();
-
-            // initialize a cpuData collector
-
+            // check for scipts directory
             if (!osDataCollector.canGatherNet) {
                 listview_warnings.Items.Add("Could not find network adapter");
             }
@@ -127,37 +141,264 @@ namespace Check_Up {
             LoadingWindow.Join();
         }
 
-        private void ShowLoadingWindow() {
-            LoadingWindow window = new LoadingWindow();
-            //System.Windows.Threading.Dispatcher.Run();
-            window.Show();
-            window.Closed += (s, e) => System.Windows.Threading.Dispatcher.ExitAllFrames();
-
-            System.Windows.Threading.Dispatcher.Run();
-        }
+        #region INITIALIZERS
 
         private void InitializeObjects() {
             ni = new System.Windows.Forms.NotifyIcon();
-            ni.Icon = new System.Drawing.Icon("Check Up.ico");
-            scripts = new Scripts();
             subWindows = new List<Window>();
+#if DEBUG
+            Stopwatch stopwatch = Stopwatch.StartNew();
+#endif
             osDataCollector = new OSDataCollection();
+#if DEBUG
+            stopwatch.Stop();
+            Console.WriteLine("[time] OSDataCollection Constructor: " + stopwatch.ElapsedMilliseconds + "ms");
+            stopwatch.Reset();
+            stopwatch.Start();
+#endif
+            backgroundDataManager = new BackgroundDataManager();
             processDataCollector = new ProcessesDataCollection();
+            processDataCollector.LoadProcessCounters();
+#if DEBUG
+            stopwatch.Stop();
+
+            Console.WriteLine("[time] ProcessDataCollection constructor: " + stopwatch.ElapsedMilliseconds + "ms");
+#endif
+            themeManager = new ThemeManager();
+            themeManager.LoadThemes();
+            themeManager.ChangeTheme("ExpressionDark.xaml");
 
             backgroundWorkerChart = new BackgroundWorker();
         }
 
+        public void InitializeContextMenu(){
+            System.Windows.Forms.ContextMenu contextMenu;
+            contextMenu = new System.Windows.Forms.ContextMenu();
+
+            System.Windows.Forms.MenuItem foreground = new System.Windows.Forms.MenuItem();
+            contextMenu.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { foreground });
+            foreground.Text = "Foreground";
+
+            System.Windows.Forms.MenuItem foreground_start = new System.Windows.Forms.MenuItem();
+            foreground.MenuItems.Add(foreground_start);
+            foreground_start.Text = "Gather Data";
+            foreground_start.Click += new System.EventHandler(contextMenu_GatherForegroundData);
+
+            System.Windows.Forms.MenuItem foreground_stop = new System.Windows.Forms.MenuItem();
+            foreground.MenuItems.Add(foreground_stop);
+            foreground_stop.Text = "Stop Monitoring";
+            foreground_stop.Click += new System.EventHandler(this.contextMenu_StopForegroundData);
+
+            System.Windows.Forms.MenuItem background = new System.Windows.Forms.MenuItem();
+            contextMenu.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { background });
+            background.Text = "Background";
+
+            System.Windows.Forms.MenuItem background1 = new System.Windows.Forms.MenuItem();
+            background.MenuItems.Add(background1);
+            background1.Text = "Log Data";
+            background1.Click += new System.EventHandler(contextMenu_startBackgroundData);
+
+            System.Windows.Forms.MenuItem background2 = new System.Windows.Forms.MenuItem();
+            background.MenuItems.Add(background2);
+            background2.Text = "Stop Logging Data";
+            background2.Click += new System.EventHandler(contextMenu_stopLoggingData);
+
+            System.Windows.Forms.MenuItem properties = new System.Windows.Forms.MenuItem();
+            contextMenu.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { properties });
+            properties.Text = "Properties";
+            properties.Click += new System.EventHandler(contextMenu_PropertiesWindow);
+
+            System.Windows.Forms.MenuItem exit = new System.Windows.Forms.MenuItem();
+            contextMenu.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { exit });
+            exit.Text = "Exit";
+            exit.Click += new System.EventHandler(MainWindow_Closed);
+
+            ni.ContextMenu = contextMenu;
+        }
+
         private void InitializeEventHandlers() {
             this.Closed += new EventHandler(MainWindow_Closed);
+            
             ni.DoubleClick += delegate(object sender, EventArgs args) {
                 this.Show();
                 this.WindowState = WindowState.Normal;
             };
 
+            try {
+                ni.Icon = new System.Drawing.Icon(System.Windows.Application.GetResourceStream(new Uri("/Check Up.ico", UriKind.Relative)).Stream);
+            }
+            catch {
+                Console.WriteLine("Couldn't set icon");
+            }
+
+            InitializeContextMenu();
+
             backgroundWorkerChart.ProgressChanged += backgroundWorkerChart_ProgressChanged;
             backgroundWorkerChart.RunWorkerCompleted += backgroundWorkerChart_RunWorkerCompleted;
             backgroundWorkerChart.WorkerReportsProgress = true;
             backgroundWorkerChart.WorkerSupportsCancellation = true;
+        }
+
+        #endregion
+
+        #region CONTEXT MENU
+
+        private void contextMenu_PropertiesWindow(object sender, EventArgs e) {
+            PropertiesHelper();
+        }
+
+        private void contextMenu_startBackgroundData(object sender, EventArgs e) {
+            StartBackgroundData();
+        }
+
+        private void contextMenu_stopLoggingData(object sender, EventArgs e) {
+            StopBackgroundLogging();
+        }
+
+        private void contextMenu_GatherForegroundData(object sender, System.EventArgs e) {
+            BeginForegroundMonitoring();
+        }
+
+        private void contextMenu_StopForegroundData(object sender, System.EventArgs e) {
+            StopForegroundMonitoring();
+        }
+
+        private void menuItem_LogData(object sender, EventArgs e) {
+
+            // Start the processes monitoring thread
+            try {
+                new Thread(GatherDataProcesses).Start();
+            }
+            catch {
+                Logger.Error("Could not start Process Thread");
+            }
+
+            button_stopLoggingData.IsEnabled = true;
+            button_logData.IsEnabled = false;
+        }
+
+        #endregion
+
+        #region MENU BAR
+
+        private void MenuItemProperties_Click(object sender, RoutedEventArgs e) {
+            PropertiesHelper();
+        }
+
+        private void MenuItemExit_Click(object sender, RoutedEventArgs e) {
+            this.Close();
+        }
+
+        private void MenuItemAbout_Click(object sender, RoutedEventArgs e) {
+            System.Windows.Forms.MessageBox.Show("About Window is WIP");
+        }
+
+        #endregion
+
+        #region BUTTON_CLICK
+
+        private void button_gatherData_Click(object sender, RoutedEventArgs e) {
+            BeginForegroundMonitoring();
+        }
+
+        private void button_stopMonitoring_Click(object sender, RoutedEventArgs e) {
+            StopForegroundMonitoring();
+        }
+
+        private void button_resetChart_Click(object sender, RoutedEventArgs e) {
+            ResetChart();
+        }
+
+        private void button_checkScripts_Click(object sender, RoutedEventArgs e) {
+            ScriptWindow subWindow = new ScriptWindow();
+            subWindows.Add(subWindow);
+            subWindow.Show();
+        }
+
+        private void button_logData_Click(object sender, RoutedEventArgs e) {
+#if DEBUG
+            Stopwatch stopwatch = Stopwatch.StartNew();
+#endif
+            StartBackgroundData();
+
+            button_stopLoggingData.IsEnabled = true;
+            button_logData.IsEnabled = false;
+#if DEBUG
+            stopwatch.Stop();
+            Console.WriteLine("[time] Log Data Button completed in: " + stopwatch.ElapsedMilliseconds + "ms");
+#endif
+        }
+
+        private void button_stopLoggingData_Click(object sender, RoutedEventArgs e) {
+            StopBackgroundLogging();
+        }
+
+        private void button_Results_Click(object sender, RoutedEventArgs e) {
+
+        }
+
+
+
+        #endregion
+
+        #region BACKGROUND WORKER CHART
+
+        private void backgroundWorkerChart_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
+
+            if (shouldGatherData) {
+                // Update the progress bar every time the backgroundWorker changes
+                progressBar.Value = e.ProgressPercentage;
+
+                List<string> types = new List<string>(GraphDataDict.Keys);
+                for (int i = 0; i < types.Count; i++) {
+                    try {
+                        UpdateGraph(types[i], cycles, osDataCollector.DataValues[types[i]]);
+                    }
+                    catch {
+                        Logger.Error(String.Format("Could not update graph for type {0}", types[i]));
+                        Logger.Info(String.Format("Removing type {0} from lists", types[i]));
+                        GraphDataDict.Remove(types[i]);
+                        osDataCollector.RemoveCounter(types[i]);
+                    }
+                }
+                shouldGatherData = false;
+            }
+        }
+
+        private void backgroundWorkerChart_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
+            // Create a BackgroundWorker object out of the sender
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            // GatherData every time the background worker does work
+            e.Result = GatherDataOS(worker, e);
+        }
+
+        private void backgroundWorkerChart_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
+            Logger.Info("Worker completed");
+            // If the progress bar isn't full, force it
+            progressBar.Value = 100;
+            if (e.Error != null) {
+                System.Windows.MessageBox.Show(e.Error.Message);
+            }
+
+            // Disable the monitorStop button when the backgroundWorker is completed
+            button_stopMonitoring.IsEnabled = false;
+            button_resetChart.IsEnabled = true;
+            this.menuitem_Properties.IsEnabled = true;
+        }
+
+        #endregion
+
+        private void ShowLoadingWindow() {
+            LoadingWindow window = new LoadingWindow();
+            window.Show();
+            window.Closed += (s, e) => System.Windows.Threading.Dispatcher.ExitAllFrames();
+
+            System.Windows.Threading.Dispatcher.Run();
         }
 
         private void CreateOutputDirectory() {
@@ -172,37 +413,20 @@ namespace Check_Up {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MenuItemProperties_Click(object sender, RoutedEventArgs e) {
+
+        public void PropertiesHelper(){
             PropertiesWindow subWindow = new PropertiesWindow();
             subWindows.Add(subWindow);
             subWindow.Show();
         }
 
-        /// <summary>
-        /// Exits the Application
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MenuItemExit_Click(object sender, RoutedEventArgs e) {
-            this.Close();
-        }
-
-        private void MenuItemAbout_Click(object sender, RoutedEventArgs e) {
-            AboutWindow subWindow = new AboutWindow();
-            subWindows.Add(subWindow);
-            subWindow.Show();
-        }
-
-        /// <summary>
-        /// Starts the background worker when the Gather Data button is clicked
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button_gatherData_Click(object sender, RoutedEventArgs e) {
+        private void BeginForegroundMonitoring() {
             this.button_gatherData.IsEnabled = false;
             this.button_resetChart.IsEnabled = false;
             button_stopMonitoring.IsEnabled = true;
             this.menuitem_Properties.IsEnabled = false;
+
+            ni.Text = "Monitoring Foreground Data";
 
             osDataCollector.InitializeCounters();
             List<string> CountersRemoved = osDataCollector.RemoveCounters();
@@ -216,22 +440,24 @@ namespace Check_Up {
 
             #region Create Series
             if (Properties.Settings.Default.CPU) {
-                createSeries(CounterNames.CPUName);
+                CreateSeries(CounterNames.CPUName);
             }
 
             if (Properties.Settings.Default.Memory) {
-                createSeries(CounterNames.MemName);
+                CreateSeries(CounterNames.MemName);
             }
 
             if (Properties.Settings.Default.Network) {
-                createSeries(CounterNames.NetName);
+                CreateSeries(CounterNames.NetName);
             }
 
             if (Properties.Settings.Default.DiskIO) {
                 List<string> disks = Properties.Settings.Default.Disks;
-                for (int i = 0; i < disks.Count; i++) {
-                    createSeries(disks[i]);
-                    osDataCollector.AddDiskCounter(disks[i]);
+                foreach (string disk in disks) {
+                    string name = disk.TrimEnd('\\');
+                    osDataCollector.AddDiskCounter(name);
+                    CreateSeries(name);
+
                 }
             }
             #endregion
@@ -241,11 +467,11 @@ namespace Check_Up {
                 backgroundWorkerChart.RunWorkerAsync();
             }
             catch {
-                log.Error("Could not start backgroundWorker");
+                Logger.Error("Could not start backgroundWorker");
             }
         }
 
-        private void createSeries(string type) {
+        private void CreateSeries(string type) {
 
             var areaSeries = new LineSeries {
                 DataPointStyle = new Style {
@@ -276,12 +502,7 @@ namespace Check_Up {
             return Color.FromRgb((byte)rand.Next(20, 236), (byte)this.rand.Next(20, 236), (byte)this.rand.Next(20, 236));
         }
 
-        /// <summary>
-        /// Stops the backgroundWorker
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button_stopMonitoring_Click(object sender, RoutedEventArgs e) {
+        private void StopForegroundMonitoring() {
             // When the monitorStop button is clicked stop the backgroundWorker
             backgroundWorkerChart.CancelAsync();
 
@@ -289,61 +510,8 @@ namespace Check_Up {
             backgroundWorkerChart.ReportProgress(100);
 
             this.button_resetChart.IsEnabled = true;
-            
 
-        }
-
-        /// <summary>
-        /// Resets the chart using a helper function
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button_resetChart_Click(object sender, RoutedEventArgs e) {
-            resetChartFunc();
-        }
-
-        private void backgroundWorkerChart_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
-
-            if (shouldGatherData) {
-                // Update the progress bar every time the backgroundWorker changes
-                progressBar.Value = e.ProgressPercentage;
-
-                List<string> types = new List<string>(GraphDataDict.Keys);
-                for (int i = 0; i < types.Count; i++) {
-                    try {
-                        updateGraph(types[i], cycles, osDataCollector.DataValues[types[i]]);
-                    }
-                    catch {
-                        log.Error(String.Format("Could not update graph for type {0}", types[i]));
-                        log.Info(String.Format("Removing type {0} from lists", types[i]));
-                        GraphDataDict.Remove(types[i]);
-                        osDataCollector.RemoveCounter(types[i]);
-                    }
-                }
-                shouldGatherData = false;
-            }
-        }
-
-        private void backgroundWorkerChart_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
-            // Create a BackgroundWorker object out of the sender
-            BackgroundWorker worker = sender as BackgroundWorker;
-
-            // GatherData every time the background worker does work
-            e.Result = GatherDataOS(worker, e);
-        }
-
-        private void backgroundWorkerChart_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
-            log.Debug("Worker completed");
-            // If the progress bar isn't full, force it
-            progressBar.Value = 100;
-            if (e.Error != null) {
-                System.Windows.MessageBox.Show(e.Error.Message);
-            }
-
-            // Disable the monitorStop button when the backgroundWorker is completed
-            button_stopMonitoring.IsEnabled = false;
-            button_resetChart.IsEnabled = true;
-            this.menuitem_Properties.IsEnabled = true;
+            ni.Text = "";
         }
 
         /// <summary>
@@ -395,7 +563,7 @@ namespace Check_Up {
                         percentage = Math.Round(percentage);
                         sender.ReportProgress((int)percentage);
 
-                        log.Debug("Set cancellation to pending");
+                        Logger.Info("Set cancellation to pending");
 
                     }
                     else {
@@ -431,7 +599,7 @@ namespace Check_Up {
 
             // Announce if there is a pending cancellation
             if (sender.CancellationPending) {
-                log.Debug("Cancellation is pending");
+                Logger.Info("Cancellation is pending");
                 e.Cancel = true;
                 return true;
             }
@@ -439,15 +607,14 @@ namespace Check_Up {
             return true;
         }
 
-
-        private void updateGraph(string type, int x, int y) {
+        private void UpdateGraph(string type, int x, int y) {
             GraphDataDict[type].Add(new KeyValuePair<int, int>(x, y));
         }
 
         /// <summary>
         /// Resets the chart
         /// </summary>
-        private void resetChartFunc() {
+        private void ResetChart() {
 
             // Remove the Series
             chart.Series.Clear();
@@ -459,10 +626,6 @@ namespace Check_Up {
 
             this.button_gatherData.IsEnabled = true;
             this.button_resetChart.IsEnabled = false;
-        }
-
-        private void button_checkScripts_Click(object sender, RoutedEventArgs e) {
-            scripts.runScripts();
         }
 
         protected override void OnStateChanged(EventArgs e) {
@@ -478,80 +641,34 @@ namespace Check_Up {
                     window.Close();
                 }
                 catch {
-                    log.Error(String.Format("Couldn't close sub window {0}", window.Name));
+                    Logger.Error(String.Format("Couldn't close sub window {0}", window.Name));
                 }
             }
+
             backgroundWorkerChart.CancelAsync();
+
             try {
                 base.OnClosing((CancelEventArgs)e);
             }
             catch {
-                log.Error("Couldn't call base form close");
+                Logger.Error("Couldn't call base form close");
             }
+
             ni.Visible = false;
             System.Windows.Application.Current.Shutdown();
         }
 
-        private void button_checkScripts_Click(object sender, EventArgs e) {
-            scripts.checkNewScripts();
-        }
-
-        private void button_logData_Click(object sender, RoutedEventArgs e) {
-
-            osDataCollector.InitializeCounters();
-            List<string> CountersRemoved = osDataCollector.RemoveCounters();
-            if (CountersRemoved.Count != 0) {
-                for (int i = 0; i < CountersRemoved.Count; i++) {
-                    GraphDataDict.Remove(CountersRemoved[i]);
-                }
-            }
-
-            if (Properties.Settings.Default.CPU) {
-                AddToGraphData(CounterNames.CPUName);
-            }
-
-            if (Properties.Settings.Default.Memory) {
-                AddToGraphData(CounterNames.MemName);
-            }
-
-            if (Properties.Settings.Default.Network) {
-                AddToGraphData(CounterNames.NetName);
-            }
-
-            if (Properties.Settings.Default.DiskIO) {
-                List<string> disks = Properties.Settings.Default.Disks;
-                for (int i = 0; i < disks.Count; i++) {
-                    AddToGraphData(disks[i]);
-                    osDataCollector.AddDiskCounter(disks[i]);
-                }
-            }
-
-            // Start the processes monitoring thread
+        private void StartBackgroundData() {
             try {
                 new Thread(GatherDataProcesses).Start();
             }
             catch {
-                log.Error("Could not start Process Thread");
+                Logger.Error("Could not start Process Thread");
             }
-
-            // Start the OS monitoring thread
-            /*
-            try {
-                backgroundWorkerChart.RunWorkerAsync();
-            }
-            catch {
-                log.Error("Could not start backgroundWorker");
-            }
-             */
-
             button_stopLoggingData.IsEnabled = true;
             button_logData.IsEnabled = false;
-        }
 
-        private void button_stopLoggingData_Click(object sender, RoutedEventArgs e) {
-            handle.Set();
-            button_logData.IsEnabled = true;
-            button_stopLoggingData.IsEnabled = false;
+            ni.Text = "Gathering Background Data";
         }
 
         private void AddToGraphData(string type) {
@@ -561,10 +678,21 @@ namespace Check_Up {
             }
         }
 
+        private void StopBackgroundLogging(){
+            handle.Set();
+            button_logData.IsEnabled = true;
+            button_stopLoggingData.IsEnabled = false;
+
+            ni.Text = "";
+        }
+
         /// <summary>
         /// Will Gather Data on All Processes
         /// </summary>
         void GatherDataProcesses() {
+#if DEBUG
+            Stopwatch stopwatch = Stopwatch.StartNew();
+#endif
             if (Properties.Settings.Default.MonitorProcesses) {
                 // Fire the NextValue function for all processes
                 processDataCollector.GatherData(true);
@@ -581,57 +709,27 @@ namespace Check_Up {
 
             // Log output to CSV file
             OutputProcessResults();
+#if DEBUG
+            stopwatch.Stop();
+            Console.WriteLine("[time] GatherDataProcesses function completed in: " + stopwatch.ElapsedMilliseconds + "ms");
+#endif
         }
 
         /// <summary>
         /// Debug Function to Output Results of Process Monitoring
         /// </summary>
         private void OutputProcessResults() {
-
-            var CPUItems = from pair in processDataCollector.HighestCpuUsage
-                        orderby pair.Value descending
-                        select pair;
-
-            var MemoryItems = from pair in processDataCollector.HighestMemUsage
-                        orderby pair.Value descending
-                        select pair;
-
-            Console.WriteLine("Writing Data to CSV file: {0}", FullOutputDataFileName);
-
-            // the boolean false represents whether it will be appended or not - currently overwriting
-            using (var w = new StreamWriter(FullOutputDataFileName, false)) {
-
-                var first = "Process Name";
-                var second = "CPU Usage";
-                var third = "Memory Usage";
-
-                var line = string.Format("{0},{1} (%),{2} (MB)", first, second, third);
-                w.WriteLine(line);
-                w.Flush();
-
-                int index = 0;
-                foreach (KeyValuePair<string, float> item in CPUItems) {
-
-                    var first1 = item.Key;
-                    var second1 = item.Value;
-                    float third1 = -1;
-
-                    foreach (KeyValuePair<string, float> item1 in MemoryItems) {
-                        if (item1.Key == item.Key) {
-                            third1 = item1.Value;
-                        }
-                    }
-
-                    var line1 = string.Format("{0},{1},{2}", first1, second1, third1);
-                    w.WriteLine(line1);
-                    w.Flush();
-
-                    index++;
-                }
-
-            }
-            Console.WriteLine("Finished writing data to CSV");
+#if DEBUG
+            Stopwatch stopwatch = Stopwatch.StartNew();
+#endif
+            backgroundDataManager.InsertData(processDataCollector.DataValues);
+            
+            Logger.Info("Finished writing data to SQLite");
+#if DEBUG
+            stopwatch.Stop();
+            Console.WriteLine("[time] OutputProcessResults function completed in: " + stopwatch.ElapsedMilliseconds + "ms");
+#endif
         }
+
     }
 }
-

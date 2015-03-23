@@ -1,14 +1,15 @@
-﻿<Window x:Class="Check_Up.PropertiesWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Check Up Properties" Height="201" Width="250" Initialized="Window_Initialized" MinWidth="404" MinHeight="286">
-    <Grid Background="#FF424242">
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Class="Check_Up.PropertiesWindow"
+        Title="Check Up Properties" Height="201" Width="250" Initialized="Window_Initialized" MinWidth="412" MinHeight="286" Icon="Check Up.ico">
+    <Grid Background="#FF898989">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TabControl Margin="5,5,0,0">
+        <TabControl Margin="5,5,0,0" Background="#FF898989">
             <TabItem Header="Data Control">
-                <Grid Background="#FFE5E5E5">
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
@@ -26,7 +27,7 @@
                         <TextBox x:Name="textbox_pollingInterval" HorizontalAlignment="Right" Height="23" Margin="0,0,10,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="120" Text="1" ToolTip="Interval Between Collection"/>
                     </Grid>
                     <Label x:Name="error1" Content="Error: Polling Interval is greater than Polling Time" HorizontalAlignment="Left" Margin="91,74,0,0" VerticalAlignment="Top" Background="#00000000" Foreground="#FFFF0A0A" Visibility="Hidden" Height="26" Width="269"/>
-                    <ListView x:Name="listview_disks" HorizontalAlignment="Left" Margin="10,105,0,0" VerticalAlignment="Top" MinHeight="100" SelectionChanged="listview_disks_SelectionChanged">
+                    <ListView x:Name="listview_disks" HorizontalAlignment="Left" Margin="10,105,0,0" VerticalAlignment="Top" MinHeight="100" SelectionChanged="listview_disks_SelectionChanged" Foreground="White">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn>
@@ -40,22 +41,54 @@
                                 <GridViewColumn Header="Disk Type" Width="100" DisplayMemberBinding="{Binding DiskType}" />
                             </GridView>
                         </ListView.View>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="IsSelected" Value="{Binding IsChecked}"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                            <Border
+												BorderBrush="Transparent"
+												BorderThickness="0">
+                                                <GridViewRowPresenter HorizontalAlignment="Stretch" Width="Auto" Margin="0" Content="{TemplateBinding Content}"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListView.ItemContainerStyle>
                     </ListView>
                 </Grid>
             </TabItem>
+            <TabItem Header="Themes">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="ComboBoxThemes" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboBoxThemes_SelectionChanged"/>
+                </Grid>
+            </TabItem>
             <TabItem Header="Chart Control">
-                <Grid Background="#FFE5E5E5">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
                     <CheckBox x:Name="checkbox_ignoreTime" Content="Ignore Time" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="Gather Data without Time Limit"/>
                     <TextBox x:Name="textbox_visiblePoints" HorizontalAlignment="Left" Height="23" Margin="254,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="10" ToolTip="Amount of Plotted Points on the Graph"/>
                     <Label Content="Visible Points" HorizontalAlignment="Left" Margin="169,7,0,0" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Background">
-                <Grid Background="#FFE5E5E5" Margin="0,2,0,-2">
+                <Grid Margin="0,2,0,-2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
                     <CheckBox x:Name="checkbox_monitorProcesses" Content="Monitor Processes" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" ToolTip="If processes should be monitored" IsChecked="True"/>
                     <CheckBox x:Name="checkbox_monitorProcesses_Copy" Content="Monitor Operating System" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" ToolTip="If the OS should be monitored" IsEnabled="False"/>
                 </Grid>
             </TabItem>
+            
         </TabControl>
         <Grid HorizontalAlignment="Right" Height="28" VerticalAlignment="Bottom" Width="170" Margin="0,0,5,5">
             <Button x:Name="button_Cancel" Content="Cancel" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Bottom" Width="75" Click="button_Cancel_Click"/>
