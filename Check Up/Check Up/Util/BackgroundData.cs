@@ -6,15 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 
 namespace Check_Up.Util {
-    public class BackgroundDataList : ObservableCollection<BackgroundData> {
-
-        public BackgroundDataList()
-            : base() {
-
-        }
-
-    }
-
+ 
     public class BackgroundData : IEquatable<BackgroundData> {
 
         public BackgroundData(string name) {
