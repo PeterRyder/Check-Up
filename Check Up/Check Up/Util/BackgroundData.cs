@@ -15,13 +15,59 @@ namespace Check_Up.Util {
 
     }
 
-    public class BackgroundData {
+    public class BackgroundData : IEquatable<BackgroundData> {
+
+        public BackgroundData(string name) {
+            counterName = name;
+        }
         
         // Ex. CPU, Mem, C:
-        private string counterName { get; set; }
+        private string counterName;
 
-        // Ex. 10.1, 99.9
-        private float data { get; set; }
+        private float cpu;
+
+        // Ex. 888, 1001, 90.2
+        private float mem;
+
+        public string CounterName {
+            get { return counterName; }
+        }
+
+        public float Cpu {
+            get { return cpu; }
+            set { cpu = value; }
+        }
+
+        public float Mem {
+            get { return mem; }
+            set { mem = value; }
+        }
+
+        public bool Equals(BackgroundData other) {
+            if (other == null) {
+                return false;
+            }
+
+            if (this.CounterName == other.counterName) {
+                return true;
+            }
+            else {
+                return false;
+            }
+
+        }
+
+        public override bool Equals(Object obj) {
+            if (obj == null)
+                return false;
+
+            BackgroundData backgroundDataObj = obj as BackgroundData;
+            if (backgroundDataObj == null)
+                return false;
+            else
+                return Equals(backgroundDataObj);
+        }   
+
 
     }
 }

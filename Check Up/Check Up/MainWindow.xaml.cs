@@ -53,6 +53,7 @@ namespace Check_Up {
         OSDataCollection osDataCollector;
         ProcessesDataCollection processDataCollector;
         ThemeManager themeManager;
+        BackgroundDataManager backgroundDataManager;
 
         List<Window> subWindows;
 
@@ -161,6 +162,7 @@ namespace Check_Up {
             stopwatch.Reset();
             stopwatch.Start();
 #endif
+            backgroundDataManager = new BackgroundDataManager();
             processDataCollector = new ProcessesDataCollection();
             processDataCollector.LoadProcessCounters();
 #if DEBUG
@@ -609,7 +611,7 @@ namespace Check_Up {
 
         private void menuItem_LogData(object sender, EventArgs e)
         {
-
+            /*
             osDataCollector.InitializeCounters();
             List<string> CountersRemoved = osDataCollector.RemoveCounters();
             if (CountersRemoved.Count != 0)
@@ -646,6 +648,7 @@ namespace Check_Up {
                     osDataCollector.AddDiskCounter(disk);
                 }
             }
+            */
 
             // Start the processes monitoring thread
             try
@@ -759,52 +762,11 @@ namespace Check_Up {
         /// Debug Function to Output Results of Process Monitoring
         /// </summary>
         private void OutputProcessResults() {
-
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            var CPUItems = from pair in processDataCollector.HighestCpuUsage
-                        orderby pair.Value descending
-                        select pair;
-
-            var MemoryItems = from pair in processDataCollector.HighestMemUsage
-                        orderby pair.Value descending
-                        select pair;
-
-            Logger.Info(string.Format("Writing Data to CSV file: {0}", FullOutputDataFileName));
-
-            // the boolean false represents whether it will be appended or not - currently overwriting
-            using (var w = new StreamWriter(FullOutputDataFileName, false)) {
-
-                var first = "Process Name";
-                var second = "CPU Usage";
-                var third = "Memory Usage";
-
-                var line = string.Format("{0},{1} (%),{2} (MB)", first, second, third);
-                w.WriteLine(line);
-                w.Flush();
-
-                int index = 0;
-                foreach (KeyValuePair<string, float> item in CPUItems) {
-
-                    var first1 = item.Key;
-                    var second1 = item.Value;
-                    float third1 = -1;
-
-                    foreach (KeyValuePair<string, float> item1 in MemoryItems) {
-                        if (item1.Key == item.Key) {
-                            third1 = item1.Value;
-                        }
-                    }
-
-                    var line1 = string.Format("{0},{1},{2}", first1, second1, third1);
-                    w.WriteLine(line1);
-                    w.Flush();
-
-                    index++;
-                }
-
-            }
-            Logger.Info("Finished writing data to CSV");
+            backgroundDataManager.InsertData(processDataCollector.DataValues);
+            
+            Logger.Info("Finished writing data to SQLite");
 
             stopwatch.Stop();
             Console.WriteLine("[time] OutputProcessResults function completed in: " + stopwatch.ElapsedMilliseconds + "ms");

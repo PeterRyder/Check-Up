@@ -195,6 +195,7 @@
     <Compile Include="ScriptWindow.xaml.cs">
       <DependentUpon>ScriptWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Util\BackgroundDataManager.cs" />
     <Compile Include="Util\CounterNames.cs" />
     <Compile Include="Util\Disk.cs" />
     <Compile Include="Util\Logger.cs" />
