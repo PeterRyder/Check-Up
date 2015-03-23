@@ -143,8 +143,6 @@ namespace Check_Up {
 
         #region INITIALIZERS
 
-        #region OBJECTS
-
         private void InitializeObjects() {
             ni = new System.Windows.Forms.NotifyIcon();
             subWindows = new List<Window>();
@@ -173,31 +171,27 @@ namespace Check_Up {
             backgroundWorkerChart = new BackgroundWorker();
         }
 
-        #endregion
-
-        #region CONTEXT MENU
-
         public void InitializeContextMenu(){
-            System.Windows.Forms.ContextMenu contextMenu1;
-            contextMenu1 = new System.Windows.Forms.ContextMenu();
+            System.Windows.Forms.ContextMenu contextMenu;
+            contextMenu = new System.Windows.Forms.ContextMenu();
 
             System.Windows.Forms.MenuItem foreground = new System.Windows.Forms.MenuItem();
-            contextMenu1.MenuItems.AddRange(
+            contextMenu.MenuItems.AddRange(
                     new System.Windows.Forms.MenuItem[] { foreground });
             foreground.Text = "Foreground";
 
             System.Windows.Forms.MenuItem foreground_start = new System.Windows.Forms.MenuItem();
             foreground.MenuItems.Add(foreground_start);
             foreground_start.Text = "Gather Data";
-            foreground_start.Click += new System.EventHandler(menuItem_GatherForegroundData);
+            foreground_start.Click += new System.EventHandler(contextMenu_GatherForegroundData);
 
             System.Windows.Forms.MenuItem foreground_stop = new System.Windows.Forms.MenuItem();
             foreground.MenuItems.Add(foreground_stop);
             foreground_stop.Text = "Stop Monitoring";
-            foreground_stop.Click += new System.EventHandler(this.menuItem_StopForegroundData);
+            foreground_stop.Click += new System.EventHandler(this.contextMenu_StopForegroundData);
 
             System.Windows.Forms.MenuItem background = new System.Windows.Forms.MenuItem();
-            contextMenu1.MenuItems.AddRange(
+            contextMenu.MenuItems.AddRange(
                     new System.Windows.Forms.MenuItem[] { background });
             background.Text = "Background";
 
@@ -212,23 +206,19 @@ namespace Check_Up {
             background2.Click += new System.EventHandler(contextMenu_stopLoggingData);
 
             System.Windows.Forms.MenuItem properties = new System.Windows.Forms.MenuItem();
-            contextMenu1.MenuItems.AddRange(
+            contextMenu.MenuItems.AddRange(
                     new System.Windows.Forms.MenuItem[] { properties });
             properties.Text = "Properties";
-            properties.Click += new System.EventHandler(ContextMenuProperties_Click);
+            properties.Click += new System.EventHandler(contextMenu_PropertiesWindow);
 
             System.Windows.Forms.MenuItem exit = new System.Windows.Forms.MenuItem();
-            contextMenu1.MenuItems.AddRange(
+            contextMenu.MenuItems.AddRange(
                     new System.Windows.Forms.MenuItem[] { exit });
             exit.Text = "Exit";
             exit.Click += new System.EventHandler(MainWindow_Closed);
 
-            ni.ContextMenu = contextMenu1;
+            ni.ContextMenu = contextMenu;
         }
-
-        #endregion
-
-        #region EVENT HANDLERS
 
         private void InitializeEventHandlers() {
             this.Closed += new EventHandler(MainWindow_Closed);
@@ -255,11 +245,9 @@ namespace Check_Up {
 
         #endregion
 
-        #endregion
-
         #region CONTEXT MENU
 
-        private void ContextMenuProperties_Click(object sender, EventArgs e) {
+        private void contextMenu_PropertiesWindow(object sender, EventArgs e) {
             PropertiesHelper();
         }
 
@@ -271,23 +259,11 @@ namespace Check_Up {
             StopBackgroundLogging();
         }
 
-        private void MenuItemProperties_Click(object sender, RoutedEventArgs e) {
-            PropertiesHelper();
-        }
-
-        private void MenuItemExit_Click(object sender, RoutedEventArgs e) {
-            this.Close();
-        }
-
-        private void MenuItemAbout_Click(object sender, RoutedEventArgs e) {
-            System.Windows.Forms.MessageBox.Show("About Window is WIP");
-        }
-
-        private void menuItem_GatherForegroundData(object sender, System.EventArgs e) {
+        private void contextMenu_GatherForegroundData(object sender, System.EventArgs e) {
             BeginForegroundMonitoring();
         }
 
-        private void menuItem_StopForegroundData(object sender, System.EventArgs e) {
+        private void contextMenu_StopForegroundData(object sender, System.EventArgs e) {
             StopForegroundMonitoring();
         }
 
@@ -303,6 +279,22 @@ namespace Check_Up {
 
             button_stopLoggingData.IsEnabled = true;
             button_logData.IsEnabled = false;
+        }
+
+        #endregion
+
+        #region MENU BAR
+
+        private void MenuItemProperties_Click(object sender, RoutedEventArgs e) {
+            PropertiesHelper();
+        }
+
+        private void MenuItemExit_Click(object sender, RoutedEventArgs e) {
+            this.Close();
+        }
+
+        private void MenuItemAbout_Click(object sender, RoutedEventArgs e) {
+            System.Windows.Forms.MessageBox.Show("About Window is WIP");
         }
 
         #endregion
