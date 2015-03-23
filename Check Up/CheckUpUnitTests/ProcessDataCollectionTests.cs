@@ -13,8 +13,8 @@ namespace CheckUpUnitTests {
         [Test]
         public void AggragateDataInputNull() {
             ProcessesDataCollection dataCollection = new ProcessesDataCollection();
-            Dictionary<string, float> expected = new Dictionary<string, float>();
-            Dictionary<string, float> returned = dataCollection.AggregateData(null);
+            List<BackgroundData> expected = new List<BackgroundData>();
+            List<BackgroundData> returned = dataCollection.AggregateData();
             Assert.AreEqual(expected, returned);
         }
 
@@ -22,12 +22,17 @@ namespace CheckUpUnitTests {
         public void AggregateDataInput1Process() {
             ProcessesDataCollection dataCollection = new ProcessesDataCollection();
 
-            Dictionary<string, float> input = new Dictionary<string,float>();
-            input.Add("chrome#1", 9.9f);
-            input.Add("chrome#2", 10.0f);
-            Dictionary<string, float> expected = new Dictionary<string, float>();
-            expected.Add("chrome", 19.9f);
-            Dictionary<string, float> returned = dataCollection.AggregateData(input);
+            List<BackgroundData> input = new List<BackgroundData>();
+
+            input.Add(new BackgroundData("chrome#1", 10f, 101f));
+            input.Add(new BackgroundData("chrome#2", 9.9f, 50f));
+
+            dataCollection.SetDataValues(input);
+
+            List<BackgroundData> expected = new List<BackgroundData>();
+            expected.Add(new BackgroundData("chrome", 10.9f, 151f));
+
+            List<BackgroundData> returned = dataCollection.AggregateData();
 
             Assert.AreEqual(expected, returned);
         }
@@ -36,17 +41,20 @@ namespace CheckUpUnitTests {
         public void AggregateDataInput2Processes() {
             ProcessesDataCollection dataCollection = new ProcessesDataCollection();
 
-            Dictionary<string, float> input = new Dictionary<string, float>();
-            input.Add("chrome#1", 9.9f);
-            input.Add("chrome#2", 10.0f);
+            List<BackgroundData> input = new List<BackgroundData>();
+            input.Add(new BackgroundData("chrome#1", 9.9f, 100f));
+            input.Add(new BackgroundData("chrome#2", 10.0f, 50f));
 
-            input.Add("test#1", 9.9f);
-            input.Add("test#2", 12.1f);
+            input.Add(new BackgroundData("test#1", 9.9f, 100f));
+            input.Add(new BackgroundData("test#2", 12.1f, 50f));
 
-            Dictionary<string, float> expected = new Dictionary<string, float>();
-            expected.Add("chrome", 19.9f);
-            expected.Add("test", 22f);
-            Dictionary<string, float> returned = dataCollection.AggregateData(input);
+            List<BackgroundData> expected = new List<BackgroundData>();
+            expected.Add(new BackgroundData("chrome", 19.9f, 150f));
+            expected.Add(new BackgroundData("test", 22f, 150f));
+
+            dataCollection.SetDataValues(input);
+
+            List<BackgroundData> returned = dataCollection.AggregateData();
 
             Assert.AreEqual(expected, returned);
         }
@@ -55,13 +63,16 @@ namespace CheckUpUnitTests {
         public void AggregateDataWeirdInputProcesses() {
             ProcessesDataCollection dataCollection = new ProcessesDataCollection();
 
-            Dictionary<string, float> input = new Dictionary<string, float>();
-            input.Add("chrome#1", 9.9f);
-            input.Add("chrome#3", 10.0f);
+            List<BackgroundData> input = new List<BackgroundData>();
+            input.Add(new BackgroundData("chrome#1", 9.9f, 100f));
+            input.Add(new BackgroundData("chrome#3", 10.0f, 50f));
 
-            Dictionary<string, float> expected = new Dictionary<string, float>();
-            expected.Add("chrome", 19.9f);
-            Dictionary<string, float> returned = dataCollection.AggregateData(input);
+            List<BackgroundData> expected = new List<BackgroundData>();
+            expected.Add(new BackgroundData("chrome", 19.9f, 150f));
+
+            dataCollection.SetDataValues(input);
+
+            List<BackgroundData> returned = dataCollection.AggregateData();
 
             Assert.AreEqual(expected, returned);
         }

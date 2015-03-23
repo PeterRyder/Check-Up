@@ -19,6 +19,14 @@ namespace Check_Up.Util {
             get { return dataValues; }
         }
 
+        /// <summary>
+        /// Only to be used in Unit Tests 
+        /// </summary>
+        /// <param name="b"></param>
+        internal void SetDataValues(List<BackgroundData> b) {
+            dataValues = b;
+        }
+
         public ProcessesDataCollection() {
             
         }

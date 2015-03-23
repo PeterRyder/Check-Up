@@ -20,6 +20,12 @@ namespace Check_Up.Util {
         public BackgroundData(string name) {
             counterName = name;
         }
+
+        internal BackgroundData(string name, float c, float m) {
+            counterName = name;
+            cpu = c;
+            mem = m;
+        }
         
         // Ex. CPU, Mem, C:
         private string counterName;
