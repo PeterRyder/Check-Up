@@ -249,7 +249,7 @@ namespace Check_Up.Util {
             GC.SuppressFinalize(this);
         }
 
-        public virtual void Dispose(bool disposing) {
+        protected virtual void Dispose(bool disposing) {
             if (disposing) {
                 foreach (KeyValuePair<string, PerformanceCounter> count in PerfCounters) {
                     count.Value.Dispose();
