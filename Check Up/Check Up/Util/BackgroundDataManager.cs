@@ -12,16 +12,18 @@ namespace Check_Up.Util {
         static string DatabaseName = "CheckUp.sqlite";
         static string BackgroundTableName = "BackgroundData";
 
+        static string DatabaseLocation = RandomInfo.roamingDir + "\\" + RandomInfo.dataDir + "\\" + DatabaseName;
+
         SQLiteConnection m_dbConnection;
 
         public BackgroundDataManager() {
-            if (!File.Exists(DatabaseName)) {
+            if (!File.Exists(DatabaseLocation)) {
                 CreateDatabase();
             }
         }
 
         internal void ConnectDatabase() {
-            m_dbConnection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", DatabaseName));
+            m_dbConnection = new SQLiteConnection(string.Format("Data Source={0};Version=3;", DatabaseLocation));
             m_dbConnection.Open();
         }
 
@@ -40,9 +42,9 @@ namespace Check_Up.Util {
 
         internal void InsertData(string key, float cpu, float mem) {
             string sql = string.Format("insert into {0} (name, cpu, mem) values ('{1}', '{2}', '{3}')", BackgroundTableName,
-                                                                                                  key,
-                                                                                                  cpu,
-                                                                                                  mem);
+                                                                                                        key,
+                                                                                                        cpu,
+                                                                                                        mem);
             SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
 
             try {
@@ -59,8 +61,8 @@ namespace Check_Up.Util {
         }
 
         internal void CreateDatabase() {
-            SQLiteConnection.CreateFile(DatabaseName);
-            Logger.Info("Created database with name " + BackgroundTableName);
+            SQLiteConnection.CreateFile(DatabaseLocation);
+            Logger.Info(string.Format("Created database with name {0}", DatabaseName));
 
             ConnectDatabase();
             CreateTable(BackgroundTableName);
