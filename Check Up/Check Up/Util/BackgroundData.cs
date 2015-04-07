@@ -8,16 +8,6 @@ using System.Collections.ObjectModel;
 namespace Check_Up.Util {
  
     public class BackgroundData : IEquatable<BackgroundData> {
-
-        public BackgroundData(string name) {
-            counterName = name;
-        }
-
-        internal BackgroundData(string name, float c, float m) {
-            counterName = name;
-            cpu = c;
-            mem = m;
-        }
         
         // Ex. CPU, Mem, C:
         private string counterName;
@@ -29,6 +19,7 @@ namespace Check_Up.Util {
 
         public string CounterName {
             get { return counterName; }
+            set { counterName = value; }
         }
 
         public float Cpu {
@@ -52,7 +43,6 @@ namespace Check_Up.Util {
             else {
                 return false;
             }
-
         }
 
         public override bool Equals(Object obj) {

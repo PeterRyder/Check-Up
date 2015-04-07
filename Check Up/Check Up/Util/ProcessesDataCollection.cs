@@ -65,7 +65,8 @@ namespace Check_Up.Util {
                 if (!FirstRun) {
                     var response = dataValues.Find(r => (r.CounterName == counter.InstanceName));
                     if (response == null) {
-                        BackgroundData item = new BackgroundData(counter.InstanceName);
+                        BackgroundData item = new BackgroundData();
+                        item.CounterName = counter.InstanceName;
 
                         if (counter.CounterName == "% Processor Time") {
                             data = data / (float)RandomInfo.logicalCpuCount;
@@ -80,7 +81,8 @@ namespace Check_Up.Util {
 
                     }
                     else {
-                        BackgroundData item = new BackgroundData(counter.InstanceName);
+                        BackgroundData item = new BackgroundData();
+                        item.CounterName = counter.InstanceName;
                         dataValues.Remove(item);
                         if (counter.CounterName == "% Processor Time") {
                             data = data / (float)RandomInfo.logicalCpuCount;
@@ -129,7 +131,8 @@ namespace Check_Up.Util {
                     var response = NewData.Find(r => (r.CounterName == newName));
 
                     if (response == null) {
-                        BackgroundData newItem = new BackgroundData(newName);
+                        BackgroundData newItem = new BackgroundData();
+                        newItem.CounterName = newName;
                         newItem.Cpu = item.Cpu;
                         newItem.Mem = item.Mem;
                         NewData.Add(newItem);
@@ -147,7 +150,8 @@ namespace Check_Up.Util {
                     var response = NewData.Find(r => (r.CounterName == item.CounterName));
 
                     if (response == null) {
-                        BackgroundData newItem = new BackgroundData(item.CounterName);
+                        BackgroundData newItem = new BackgroundData();
+                        newItem.CounterName = item.CounterName;
                         newItem.Cpu = item.Cpu;
                         newItem.Mem = item.Mem;
                         NewData.Add(newItem);

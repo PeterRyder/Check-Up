@@ -19,7 +19,7 @@
                     <GridViewColumn Header="Stop" Width="140">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="Stop" Width="80" Click="StopScript" CommandParameter="{Binding}"/>
+                                
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

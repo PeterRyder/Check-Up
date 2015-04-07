@@ -45,7 +45,6 @@ namespace Check_Up {
         private void InitializeWorker() {
             worker = new BackgroundWorker();
             worker.DoWork += worker_DoWork;
-            worker.ProgressChanged += worker_ProgressChanged;
             worker.RunWorkerCompleted += worker_RunWorkerCompleted;
             worker.WorkerReportsProgress = true;
             worker.WorkerSupportsCancellation = true;
@@ -61,12 +60,15 @@ namespace Check_Up {
             Button b = sender as Button;
             ScriptData scriptData = b.CommandParameter as ScriptData;
 
-            if (scripts.RunScript(scriptData.FullPath)) {
-                //b.IsEnabled = false;
+            string code = scripts.GetScriptContents(scriptData.FullPath);
+
+
+            if (scripts.ExecuteCode(code, "Test", "Test", "PrintTest", false) == null) {
+                Console.WriteLine("ScriptWindow couldn't execute file {0}", scriptData.FullPath);
             }
 
         }
-
+        /*
         private void StopScript(object sender, RoutedEventArgs e) {
             Button b = sender as Button;
             ScriptData scriptData = b.CommandParameter as ScriptData;
@@ -75,27 +77,18 @@ namespace Check_Up {
                 //b.IsEnabled = false;
             }
         }
-
+        */
         private void worker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
-            string[] files = Directory.GetFiles(ScriptControl.fullScriptPath);
+            string[] files = Directory.GetFiles(FolderManager.ScriptDir);
             BackgroundWorker w = sender as BackgroundWorker;
 
-            int i = 1;
-            foreach (string filename in files) {
-                scripts.CheckNewScript(filename);
-                float progress = ((float)i / files.Length) * 100;
-                w.ReportProgress((int)progress);
-                i++;
-            }
-        }
-
-        private void worker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
-            //Console.WriteLine("Progress Changed " + e.ProgressPercentage);
+            scripts.CheckScripts();
         }
 
         private void worker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
             Logger.Info("Script Window Worker completed");
-            List<string> scriptList = scripts.GetScripts();
+
+            List<string> scriptList = scripts.ScriptFiles;
 
             foreach (string script in scriptList) {
                 _ScriptCollection.Add(new ScriptData {

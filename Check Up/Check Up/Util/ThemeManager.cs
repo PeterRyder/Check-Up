@@ -13,32 +13,15 @@ using System.Runtime.CompilerServices;
 namespace Check_Up.Util {
     public class ThemeManager {
 
-        private static string themeDir = RandomInfo.roamingDir + "\\" + RandomInfo.themeDir;
-
         public ObservableCollection<string> themes = new ObservableCollection<string>();
 
         public ThemeManager() {
-            CheckDirectory();
-        }
 
-        internal void CheckDirectory() {
-            if (!Directory.Exists(themeDir)) {
-                Directory.CreateDirectory(themeDir);
-            }
         }
 
         public void LoadThemes() {
-            LoadThemes(themeDir);
-        }
-
-        public void LoadThemes(string directory) {
-            if (directory == null) {
-                Logger.Error("Cannot load themes from null directory");
-                return;
-            }
             Logger.Info("Loading Themes...");
-            if (Directory.Exists(directory)) {
-                string[] files = Directory.GetFiles(directory);
+                string[] files = Directory.GetFiles(FolderManager.ThemeDir);
                 foreach (string file in files) {
                     string parsedFile = ParseTheme(file);
                     Logger.Debug("Found Theme " + parsedFile);
@@ -47,10 +30,6 @@ namespace Check_Up.Util {
                 if (files.Length == 0) {
                     Logger.Warn("Couldn't find any themes to load");
                 }
-            }
-            else {
-                Logger.Error(string.Format("Couldn't find theme directory {0}", directory));
-            }
         }
 
         internal string ParseTheme(string file) {
@@ -58,7 +37,7 @@ namespace Check_Up.Util {
         }
 
         public void ChangeTheme(string theme) {
-            string s = themeDir + "\\" + theme;
+            string s = FolderManager.ThemeDir + "\\" + theme;
 
             try {
                 Application.Current.Resources.MergedDictionaries.Clear();

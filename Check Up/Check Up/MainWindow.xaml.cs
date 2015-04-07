@@ -42,18 +42,11 @@ namespace Check_Up {
     public partial class MainWindow : Window {
         private Random rand = new Random();
 
-        private string OutputDirectory = RandomInfo.roamingDir + "\\" + RandomInfo.dataDir;
-        private string FullOutputDirectory = "";
-
-        private string OutputDataFileName;
-        private string FullOutputDataFileName;
-
         System.Windows.Forms.NotifyIcon ni;
 
         OSDataCollection osDataCollector;
         ProcessesDataCollection processDataCollector;
         ThemeManager themeManager;
-        BackgroundDataManager backgroundDataManager;
 
         List<Window> subWindows;
 
@@ -68,16 +61,12 @@ namespace Check_Up {
         private Dictionary<string, GraphData> GraphDataDict = new Dictionary<string, GraphData>();
 
         public MainWindow() {
-
-            // create the loading window in a seperate thread before initialzing anything
-            Thread LoadingWindow = new Thread(ShowLoadingWindow);
-            LoadingWindow.SetApartmentState(ApartmentState.STA);
-            LoadingWindow.Start();
-
 #if DEBUG
             Stopwatch stopwatch = Stopwatch.StartNew(); //creates and start the instance of Stopwatch
 #endif
             InitializeComponent();
+
+            FolderManager.CreateFolders();
 #if DEBUG
             stopwatch.Stop();
             Logger.Debug("[time] InitializeComponent: " + stopwatch.ElapsedMilliseconds + "ms");
@@ -101,13 +90,6 @@ namespace Check_Up {
             Console.WriteLine("Showing Notification Icon");
             ni.Visible = true;
 
-            CreateOutputDirectory();
-
-            OutputDataFileName = OutputDirectory + "\\Data-" + DateTime.Now.ToString("yyyy-MM-dd") + ".csv";
-
-            FullOutputDataFileName = System.IO.Path.GetFullPath(OutputDataFileName);
-
-            // check for scipts directory
             if (!osDataCollector.canGatherNet) {
                 listview_warnings.Items.Add("Could not find network adapter");
             }
@@ -136,9 +118,6 @@ namespace Check_Up {
 
             button_stopMonitoring.IsEnabled = false;
             button_resetChart.IsEnabled = false;
-
-            LoadingWindow.Abort();
-            LoadingWindow.Join();
         }
 
         #region INITIALIZERS
@@ -156,7 +135,6 @@ namespace Check_Up {
             stopwatch.Reset();
             stopwatch.Start();
 #endif
-            backgroundDataManager = new BackgroundDataManager();
             processDataCollector = new ProcessesDataCollection();
             processDataCollector.LoadProcessCounters();
 #if DEBUG
@@ -392,21 +370,6 @@ namespace Check_Up {
         }
 
         #endregion
-
-        private void ShowLoadingWindow() {
-            LoadingWindow window = new LoadingWindow();
-            window.Show();
-            window.Closed += (s, e) => System.Windows.Threading.Dispatcher.ExitAllFrames();
-
-            System.Windows.Threading.Dispatcher.Run();
-        }
-
-        private void CreateOutputDirectory() {
-            FullOutputDirectory = System.IO.Path.GetFullPath(OutputDirectory);
-            if (!Directory.Exists(FullOutputDirectory)) {
-                Directory.CreateDirectory(FullOutputDirectory);
-            }
-        }
 
         /// <summary>
         /// Launches the PropertiesWindow when the menu item is clicked
@@ -690,9 +653,6 @@ namespace Check_Up {
         /// Will Gather Data on All Processes
         /// </summary>
         void GatherDataProcesses() {
-#if DEBUG
-            Stopwatch stopwatch = Stopwatch.StartNew();
-#endif
             if (Properties.Settings.Default.MonitorProcesses) {
                 // Fire the NextValue function for all processes
                 processDataCollector.GatherData(true);
@@ -709,10 +669,6 @@ namespace Check_Up {
 
             // Log output to CSV file
             OutputProcessResults();
-#if DEBUG
-            stopwatch.Stop();
-            Console.WriteLine("[time] GatherDataProcesses function completed in: " + stopwatch.ElapsedMilliseconds + "ms");
-#endif
         }
 
         /// <summary>
@@ -722,9 +678,8 @@ namespace Check_Up {
 #if DEBUG
             Stopwatch stopwatch = Stopwatch.StartNew();
 #endif
-            backgroundDataManager.InsertData(processDataCollector.DataValues);
-            
-            Logger.Info("Finished writing data to SQLite");
+            BackgroundDataManager.SerializeData(processDataCollector.DataValues);
+            Logger.Info("Finished writing background data");
 #if DEBUG
             stopwatch.Stop();
             Console.WriteLine("[time] OutputProcessResults function completed in: " + stopwatch.ElapsedMilliseconds + "ms");
