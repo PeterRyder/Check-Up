@@ -8,12 +8,6 @@ namespace CheckUpUnitTests {
     public class ThemeManagerTests {
 
         [Test]
-        public void LoadThemes() {
-            ThemeManager themeManager = new ThemeManager();
-            themeManager.LoadThemes();
-        }
-
-        [Test]
         public void ParseTheme_SameInputandReturn() {
             ThemeManager themeManager = new ThemeManager();
 
