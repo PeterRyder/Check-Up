@@ -8,29 +8,9 @@ namespace CheckUpUnitTests {
     public class ThemeManagerTests {
 
         [Test]
-        public void CheckDirectory() {
-            ThemeManager themeManager = new ThemeManager();
-            themeManager.CheckDirectory();
-        }
-
-        [Test]
         public void LoadThemes() {
             ThemeManager themeManager = new ThemeManager();
             themeManager.LoadThemes();
-        }
-
-        [Test]
-        public void LoadThemes_InputNull() {
-            ThemeManager themeManager = new ThemeManager();
-            string given = null;
-            themeManager.LoadThemes(given);
-        }
-
-        [Test]
-        public void LoadThemes_InputNotExist() {
-            ThemeManager themeManager = new ThemeManager();
-            string given = "C:\\Users\\John";
-            themeManager.LoadThemes(given);
         }
 
         [Test]

@@ -22,7 +22,7 @@ namespace Check_Up.Util {
         }
 
         public ScriptControl() {
-            // CheckScripts();
+            
         }
 
         public void CheckScripts() {
