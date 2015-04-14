@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Reflection;
 using Microsoft.CSharp;
 using System.CodeDom.Compiler;
+using CSScriptLibrary;
 
 namespace Check_Up.Util {
     public class ScriptControl {
@@ -43,6 +44,19 @@ namespace Check_Up.Util {
             else {
                 return null;
             }
+        }
+
+        private void test() {
+            dynamic script = CSScript.Evaluator
+                         .LoadCode(@"using System;
+                                     public class Script
+                                     {
+                                         public int Sum(int a, int b)
+                                         {
+                                             return a+b;
+                                         }
+                                     }");
+            int result = script.Sum(1, 2);
         }
 
         private Assembly BuildAssembly(string code) {
