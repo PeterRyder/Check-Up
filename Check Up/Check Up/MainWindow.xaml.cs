@@ -161,11 +161,14 @@ namespace Check_Up {
             System.Windows.Forms.MenuItem foreground_start = new System.Windows.Forms.MenuItem();
             foreground.MenuItems.Add(foreground_start);
             foreground_start.Text = "Gather Data";
-            foreground_start.Click += new System.EventHandler(contextMenu_GatherForegroundData);
+            foreground_start.Name = "foreground_start";
+            foreground_start.Click += new System.EventHandler(contextMenu_StartForegroundData);
 
             System.Windows.Forms.MenuItem foreground_stop = new System.Windows.Forms.MenuItem();
             foreground.MenuItems.Add(foreground_stop);
             foreground_stop.Text = "Stop Monitoring";
+            foreground_stop.Name = "foreground_stop";
+            foreground_stop.Enabled = false;
             foreground_stop.Click += new System.EventHandler(this.contextMenu_StopForegroundData);
 
             System.Windows.Forms.MenuItem background = new System.Windows.Forms.MenuItem();
@@ -173,15 +176,18 @@ namespace Check_Up {
                     new System.Windows.Forms.MenuItem[] { background });
             background.Text = "Background";
 
-            System.Windows.Forms.MenuItem background1 = new System.Windows.Forms.MenuItem();
-            background.MenuItems.Add(background1);
-            background1.Text = "Log Data";
-            background1.Click += new System.EventHandler(contextMenu_startBackgroundData);
+            System.Windows.Forms.MenuItem background_start = new System.Windows.Forms.MenuItem();
+            background.MenuItems.Add(background_start);
+            background_start.Text = "Log Data";
+            background_start.Name = "background_start";
+            background_start.Click += new System.EventHandler(contextMenu_startBackgroundData);
 
-            System.Windows.Forms.MenuItem background2 = new System.Windows.Forms.MenuItem();
-            background.MenuItems.Add(background2);
-            background2.Text = "Stop Logging Data";
-            background2.Click += new System.EventHandler(contextMenu_stopLoggingData);
+            System.Windows.Forms.MenuItem background_stop = new System.Windows.Forms.MenuItem();
+            background.MenuItems.Add(background_stop);
+            background_stop.Text = "Stop Logging Data";
+            background_stop.Name = "background_stop";
+            background_stop.Enabled = false;
+            background_stop.Click += new System.EventHandler(contextMenu_stopBackgroundData);
 
             System.Windows.Forms.MenuItem properties = new System.Windows.Forms.MenuItem();
             contextMenu.MenuItems.AddRange(
@@ -230,19 +236,38 @@ namespace Check_Up {
         }
 
         private void contextMenu_startBackgroundData(object sender, EventArgs e) {
+            var menuItem = sender as System.Windows.Forms.MenuItem;
+            menuItem.Enabled = false;
+
             StartBackgroundData();
         }
 
-        private void contextMenu_stopLoggingData(object sender, EventArgs e) {
+        private void contextMenu_stopBackgroundData(object sender, EventArgs e) {
             StopBackgroundLogging();
         }
 
-        private void contextMenu_GatherForegroundData(object sender, System.EventArgs e) {
+        private void contextMenu_StartForegroundData(object sender, System.EventArgs e) {
+            var menuItem = sender as System.Windows.Forms.MenuItem;
+            menuItem.Enabled = false;
+
             BeginForegroundMonitoring();
         }
 
         private void contextMenu_StopForegroundData(object sender, System.EventArgs e) {
+            var menuItem = sender as System.Windows.Forms.MenuItem;
+            menuItem.Enabled = false;
+
             StopForegroundMonitoring();
+        }
+
+        private void EnableMenuItem(string name) {
+            System.Windows.Forms.MenuItem[] items = this.ni.ContextMenu.MenuItems.Find(name, true);
+            items[0].Enabled = true;
+        }
+
+        private void DisableMenuItem(string name) {
+            System.Windows.Forms.MenuItem[] items = this.ni.ContextMenu.MenuItems.Find(name, true);
+            items[0].Enabled = false;
         }
 
         private void menuItem_LogData(object sender, EventArgs e) {
@@ -319,8 +344,6 @@ namespace Check_Up {
 
         }
 
-
-
         #endregion
 
         #region BACKGROUND WORKER CHART
@@ -384,9 +407,14 @@ namespace Check_Up {
         }
 
         private void BeginForegroundMonitoring() {
+
             this.button_gatherData.IsEnabled = false;
             this.button_resetChart.IsEnabled = false;
             button_stopMonitoring.IsEnabled = true;
+
+            DisableMenuItem("foreground_start");
+            EnableMenuItem("foreground_stop");
+
             this.menuitem_Properties.IsEnabled = false;
 
             ni.Text = "Monitoring Foreground Data";
@@ -471,6 +499,8 @@ namespace Check_Up {
 
             // Announce that the backgroundWorker is 100 percent done
             backgroundWorkerChart.ReportProgress(100);
+
+            DisableMenuItem("foreground_stop");
 
             this.button_resetChart.IsEnabled = true;
 
@@ -589,6 +619,9 @@ namespace Check_Up {
 
             this.button_gatherData.IsEnabled = true;
             this.button_resetChart.IsEnabled = false;
+
+            EnableMenuItem("foreground_start");
+            DisableMenuItem("foreground_stop");
         }
 
         protected override void OnStateChanged(EventArgs e) {
@@ -631,6 +664,9 @@ namespace Check_Up {
             button_stopLoggingData.IsEnabled = true;
             button_logData.IsEnabled = false;
 
+            DisableMenuItem("background_start");
+            EnableMenuItem("background_stop");
+
             ni.Text = "Gathering Background Data";
         }
 
@@ -645,6 +681,9 @@ namespace Check_Up {
             handle.Set();
             button_logData.IsEnabled = true;
             button_stopLoggingData.IsEnabled = false;
+
+            EnableMenuItem("background_start");
+            DisableMenuItem("background_stop");
 
             ni.Text = "";
         }
