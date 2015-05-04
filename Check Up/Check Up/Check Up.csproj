@@ -127,6 +127,7 @@
     <Compile Include="Util\Disk.cs" />
     <Compile Include="Util\FolderManager.cs" />
     <Compile Include="Util\Logger.cs" />
+    <Compile Include="Util\ObservableDictionary.cs" />
     <Compile Include="Util\OSDataCollection.cs" />
     <Compile Include="Util\ProcessesDataCollection.cs" />
     <Compile Include="Util\ProcessMonitor.cs" />

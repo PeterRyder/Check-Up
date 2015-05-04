@@ -9,13 +9,14 @@ using System.Threading;
 using System.Net.NetworkInformation;
 using Check_Up.Util;
 using System.IO;
+using System.Collections.ObjectModel;
 
 namespace Check_Up.Util {
     public class OSDataCollection : IDisposable {
 
         internal Dictionary<string, PerformanceCounter> PerfCounters = new Dictionary<string,PerformanceCounter>();
 
-        public Dictionary<string, int> DataValues = new Dictionary<string, int>();
+        public ObservableDictionary<string, int> DataValues = new ObservableDictionary<string, int>();
 
         public double totalMemMBs { get; set; }
         public double availableMemMBs { get; set; }
